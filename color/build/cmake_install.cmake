@@ -131,6 +131,7 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/cc/ee106a/fa24/class/ee106a-adh/color_sorter/color/build/gtest/cmake_install.cmake")
+  include("/home/cc/ee106a/fa24/class/ee106a-adh/color_sorter/color/build/color_detection/cmake_install.cmake")
 
 endif()
 

@@ -20,6 +20,7 @@ class ObjectDetector:
     def __init__(self):
         rospy.init_node('object_detector', anonymous=True)
 
+        # CVBridge converts from the 
         self.bridge = CvBridge()
 
         self.cv_color_image = None
@@ -43,14 +44,12 @@ class ObjectDetector:
         rospy.spin()
 
     def camera_info_callback(self, msg):
-        # TODO: Extract the intrinsic parameters from the CameraInfo message (look this message type up online)
         self.fx = msg.K[0]
         self.fy = msg.K[4]
         self.cx = msg.K[2]
         self.cy = msg.K[5]
 
     def pixel_to_point(self, u, v, depth):
-        # TODO: Use the camera intrinsics to convert pixel coordinates to real-world coordinates
         X = ((u - self.cx) * depth) / self.fx
         Y = ((v - self.cy) * depth) / self.fy
         Z = depth
