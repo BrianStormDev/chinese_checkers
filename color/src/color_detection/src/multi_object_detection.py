@@ -20,7 +20,7 @@ class ObjectDetector:
     def __init__(self):
         rospy.init_node('object_detector', anonymous=True)
 
-        # CVBridge converts from the 
+        # CVBridge converts from the ROS Image to the CV Image
         self.bridge = CvBridge()
 
         self.cv_color_image = None
