@@ -5,7 +5,7 @@ from Player import Player
 from Point import Point
 
 X_DIM = 27
-Y_DIM = 34
+Y_DIM = 18
 
 # The key thing to note is that a chinese checkers board has players, not a player having a board
 # But each player has a set of pieces, representing what pegs they occupy
@@ -13,6 +13,8 @@ Y_DIM = 34
 # The board associates a triangle as the end for each of the players
 
 class ChineseCheckersBoard:
+    # TODO Revisit the Origin Points of the triangles, make sure they match with physical board
+
     # Information about players and directions to store for later
     red_directions = [Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0)]
     orange_directions = [Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1)]
@@ -22,11 +24,11 @@ class ChineseCheckersBoard:
     green_directions = [Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1)]
 
     player_1 = Player("Red", 1, red_directions, Point(13, 0))
-    player_2 = Player("Orange", 2, orange_directions, Point(0, 5))
-    player_3 = Player("Blue", 3, blue_directions, Point(0, 12))
-    player_4 = Player("Yellow", 4, yellow_directions, Point(13, 17))
+    player_2 = Player("Orange", 2, orange_directions, Point(1, 4))
+    player_3 = Player("Blue", 3, blue_directions, Point(1, 12))
+    player_4 = Player("Yellow", 4, yellow_directions, Point(13, 16))
     player_5 = Player("Purple", 5, purple_directions, Point(25, 12))
-    player_6 = Player("Green", 6, green_directions, Point(25, 5))
+    player_6 = Player("Green", 6, green_directions, Point(25, 4))
 
     def __init__(self, x_dim, y_dim, num_players=2):
         """
@@ -49,13 +51,13 @@ class ChineseCheckersBoard:
         board = np.ndarray((self.x_dim, self.y_dim), dtype=object)
 
         # Initialize the hexagon for the board
-        bottom_hexagon_origin = Point(8, 5)
+        bottom_hexagon_origin = Point(9, 4)
         for i in range(5):
             board[bottom_hexagon_origin.x, bottom_hexagon_origin.y] = Peg(bottom_hexagon_origin, False, True, "black")
             for j in range(5 + i):
                 cur_position = bottom_hexagon_origin + (i * Point(-1, 1)) + (j * Point(2, 0))
                 board[cur_position.x, cur_position.y] = Peg(cur_position, False, True, "Black")
-        top_hexagon_origin = Point(8, 13)
+        top_hexagon_origin = Point(9, 12)
         for i in range(4):
             board[top_hexagon_origin.x, top_hexagon_origin.y] = Peg(top_hexagon_origin, False, True, "black")
             for j in range(5 + i):
@@ -139,8 +141,12 @@ class ChineseCheckersBoard:
         plt.scatter(x_coords, y_coords, c=colors)
         # Add labels and title
         plt.xlabel('X-axis')
+        plt.xticks(list(range(self.x_dim)))
         plt.ylabel('Y-axis')
+        plt.yticks(list(range(self.y_dim)))
         plt.title('Scatter Plot of Points with Colors')
+        # Make grid lines
+        plt.grid()
         # Show the plot
         plt.show()
 
