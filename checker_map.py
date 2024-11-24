@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from Peg import Peg
-import Border
+from Player import Player
 
 X_DIM = 27
 Y_DIM = 34

@@ -9,7 +9,8 @@ class Player:
         color: string indicating the color of the player (e.g., 'red', 'blue')
         number: integer indicating the number of the player
         directions: an array of strings representing coordinate movements with respect to each player
-        pieces: an array of Pegs representing the pegs a player occupies
+        initial_pegs: an array of Pegs representing the initial position of pegs a player occupies
+        current_pegs: an array of Pegs representing the current position of pegs a player occupies
         """
         self.color = color
         self.number = number
@@ -41,6 +42,10 @@ class Player:
     def reset_pegs(self):
         self.current_pegs = self.initial_pegs.copy()
 
+    def peg_positions(self):
+        return [peg.position for peg in self.current_pegs]
+
+# Information about players and directions to store for later
 red_directions = [Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0)]
 orange_directions = [Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1)]
 blue_directions = [Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1)]
