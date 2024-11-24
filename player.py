@@ -44,18 +44,3 @@ class Player:
 
     def peg_positions(self):
         return [peg.position for peg in self.current_pegs]
-
-# Information about players and directions to store for later
-red_directions = [Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0)]
-orange_directions = [Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1)]
-blue_directions = [Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1)]
-yellow_directions = [Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0)]
-purple_directions = [Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1)]
-green_directions = [Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1)]
-
-player_1 = Player("Red", 1, red_directions, Point(0, 17))
-player_2 = Player("Orange", 2, orange_directions, Point(0, 5))
-player_3 = Player("Blue", 3, blue_directions, Point(0, 12))
-player_4 = Player("Yellow", 4, yellow_directions, Point(16, 17))
-player_5 = Player("Purple", 5, purple_directions, Point(25, 12))
-player_6 = Player("Green", 6, green_directions, Point(25, 5))

@@ -9,6 +9,9 @@ class Point:
     def __mul__(self, scalar):
         return Point(scalar * self.x, scalar * self.y)
     
+    def __rmul__(self, scalar):
+        return Point(scalar * self.x, scalar * self.y)
+    
     def __repr__(self):
         return f'Point({self.x}, {self.y})'
     
