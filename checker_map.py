@@ -23,12 +23,12 @@ class ChineseCheckersBoard:
     purple_directions = [Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1)]
     green_directions = [Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1)]
 
-    player_1 = Player("Red", 1, red_directions, Point(13, 0))
-    player_2 = Player("Orange", 2, orange_directions, Point(1, 4))
-    player_3 = Player("Blue", 3, blue_directions, Point(1, 12))
-    player_4 = Player("Yellow", 4, yellow_directions, Point(13, 16))
-    player_5 = Player("Purple", 5, purple_directions, Point(25, 12))
-    player_6 = Player("Green", 6, green_directions, Point(25, 4))
+    player_1 = Player("Red", 1, red_directions, Point(12, 0))
+    player_2 = Player("Orange", 2, orange_directions, Point(0, 4))
+    player_3 = Player("Blue", 3, blue_directions, Point(0, 12))
+    player_4 = Player("Yellow", 4, yellow_directions, Point(12, 16))
+    player_5 = Player("Purple", 5, purple_directions, Point(24, 12))
+    player_6 = Player("Green", 6, green_directions, Point(24, 4))
 
     def __init__(self, x_dim, y_dim, num_players=2):
         """
@@ -51,13 +51,13 @@ class ChineseCheckersBoard:
         board = np.ndarray((self.x_dim, self.y_dim), dtype=object)
 
         # Initialize the hexagon for the board
-        bottom_hexagon_origin = Point(9, 4)
+        bottom_hexagon_origin = Point(8, 4)
         for i in range(5):
             board[bottom_hexagon_origin.x, bottom_hexagon_origin.y] = Peg(bottom_hexagon_origin, False, True, "black")
             for j in range(5 + i):
                 cur_position = bottom_hexagon_origin + (i * Point(-1, 1)) + (j * Point(2, 0))
                 board[cur_position.x, cur_position.y] = Peg(cur_position, False, True, "Black")
-        top_hexagon_origin = Point(9, 12)
+        top_hexagon_origin = Point(8, 12)
         for i in range(4):
             board[top_hexagon_origin.x, top_hexagon_origin.y] = Peg(top_hexagon_origin, False, True, "black")
             for j in range(5 + i):
@@ -152,6 +152,7 @@ class ChineseCheckersBoard:
 
     def move_piece(self, player, starting_peg, move_command):
         """Attempt to move a piece for a player"""
+        # Anytime we move a piece, the starting_peg must be assigned the color black
         if self.is_valid_move_command(player, starting_peg, move_command):
             pass
         
