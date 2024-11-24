@@ -144,7 +144,7 @@ class ChineseCheckersBoard:
         plt.xticks(list(range(self.x_dim)))
         plt.ylabel('Y-axis')
         plt.yticks(list(range(self.y_dim)))
-        plt.title('Scatter Plot of Points with Colors')
+        plt.title('Checker Board Visualization')
         # Make grid lines
         plt.grid()
         # Show the plot
