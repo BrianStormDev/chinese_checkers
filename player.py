@@ -15,6 +15,7 @@ class Player:
         self.color = color
         self.number = number
         self.directions = {}
+        
         # Intialize the player directions
         self.directions["UL"] = directions[0]
         self.directions["UR"] = directions[1]
@@ -22,6 +23,7 @@ class Player:
         self.directions["DR"] = directions[3]
         self.directions["DL"] = directions[4]
         self.directions["L"] = directions[5]
+
         # Set the origin of the pegs and the current state of pegs
         self.initial_pegs = self.initialize_pegs(origin)
         self.current_pegs = self.initial_pegs.copy()
