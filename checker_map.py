@@ -5,21 +5,24 @@ X_DIM = 27
 Y_DIM = 34
 
 class Peg:
-    def __init__(self, x, y, in_board, is_empty, color):
+    def __init__(self, position, in_board, is_empty, color):
         """
         Initialize a peg.
-        :param is_empty: Boolean indicating if the peg is empty.
-        :param color: The color of the piece on the peg (e.g., 'red', 'blue').
+        is_empty: boolean indicating if the peg is empty
+        in_board: boolean indicating if the peg is a slot on the board
+        color: string indicating the color of the piece on the peg (e.g., 'red', 'blue')
+        position: tuple indicating the position of the peg
         """
-        self.x = x
-        self.y = y
-        self.position = (x, y)
+        self.position = position
         self.in_board = in_board
         self.is_empty = is_empty
         self.color = color
 
     def place_piece(self, color):
-        """Place a piece on this peg."""
+        """
+        Place a piece on this peg.
+        color: string indicating the color of the piece on the peg (e.g., 'red', 'blue')
+        """
         if not self.is_empty:
             raise ValueError("Peg is already occupied.")
         self.is_empty = False
@@ -50,8 +53,17 @@ class Border:
         return zip(x_steps, y_steps)
 
 class Player:
-    def __init__(self, color, directions):
+    def __init__(self, color, number, directions):
+        """
+        Initialize a player.
+        color: string indicating the color of the player (e.g., 'red', 'blue')
+        number: integer indicating the number of the player
+        directions: an array of strings representing coordinate movements w0ith respect to each player
+
+        Each player should also have a triangle associated with them 
+        """
         self.color = color
+        self.number = number
         self.directions = {}
         # Intialize the player directions
         self.directions["UL"] = directions[0]
@@ -70,60 +82,76 @@ green_directions = [(-2, 0), (-1, 1), (1, 1), (2, 0), (1, -1), (-1, -1)]
 
 class ChineseCheckersHex:
     def __init__(self, x_dim, y_dim, num_players=2):
+        """
+        Initialize a Board
+        x_dim: An integer representing the x dimension of the board
+        y_dim: An integer representing the y dimension of the board
+        """
         self.num_players = num_players
         self.board = self.initialize_board(x_dim, y_dim)
 
     def initialize_board(self):
-            board = np.ndarray((self.x_dim, self.y_dim), dtype=object)
-            for x in range(self.x_dim):
-                for y in range(self.y_dim):
-                    x_prime, y_prime = self.bot_coord_to_center_coord(x, y)
-                    board[x, y] = Peg(x_prime, y_prime, False, True, "black")
-            
-            for j in range(-4, 5):
-                for i in np.arange(- 8 + abs(j), 9 - abs(j), 2):
-                    x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
-                    board[x_prime, y_prime] = Peg(i, j, True, True, "pink")
-
-            for j in range(1, 5):
-                for i in np.arange(-9 - abs(j) + 1, -9 + abs(j), 2):
-                    x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
-                    board[x_prime, y_prime] = Peg(i, j, True, True, "blue")
-
-            for j in range(1, 5):
-                for i in np.arange(9 - abs(j) + 1, 9 + abs(j), 2):
-                    x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
-                    board[x_prime, y_prime] = Peg(i, j, True, True, "purple")
-
-            for j in range(-4, 0):
-                for i in np.arange(-9 - abs(j) + 1, -9 + abs(j), 2):
-                    x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
-                    board[x_prime, y_prime] = Peg(i, j, True, True, "orange")
-
-            for j in range(-4, 0):
-                for i in np.arange(9 - abs(j) + 1, 9 + abs(j), 2):
-                    x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
-                    board[x_prime, y_prime] = Peg(i, j, True, True, "green")
-            
-            for j in range(5, 9):
-                for i in np.arange(- abs(j - 9) + 1, abs(j - 9), 2):
-                    x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
-                    board[x_prime, y_prime] = Peg(i, j, True, True, "yellow")
-
-            for j in range(-8, -4):
-                for i in np.arange(- abs(j + 9) + 1, abs(j + 9), 2):
-                    x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
-                    board[x_prime, y_prime] = Peg(i, j, True, True, "red")
-            return board
+        """
+        Initialize a Board
+        """
+        board = np.ndarray((self.x_dim, self.y_dim), dtype=object)
+        for x in range(self.x_dim):
+            for y in range(self.y_dim):
+                x_prime, y_prime = self.bot_coord_to_center_coord(x, y)
+                board[x, y] = Peg(x_prime, y_prime, False, True, "black")
         
-    def center_coord_to_bot_coord(self, x, y):
-        return x + self.x_dim // 2, y + self.y_dim // 2
+        for j in range(-4, 5):
+            for i in np.arange(- 8 + abs(j), 9 - abs(j), 2):
+                x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
+                board[x_prime, y_prime] = Peg(i, j, True, True, "pink")
 
-    def bot_coord_to_center_coord(self, x, y):
-        return x - self.x_dim // 2, y - self.y_dim // 2
+        for j in range(1, 5):
+            for i in np.arange(-9 - abs(j) + 1, -9 + abs(j), 2):
+                x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
+                board[x_prime, y_prime] = Peg(i, j, True, True, "blue")
+
+        for j in range(1, 5):
+            for i in np.arange(9 - abs(j) + 1, 9 + abs(j), 2):
+                x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
+                board[x_prime, y_prime] = Peg(i, j, True, True, "purple")
+
+        for j in range(-4, 0):
+            for i in np.arange(-9 - abs(j) + 1, -9 + abs(j), 2):
+                x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
+                board[x_prime, y_prime] = Peg(i, j, True, True, "orange")
+
+        for j in range(-4, 0):
+            for i in np.arange(9 - abs(j) + 1, 9 + abs(j), 2):
+                x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
+                board[x_prime, y_prime] = Peg(i, j, True, True, "green")
+        
+        for j in range(5, 9):
+            for i in np.arange(- abs(j - 9) + 1, abs(j - 9), 2):
+                x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
+                board[x_prime, y_prime] = Peg(i, j, True, True, "yellow")
+
+        for j in range(-8, -4):
+            for i in np.arange(- abs(j + 9) + 1, abs(j + 9), 2):
+                x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
+                board[x_prime, y_prime] = Peg(i, j, True, True, "red")
+        return board
+        
+    def center_coord_to_corner_coord(self, coordinate):
+        """
+        coordinate: tuple indicating a position w.r.t origin at center of board
+        returns: tuple indicating a position w.r.t origin at corner of board
+        """
+        return coordinate[0] + self.x_dim // 2, coordinate[1] + self.y_dim // 2
+
+    def corner_coord_to_center_coord(self, coordinate):
+        """
+        coordinate: tuple indicating a position w.r.t origin at corner of board
+        returns: tuple indicating a position w.r.t origin at center of board
+        """
+        return coordinate[0] - self.x_dim // 2, coordinate[1] - self.y_dim // 2
 
     def display_board(self):
-        """Display the board in a simple graph representation."""
+        """Display the board using matplotlib"""
         colors = []
         x_coords = []
         y_coords = []
