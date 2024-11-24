@@ -5,7 +5,7 @@ class Peg:
         is_empty: boolean indicating if the peg is empty
         in_board: boolean indicating if the peg is a slot on the board
         color: string indicating the color of the piece on the peg (e.g., 'red', 'blue')
-        position: tuple indicating the position of the peg
+        position: Point indicating the position of the peg
         """
         self.position = position
         self.in_board = in_board
@@ -28,3 +28,8 @@ class Peg:
             raise ValueError("Peg is already empty.")
         self.is_empty = True
         self.color = None
+        
+    def __str__(self):
+        position_str = f'Position: {str(self.position)}'
+        color_str = f'Color: {self.color}'
+        return position_str + " " + color_str
