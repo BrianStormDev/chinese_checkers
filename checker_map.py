@@ -19,7 +19,9 @@ class ChineseCheckersBoard:
         y_dim: An integer representing the y dimension of the board
         """
         self.num_players = num_players
-        self.board = self.initialize_board(x_dim, y_dim)
+        self.x_dim = x_dim
+        self.y_dim = y_dim
+        self.board = self.initialize_board()
 
     def initialize_board(self):
         """
@@ -28,42 +30,42 @@ class ChineseCheckersBoard:
         board = np.ndarray((self.x_dim, self.y_dim), dtype=object)
         for x in range(self.x_dim):
             for y in range(self.y_dim):
-                x_prime, y_prime = self.bot_coord_to_center_coord(x, y)
+                x_prime, y_prime = self.corner_coord_to_center_coord(x, y)
                 board[x, y] = Peg(x_prime, y_prime, False, True, "black")
         
         for j in range(-4, 5):
             for i in np.arange(- 8 + abs(j), 9 - abs(j), 2):
-                x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
+                x_prime, y_prime = self.center_coord_to_corner_coord(i, j)
                 board[x_prime, y_prime] = Peg(i, j, True, True, "pink")
 
         for j in range(1, 5):
             for i in np.arange(-9 - abs(j) + 1, -9 + abs(j), 2):
-                x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
+                x_prime, y_prime = self.center_coord_to_corner_coord(i, j)
                 board[x_prime, y_prime] = Peg(i, j, True, True, "blue")
 
         for j in range(1, 5):
             for i in np.arange(9 - abs(j) + 1, 9 + abs(j), 2):
-                x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
+                x_prime, y_prime = self.center_coord_to_corner_coord(i, j)
                 board[x_prime, y_prime] = Peg(i, j, True, True, "purple")
 
         for j in range(-4, 0):
             for i in np.arange(-9 - abs(j) + 1, -9 + abs(j), 2):
-                x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
+                x_prime, y_prime = self.center_coord_to_corner_coord(i, j)
                 board[x_prime, y_prime] = Peg(i, j, True, True, "orange")
 
         for j in range(-4, 0):
             for i in np.arange(9 - abs(j) + 1, 9 + abs(j), 2):
-                x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
+                x_prime, y_prime = self.center_coord_to_corner_coord(i, j)
                 board[x_prime, y_prime] = Peg(i, j, True, True, "green")
         
         for j in range(5, 9):
             for i in np.arange(- abs(j - 9) + 1, abs(j - 9), 2):
-                x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
+                x_prime, y_prime = self.center_coord_to_corner_coord(i, j)
                 board[x_prime, y_prime] = Peg(i, j, True, True, "yellow")
 
         for j in range(-8, -4):
             for i in np.arange(- abs(j + 9) + 1, abs(j + 9), 2):
-                x_prime, y_prime = self.center_coord_to_bot_coord(i, j)
+                x_prime, y_prime = self.center_coord_to_corner_coord(i, j)
                 board[x_prime, y_prime] = Peg(i, j, True, True, "red")
         return board
         
@@ -140,5 +142,5 @@ class ChineseCheckersBoard:
                 print("Invalid move. Try again.")
 
 if __name__ == "__main__":
-    game = ChineseCheckersBoard(27, 19, players=2)
+    game = ChineseCheckersBoard(X_DIM, Y_DIM, num_players=2)
     game.play_game()
