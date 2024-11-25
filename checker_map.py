@@ -1,14 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
-<<<<<<< HEAD
-import Peg
-import Point
-import Border
-=======
 from Peg import Peg
 from Player import Player
 from Point import Point
->>>>>>> 986830871aecd6bb69b3e43681f7d091882f3e42
 
 X_DIM = 27
 Y_DIM = 18
@@ -77,21 +71,6 @@ class ChineseCheckersBoard:
         
         return board
         
-<<<<<<< HEAD
-    def center_coord_to_corner_coord(self, coordinate: Point) -> Point:
-        """
-        coordinate: Point indicating a position w.r.t origin at center of board
-        returns: tuple indicating a position w.r.t origin at corner of board
-        """
-        return Point(coordinate.x + self.x_dim // 2, coordinate.y + self.y_dim // 2)
-
-    def corner_coord_to_center_coord(self, coordinate):
-        """
-        coordinate: Point indicating a position w.r.t origin at corner of board
-        returns: tuple indicating a position w.r.t origin at center of board
-        """
-        return coordinate.x - self.x_dim // 2, coordinate.y - self.y_dim // 2
-=======
     #     for x in range(self.x_dim):
     #         for y in range(self.y_dim):
     #             x_prime, y_prime = self.bot_coord_to_center_coord(x, y)
@@ -146,7 +125,6 @@ class ChineseCheckersBoard:
     #     returns: tuple indicating a position w.r.t origin at center of board
     #     """
     #     return coordinate[0] - self.x_dim // 2, coordinate[1] - self.y_dim // 2
->>>>>>> 986830871aecd6bb69b3e43681f7d091882f3e42
 
     def display_board(self):
         """Display the board using matplotlib"""
@@ -201,16 +179,7 @@ class ChineseCheckersBoard:
         current_player = 1
         while True:
             print(f"Player {current_player}'s turn.")
-            start = tuple(map(int, input("Enter the piece to move (q, r, s): ").split(',')))
-            end = tuple(map(int, input("Enter the destination (q, r, s): ").split(',')))
-            if self.move_piece(current_player, start, end):
-                self.display_board()
-                if self.check_winner(current_player):
-                    print(f"Player {current_player} wins!")
-                    break
-                current_player = 2 if current_player == 1 else 1
-            else:
-                print("Invalid move. Try again.")
+            pass
 
 if __name__ == "__main__":
     game = ChineseCheckersBoard(X_DIM, Y_DIM, 6)
