@@ -1,3 +1,5 @@
+from Point import Point
+
 class Peg:
     def __init__(self, position, in_board, is_empty, color):
         """
@@ -28,6 +30,9 @@ class Peg:
             raise ValueError("Peg is already empty.")
         self.is_empty = True
         self.color = None
+
+    def peg_position(self):
+        return Point(self.position.x, self.position.y)
         
     def __str__(self):
         position_str = f'Position: {str(self.position)}'
