@@ -16,19 +16,20 @@ class ChineseCheckersBoard:
     # TODO Revisit the Origin Points of the triangles, make sure they match with physical board
 
     # Information about players and directions to store for later
+    # Class attributes
+    yellow_directions = [Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0)]
     red_directions = [Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0)]
     orange_directions = [Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1)]
-    blue_directions = [Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1)]
-    yellow_directions = [Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0)]
     purple_directions = [Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1)]
+    blue_directions = [Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1)]
     green_directions = [Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1)]
 
-    player_1 = Player("Yellow", 1, yellow_directions, Point(12, 16))
-    player_2 = Player("Red", 2, red_directions, Point(12, 0))
-    player_3 = Player("Orange", 3, orange_directions, Point(0, 4))
-    player_4 = Player("Blue", 4, blue_directions, Point(0, 12))
-    player_5 = Player("Purple", 5, purple_directions, Point(24, 12))
-    player_6 = Player("Green", 6, green_directions, Point(24, 4))
+    player_1 = Player("Yellow", 1, yellow_directions, Point(12, 16), Point(12, 0))
+    player_2 = Player("Red", 2, red_directions, Point(12, 0), Point(12, 16))
+    player_3 = Player("Orange", 3, orange_directions, Point(0, 4), Point(24, 12))
+    player_4 = Player("Purple", 4, purple_directions, Point(24, 12), Point(0, 4))
+    player_5 = Player("Blue", 5, blue_directions, Point(0, 12), Point(24, 4))
+    player_6 = Player("Green", 6, green_directions, Point(24, 4), Point(0, 12))
 
     def __init__(self, x_dim: int, y_dim: int, num_players=2):
         """
@@ -40,11 +41,11 @@ class ChineseCheckersBoard:
         self.all_players = [self.player_1, self.player_2, self.player_3, self.player_4, self.player_5, self.player_6]
         match num_players:
             case 2:
-                self.players = [self.player_1, self.player_2]
+                self.players = self.all_players[2]
             case 4:
-                self.players = [self.player_1, self.player_2, self.player_3, self.player_4]
+                self.players = self.all_players[4]
             case 6:
-                self.players = [self.player_1, self.player_2, self.player_3, self.player_4, self.player_5, self.player_6]
+                self.players = self.all_players[6]
         self.x_dim = x_dim
         self.y_dim = y_dim
         self.board = self.initialize_board()
@@ -124,9 +125,14 @@ class ChineseCheckersBoard:
         target_peg = self.board[self.center_coord_to_bot_coord(target_x, target_y)]
         return target_peg.is_empty == True and target_peg.in_board
         
-    def check_winner(self, player) -> bool:
+    def check_winner(self, player: Player) -> bool:
         """Check if a player has won."""
-        pass
+        # For every point in the player's "endzone", we check if that point has the players color, if true, return true
+        endpoints = player.endpoints
+        for point in endpoints:
+            if (self.board[point.x, point.y].color != player.color):
+                return False
+        return True
         
     def play_game(self):
         """Main game loop."""
@@ -138,5 +144,6 @@ class ChineseCheckersBoard:
 
 if __name__ == "__main__":
     game = ChineseCheckersBoard(X_DIM, Y_DIM, 2)
+    print(game.check_winner(game.player_1))
     game.display_board()
     # game.play_game()
