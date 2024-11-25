@@ -3,7 +3,7 @@ from Point import Point
 from Peg import Peg
 
 class Player:
-    def __init__(self, color, number, directions, origin):
+    def __init__(self, color: str, number: int, directions: list[Point], origin: Point):
         """
         Initialize a player.
         color: string indicating the color of the player (e.g., 'red', 'blue')
@@ -28,21 +28,21 @@ class Player:
         self.initial_pegs = self.initialize_pegs(origin)
         self.current_pegs = self.initial_pegs.copy()
     
-    def initialize_pegs(self, origin):
+    def initialize_pegs(self, origin: Point) -> list[Peg]:
         """
         Initializes the pegs and their position
         origin: Point representing the origin of the positions
         """
-        self.pegs = []
+        pegs = []
         for i in range(4):
             for j in range(0, i + 1):
                 cur_position = origin + self.directions["UL"] * i + self.directions["R"] * j
                 cur_peg = Peg(cur_position, True, False, self.color)
-                self.pegs.append(cur_peg)
-        return self.pegs
+                pegs.append(cur_peg)
+        return pegs
         
-    def reset_pegs(self):
+    def reset_pegs(self) -> list[Peg]:
         self.current_pegs = self.initial_pegs.copy()
 
-    def peg_positions(self):
+    def peg_positions(self) -> list[Point]:
         return [peg.position for peg in self.current_pegs]
