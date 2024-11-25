@@ -14,3 +14,6 @@ class Point:
     
     def __string__(self):
         return f'Point({self.x}, {self.y})'
+
+    def __iter__(self):
+        return iter((self.x, self.y))

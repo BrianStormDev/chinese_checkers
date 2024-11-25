@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from Peg import Peg
+import Peg
+import Point
 import Border
 
 X_DIM = 27
@@ -69,19 +70,19 @@ class ChineseCheckersBoard:
                 board[x_prime, y_prime] = Peg(i, j, True, True, "red")
         return board
         
-    def center_coord_to_corner_coord(self, coordinate):
+    def center_coord_to_corner_coord(self, coordinate: Point) -> Point:
         """
-        coordinate: tuple indicating a position w.r.t origin at center of board
+        coordinate: Point indicating a position w.r.t origin at center of board
         returns: tuple indicating a position w.r.t origin at corner of board
         """
-        return coordinate[0] + self.x_dim // 2, coordinate[1] + self.y_dim // 2
+        return Point(coordinate.x + self.x_dim // 2, coordinate.y + self.y_dim // 2)
 
     def corner_coord_to_center_coord(self, coordinate):
         """
-        coordinate: tuple indicating a position w.r.t origin at corner of board
+        coordinate: Point indicating a position w.r.t origin at corner of board
         returns: tuple indicating a position w.r.t origin at center of board
         """
-        return coordinate[0] - self.x_dim // 2, coordinate[1] - self.y_dim // 2
+        return coordinate.x - self.x_dim // 2, coordinate.y - self.y_dim // 2
 
     def display_board(self):
         """Display the board using matplotlib"""
