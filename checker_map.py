@@ -39,13 +39,12 @@ class ChineseCheckersBoard:
         """
         self.num_players = num_players
         self.all_players = [self.player_1, self.player_2, self.player_3, self.player_4, self.player_5, self.player_6]
-        match num_players:
-            case 2:
-                self.players = self.all_players[2]
-            case 4:
-                self.players = self.all_players[4]
-            case 6:
-                self.players = self.all_players[6]
+        if num_players == 2: 
+            self.players = self.all_players[2]
+        elif num_players == 4: 
+            self.players = self.all_players[4]
+        elif num_players == 6: 
+            self.players = self.all_players[6]
         self.x_dim = x_dim
         self.y_dim = y_dim
         self.board = self.initialize_board()
