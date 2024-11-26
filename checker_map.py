@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from Peg import Peg
+from typing import List
 from Player import Player
 from Point import Point
 
@@ -109,7 +110,7 @@ class ChineseCheckersBoard:
         plt.grid()
         plt.show()
 
-    def move_piece(self, player: Player, starting_peg, move_command: list[str]) -> bool:
+    def move_piece(self, player: Player, starting_peg, move_command: List[str]) -> bool:
         """Attempt to move a piece for a player"""
         # Anytime we move a piece, the starting_peg must be assigned the color black
         if self.is_valid_move_command(player, starting_peg, move_command):

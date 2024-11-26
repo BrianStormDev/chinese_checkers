@@ -1,9 +1,10 @@
 import numpy as np
 from Point import Point
+from typing import List
 from Peg import Peg
 
 class Player:
-    def __init__(self, color: str, number: int, directions: list[Point], origin: Point, opposite_origin: Point=None):
+    def __init__(self, color: str, number: int, directions: List[Point], origin: Point, opposite_origin: Point=None):
         """
         Initialize a player.
         color: string indicating the color of the player (e.g., 'red', 'blue')
@@ -40,7 +41,7 @@ class Player:
         self.current_pegs = self.initial_pegs.copy()
         self.endpoints = self.initialize_opposite_pegs()
     
-    def initialize_pegs(self) -> list[Peg]:
+    def initialize_pegs(self) -> List[Peg]:
         """
         Initializes the pegs and their position
         origin: Point representing the origin of the positions
@@ -61,8 +62,8 @@ class Player:
                 endPoints.append(cur_position)
         return endPoints
 
-    def reset_pegs(self) -> list[Peg]:
+    def reset_pegs(self) -> List[Peg]:
         self.current_pegs = self.initial_pegs.copy()
 
-    def peg_positions(self) -> list[Point]:
+    def peg_positions(self) -> List[Point]:
         return [peg.position for peg in self.current_pegs]
