@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from Peg import Peg
+from typing import List
 from Player import Player
 from Point import Point
 
