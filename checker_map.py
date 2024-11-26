@@ -109,6 +109,14 @@ class ChineseCheckersBoard:
         plt.grid()
         plt.show()
 
+    def valid_moves(self, player: Player):
+        """
+        Generate a list of valid moves 
+        returns: List of move strings 
+        """
+        # Hmmm somehow we need to store the current peg and figure out the future peg 
+
+
     def move_piece(self, player: Player, starting_peg, move_command: list[str]) -> bool:
         """Attempt to move a piece for a player"""
         # Anytime we move a piece, the starting_peg must be assigned the color black
