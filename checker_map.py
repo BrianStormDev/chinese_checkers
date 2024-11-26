@@ -113,11 +113,18 @@ class ChineseCheckersBoard:
     def valid_moves(self, player: Player):
         """
         Generate a list of valid moves 
-        returns: List of move strings 
+        returns: List of valid moves 
         """
-        # Hmmm somehow we need to store the current peg and figure out the future peg 
+        # We need to figure out all the valid maneuvers (list of start and end Points)
 
-
+        # You can either do a chain of jumps, or a singular move
+        # If you jump back to the original point, end recursion
+        moves = []
+        for peg in player.current_pegs:
+            for move_code in player.directions:
+                direction = player.directions[move_code]
+                
+            
     def move_piece(self, player: Player, starting_peg, move_command: list[str]) -> bool:
         """Attempt to move a piece for a player"""
         # Anytime we move a piece, the starting_peg must be assigned the color black
