@@ -14,8 +14,6 @@ Y_DIM = 17
 # The board associates a triangle as the end for each of the players
 
 class ChineseCheckersBoard:
-    # TODO Revisit the Origin Points of the triangles, make sure they match with physical board
-
     # Information about players and directions to store for later
     # Class attributes
     yellow_directions = [Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0)]
@@ -129,39 +127,61 @@ class ChineseCheckersBoard:
         # Two cases of movements:
         
 
-        # def valid_jumps_from_point(origin_pos: Point, current_pos: Point, direction: Point) -> list:
-        #     """
-        #     origin_pos: indicates the initial position of the peg
-        #     current_pos: indicates the current peg we are looking at
-        #     direction: indicates which direction we just came from (use move_code)
-        #     jumping: indicates whether or not we are jumping 
-        #     """
-        #     moves = set()
-        #     for move_code in player.directions: # For each possible direction
-        #         direction = player.directions[move_code] # Get the direction
-        #         target_pos = current_pos + direction # Get the target_position with the direction
-        #         if self.in_bounds(target_pos): # If the target_position is in bounds
-        #             if self.is_empty(target_pos): # If the target_position is empty
-        #                 move_tuple = (origin_pos, target_pos)
-        #                 # If the move_tuple is not in the moves
-        #                 if move_tuple not in moves: 
-        #                     moves.add(move_tuple) # We can add a valid move
-        #                     moves.update(valid_jumps_from_point(origin_pos, target_pos)) # Add all the other valid moves
-        #     return moves
+        def valid_jumps_from_point(origin_pos: Point, current_pos: Point) -> list:
+            """
+            origin_pos: indicates the initial position of the peg
+            current_pos: indicates the current peg we are looking at
+            direction: Point indicating which direction we just came from 
+            jumping: indicates whether or not we are jumping 
+            """
+            # if we end back into the state we were at, then we can end recursion there
+            jumps = set()
+
+            for move_code in player.directions: # For each possible direction
+                direction = player.directions[move_code] # Get the direction
+                one_move_pos = current_pos + direction # Get the one_move_position 
+                jump_move_pos = current_pos + (2 * direction) # Get the jump_move_position
+                
+                # Determine if we are allowed to make a jump:
+                # 1. Target position is in bounds
+                # 2. Target position is empty
+                # 3. The adjacent location (one_move_pos) has a piece next to it
+                if self.in_bounds(jump_move_pos) and self.is_empty(jump_move_pos) and (not self.is_empty(one_move_pos)):
+                    move_tuple = (origin_pos, jump_move_pos)
+                    # Determine if we stop jumping:
+                    # 1. If the move_tuple is in moves, we don't make the recursive jump
+                    # 2. If the current_pos is equal to the origin_pos, we don't make the recursive jump
+                    if move_tuple not in jumps and (current_pos != origin_pos): 
+                        jumps.add(move_tuple) # We can add a valid move
+                        jumps.update(valid_jumps_from_point(origin_pos, jump_move_pos)) # Add all the other valid moves
+            return jumps
         
         all_moves = set()
 
-        # First determine if we can make any moves one step away 
         for peg in player.current_pegs: # For each of the pegs of the current player
+            # First determine if we can make any moves one step away 
             for move_code in player.directions: # For each possible direction
                 direction = player.directions[move_code] # Get the direction
-                current_pos = peg.peg_position() # Get the current position of the peg
+                origin_pos = peg.peg_position() # Get the current position of the peg
+
                 # Determine if the singular movement is possible
-                target_pos = current_pos + direction
-                # Determine if the target position is in bounds and if it's not occupied
-                if self.in_bounds(target_pos) and self.is_empty(target_pos):
-                    all_moves.add((current_pos, target_pos))
-                # all_moves.add(valid_jumps_from_point(current_pos, current_pos)) # Add the valid moves 
+                # 1. Target position is in bounds
+                # 2. Target position is empty
+                single_move_pos = origin_pos + direction
+                if self.in_bounds(single_move_pos) and self.is_empty(single_move_pos):
+                    move_tuple = (origin_pos, single_move_pos)
+                    all_moves.add(move_tuple)
+
+                # Now figure out if we can make any jump movements
+                # 1. Target position is in bounds
+                # 2. Target position is empty
+                # 3. The adjacent location (one_move_pos) has a piece next to it
+                jump_move_pos = origin_pos + (2 * direction)
+                if self.in_bounds(jump_move_pos) and self.is_empty(jump_move_pos) and (not self.is_empty(single_move_pos)):
+                    move_tuple = (origin_pos, jump_move_pos)
+                    all_moves.add(move_tuple)
+                    all_moves.update(valid_jumps_from_point(origin_pos, jump_move_pos))
+
         return list(all_moves)
         
     def move_piece(self, player: Player, starting_peg, move_command: list[str]) -> bool:
@@ -217,6 +237,6 @@ class ChineseCheckersBoard:
 if __name__ == "__main__":
     game = ChineseCheckersBoard(X_DIM, Y_DIM, 2)
     print(game.check_winner(game.player_1))
-    print(game.valid_moves(game.player_2))
+    print(len(game.valid_moves(game.player_1)))
     # game.display_board()
     # game.play_game()
