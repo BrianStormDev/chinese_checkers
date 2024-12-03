@@ -108,33 +108,27 @@ class ChineseCheckersBoard:
         plt.grid()
         plt.show()
 
-    def valid_moves(self, player: Player):
+    # TODO: Here I can either return a list of strings indicating moves, or a list of points...
+    def valid_player_moves(self, player: Player):
         """
         Generate a list of valid moves 
         returns: List of valid moves (a list of tuples, where each element is a tuple containing the start point and end point)
         """
-        # We need to figure out all the valid maneuvers (list of start and end Points)
+        all_moves = set()
 
-        # You can either do a chain of jumps, or a singular move
-        # If you jump back to the original point, end recursion
+        for peg in player.current_pegs: # For each of the pegs of the current player
+            all_moves.update(self.valid_peg_moves(peg, player))
 
-        # player.current_pegs refers to the pegs of the current player
-        # peg refers to the piece we are looking at 
-        # peg.peg_position refers to the current_position of the peg
-
-        # You might jump back to the same spot!!!
-        # Figure out what the recursive case
-        # Two cases of movements:
-        
-
+        return list(all_moves)
+    
+    # We should probably include a function that determines the valid moves of a single peg for a player
+    def valid_peg_moves(self, peg: Peg, player: Player) -> list:
         def valid_jumps_from_point(origin_pos: Point, current_pos: Point) -> list:
             """
+            Generate a list of valid moves for a singular peg
             origin_pos: indicates the initial position of the peg
             current_pos: indicates the current peg we are looking at
-            direction: Point indicating which direction we just came from 
-            jumping: indicates whether or not we are jumping 
             """
-            # if we end back into the state we were at, then we can end recursion there
             jumps = set()
 
             for move_code in player.directions: # For each possible direction
@@ -154,11 +148,12 @@ class ChineseCheckersBoard:
                     if move_tuple not in jumps and (current_pos != origin_pos): 
                         jumps.add(move_tuple) # We can add a valid move
                         jumps.update(valid_jumps_from_point(origin_pos, jump_move_pos)) # Add all the other valid moves
+            
             return jumps
         
-        all_moves = set()
-
-        for peg in player.current_pegs: # For each of the pegs of the current player
+        moves = set()
+        
+        if peg in player.current_pegs:
             # First determine if we can make any moves one step away 
             for move_code in player.directions: # For each possible direction
                 direction = player.directions[move_code] # Get the direction
@@ -170,7 +165,7 @@ class ChineseCheckersBoard:
                 single_move_pos = origin_pos + direction
                 if self.in_bounds(single_move_pos) and self.is_empty(single_move_pos):
                     move_tuple = (origin_pos, single_move_pos)
-                    all_moves.add(move_tuple)
+                    moves.add(move_tuple)
 
                 # Now figure out if we can make any jump movements
                 # 1. Target position is in bounds
@@ -179,25 +174,31 @@ class ChineseCheckersBoard:
                 jump_move_pos = origin_pos + (2 * direction)
                 if self.in_bounds(jump_move_pos) and self.is_empty(jump_move_pos) and (not self.is_empty(single_move_pos)):
                     move_tuple = (origin_pos, jump_move_pos)
-                    all_moves.add(move_tuple)
-                    all_moves.update(valid_jumps_from_point(origin_pos, jump_move_pos))
+                    moves.add(move_tuple)
+                    moves.update(valid_jumps_from_point(origin_pos, jump_move_pos))
+        else:
+            print("This peg doesn't belong to this player!")
 
-        return list(all_moves)
+        return list(moves)
+
         
-    def move_piece(self, player: Player, starting_peg, move_command: list[str]) -> bool:
-        """Attempt to move a piece for a player"""
-        # Anytime we move a piece, the starting_peg must be assigned the color black
-        if self.is_valid_move_command(player, starting_peg, move_command):
-            pass
+    # TODO def move_piece(self, player: Player, starting_peg, move_command: list[str]) -> bool:
+    #     """Attempt to move a piece for a player"""
+    #     # Anytime we move a piece, the starting_peg must be assigned the color black
+    #     if self.is_valid_move(player, starting_peg, move_command):
+    #         pass
         
-    def is_valid_move(self, player: Player, starting_peg, move: str) -> bool:
-        """Check if the move is valid."""
-        """"move is a string, that maps to a player direction"""
-        direction = player.directions[move]
-        target_x = starting_peg.position[0] + direction[0]
-        target_y = starting_peg.position[1] + direction[1]
-        target_peg = self.board[self.center_coord_to_bot_coord(target_x, target_y)]
-        return target_peg.is_empty == True and target_peg.in_board
+    def is_valid_move(self, starting_pos: Point, direction: Point, player: Player) -> bool:
+        """
+        Check if the move is valid.
+        starting_pos: A Point indicating the starting point of the peg
+        direction: A Point indicating the direction of movement
+        """
+        target_pos = starting_pos + direction
+        if self.is_empty(target_pos) and self.in_bounds(target_pos):
+            return True
+        else:
+            return False
         
     def check_winner(self, player: Player) -> bool:
         """Check if a player has won."""
@@ -237,6 +238,6 @@ class ChineseCheckersBoard:
 if __name__ == "__main__":
     game = ChineseCheckersBoard(X_DIM, Y_DIM, 2)
     print(game.check_winner(game.player_1))
-    print(len(game.valid_moves(game.player_1)))
+    print(len(game.valid_player_moves(game.player_1)))
     # game.display_board()
     # game.play_game()

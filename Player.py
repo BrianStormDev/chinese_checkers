@@ -67,3 +67,22 @@ class Player:
 
     def peg_positions(self) -> List[Point]:
         return [peg.position for peg in self.current_pegs]
+    
+    def peg_at_position(self, position: Point) -> Peg:
+        return self.current_pegs(self.peg_index_at_position(position))
+    
+    def peg_index_at_position(self, position: Point) -> Peg:
+        for i in len(self.current_pegs):
+            if self.current_pegs[i].position == position:
+                return i
+        print("There is either no peg or this peg does not belong to player")
+        return -1 
+
+    def move_peg(self, position: Point, target_position: Point):
+        """
+        Assuming we pass in a valid move, move the peg accordingly
+        """
+        peg_index = self.peg_index_at_position(position)
+        if peg_index != -1:
+            self.current_pegs[peg_index].position = target_position
+        print("There is either no peg or this peg does not belong to player")
