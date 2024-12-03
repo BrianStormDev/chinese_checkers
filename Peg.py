@@ -33,6 +33,9 @@ class Peg:
 
     def peg_position(self):
         return Point(self.position.x, self.position.y)
+    
+    def change_y(self, new_y): 
+        self.position.change_y(new_y)
         
     def __str__(self):
         position_str = f'Position: {str(self.position)}'

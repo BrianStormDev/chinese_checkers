@@ -3,6 +3,9 @@ class Point:
         self.x = x
         self.y = y
 
+    def change_y(self, new_y): 
+        self.y = new_y
+
     def __add__(self, o):
         return Point(self.x + o.x, self.y + o.y)
     
