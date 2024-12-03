@@ -20,3 +20,10 @@ class Point:
 
     def __iter__(self):
         return iter((self.x, self.y))
+    
+    def __eq__(self, other):
+        assert type(other) is Point, "Trying to compare a Point with a non-Point"
+        if other.x == self.x and other.y == self.y:
+            return True
+        else:
+            return False

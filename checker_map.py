@@ -113,16 +113,57 @@ class ChineseCheckersBoard:
     def valid_moves(self, player: Player):
         """
         Generate a list of valid moves 
-        returns: List of valid moves 
+        returns: List of valid moves (a list of tuples, where each element is a tuple containing the start point and end point)
         """
         # We need to figure out all the valid maneuvers (list of start and end Points)
 
         # You can either do a chain of jumps, or a singular move
         # If you jump back to the original point, end recursion
-        moves = []
-        for peg in player.current_pegs:
-            for move_code in player.directions:
-                direction = player.directions[move_code]
+
+        # player.current_pegs refers to the pegs of the current player
+        # peg refers to the piece we are looking at 
+        # peg.peg_position refers to the current_position of the peg
+
+        # You might jump back to the same spot!!!
+        # Figure out what the recursive case
+        # Two cases of movements:
+        # 
+        def valid_jumps_from_point(origin_pos: Point, current_pos: Point, direction: Point) -> list:
+            """
+            origin_pos: indicates the initial position of the peg
+            current_pos: indicates the current peg we are looking at
+            direction: indicates which direction we just came from (use move_code)
+            jumping: indicates whether or not we are jumping 
+            """
+            moves = []
+            for move_code in player.directions: # For each possible direction
+                direction = player.directions[move_code] # Get the direction
+                target_position = current_pos + direction # Get the target_position with the direction
+                if self.in_bounds(target_position): # If the target_position is in bounds
+                    if self.is_empty(target_position): # If the target_position is empty 
+                        moves += [(origin_pos, target_position)] # We can add a valid move
+                        moves += valid_jumps_from_point(origin_pos, target_position) # Add all the other valid moves
+            return moves
+        
+        all_moves = []
+
+        # First determine if we can make any moves one step away 
+        for peg in player.current_pegs: # For each of the pegs of the current player
+            for move_code in player.directions: # For each possible direction
+                direction = player.directions[move_code] # Get the direction
+                current_position = peg.peg_position() # Get the current position of the peg
+                # Determine if the singular movement is possible
+                target_position = current_position + direction
+                # Determine if the target position is in bounds and if... TODO
+                if self.in_bounds(target_position) and :
+                    all_moves += [(current_position, target_position)]
+                
+                
+                all_moves += valid_jumps_from_point(current_position, current_position) # Add the valid moves 
+        return all_moves
+        
+
+
                 
             
     def move_piece(self, player: Player, starting_peg, move_command: list[str]) -> bool:
@@ -148,6 +189,24 @@ class ChineseCheckersBoard:
             if (self.board[point.x, point.y].color != player.color):
                 return False
         return True
+    
+    def peg_at_position(self, position: Point) -> Peg:
+        """Return the Peg located at the position"""
+        return self.board[position.x][position.y]
+    
+    def is_empty(self, position: Point) -> bool:
+        """Return whether or not there is Peg located at a certain position"""
+        if self.board[position.x][position.y].color == "Black":
+            return True
+        else: # If the Peg is any other color it is either out of bounds or occupied
+            return False
+        
+    def in_bounds(self, position: Point) -> bool:
+        """Return whether or not the current position is in bounds"""
+        if position.x >= self.x_dim or position.x <= 0 or position.y >= self.y_dim or position.y <= 0:
+            return False
+        else:
+            return True
         
     def play_game(self):
         """Main game loop."""
@@ -160,5 +219,6 @@ class ChineseCheckersBoard:
 if __name__ == "__main__":
     game = ChineseCheckersBoard(X_DIM, Y_DIM, 2)
     print(game.check_winner(game.player_1))
-    game.display_board()
+    print(game.valid_moves(game.player_1))
+    # game.display_board()
     # game.play_game()
