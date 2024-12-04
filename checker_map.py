@@ -46,7 +46,7 @@ class ChineseCheckersBoard:
         self.players = self.initialize_players()
         self.board = self.initialize_board()
 
-    def initialize_num_players(self):
+    def initialize_num_players(self) -> int:
         """
         Initializing the number of players
         """
@@ -111,7 +111,7 @@ class ChineseCheckersBoard:
 
         return board
 
-    def display_board(self):
+    def display_board(self) -> None:
         """Display the board using matplotlib"""
         colors = []
         x_coords = []
@@ -284,4 +284,5 @@ if __name__ == "__main__":
     print(game.check_winner(game.player_1))
     game.display_board()
     print(len(game.valid_player_moves(game.player_1)))
+    print((game.valid_player_moves(game.player_1)))
     # game.play_game()

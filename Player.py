@@ -35,7 +35,7 @@ class Player:
         self.opposite_directions["DR"] = directions[0]
         self.opposite_directions["DL"] = directions[1]
         self.opposite_directions["L"] = directions[2]
-
+        
         # Set the origin of the pegs and the current state of pegs
         self.initial_pegs = self.initialize_pegs()
         self.current_pegs = self.initial_pegs.copy()
