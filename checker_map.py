@@ -37,6 +37,7 @@ class ChineseCheckersBoard:
     color_to_player_map = {"Yellow": player_1, "Purple": player_2, "Green": player_3, "Red": player_4, "Orange": player_5, "Blue": player_6}
     player_colors = ["Yellow", "Purple", "Green", "Red", "Orange", "Blue"]
     all_players = [player_1, player_2, player_3, player_4, player_5, player_6]
+    player_moves = ["UL", "UR", "R", "DR", "DL", "L"]
 
     def __init__(self):
         """
@@ -297,14 +298,25 @@ class ChineseCheckersBoard:
         current_player = first_player
         while True:
             print(f"Player {current_player}/{self.number_to_player_map[current_player].color}'s turn.")
-            print("Enter the move you want to make as a position x y and then the sequential move commands, all space seperated.")
-            print("Example: 1 2 UR")
-            moves = input("Your Input: ")
+            moveslist = self.get_user_input()
 
             if self.check_winner(self.number_to_player_map[current_player]):
                 print(f"Player {current_player}/{self.number_to_player_map[current_player].color} has won!")
                 break
             current_player = self.get_next_player(current_player)
+
+    def get_user_input(self):
+        """
+        Prompts the user for the move they want to make.
+        Converts the string to an array containing a Point and then a series of move commands
+        return: [Point, str, str...]
+        """
+        print("Enter the move you want to make as a position x y and then the sequential move commands, all space seperated.")
+        print("Example: 1 2 UR")
+        moves = input("Your Input: ")
+        moves_split = moves.split(" ")    
+        x = moves_split[0]
+        x = moves_split[1]
 
     def get_next_player(self, current_player: int) -> int:
         """Returns the number of the next player from the current player's number."""
