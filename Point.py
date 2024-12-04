@@ -37,7 +37,6 @@ class Point:
         y = self.y
         ax = abs(x)
         ay = abs(y)
-        
 
         if (ax > ay and x > 0):
             return 4 * x * x - 3 * x + y + 1

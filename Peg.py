@@ -13,26 +13,6 @@ class Peg:
         self.in_board = in_board
         self.is_empty = is_empty
         self.color = color
-
-    def place_piece(self, color):
-        """
-        Place a piece on this peg.
-        color: string indicating the color of the piece on the peg (e.g., 'red', 'blue')
-        """
-        if not self.is_empty:
-            raise ValueError("Peg is already occupied.")
-        self.is_empty = False
-        self.color = color
-
-    def remove_piece(self):
-        """Remove a piece from this peg."""
-        if self.is_empty:
-            raise ValueError("Peg is already empty.")
-        self.is_empty = True
-        self.color = None
-
-    def peg_position(self):
-        return Point(self.position.x, self.position.y)
         
     def __str__(self):
         position_str = f'Position: {str(self.position)} | '
