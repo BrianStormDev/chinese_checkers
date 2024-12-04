@@ -44,7 +44,6 @@ class ChineseCheckersBoard:
         """
         self.num_players = self.initialize_num_players()
         self.players = self.initialize_players()
-        print(self.players)
         self.board = self.initialize_board()
 
     def initialize_num_players(self):
@@ -77,10 +76,13 @@ class ChineseCheckersBoard:
             # Adding the player corresponding to the opposite color of the user input
             player_number = player.number
             player2 = self.number_to_player_map[(player_number + 2) % 6 + 1]
+            color2 = player2.color
             list_of_players.append(player2)
 
+            print(f'Player {current_player_number} is now color {color} and Player {current_player_number + 1} is now color {color2}.')
             # Change the current_player_number
             current_player_number += 2
+        print(f'The players are {list_of_players}.')
         return list_of_players
 
     def initialize_board(self):
@@ -280,7 +282,7 @@ class ChineseCheckersBoard:
 if __name__ == "__main__":
     game = ChineseCheckersBoard()
     print(game.check_winner(game.player_1))
-    game.display_board()
+    #game.display_board()
     print(len(game.valid_player_moves(game.player_1)))
     
     # game.play_game()
