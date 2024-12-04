@@ -13,7 +13,7 @@ from Point import Point
 
 class ChineseCheckersBoard:
     # Class attributes
-    x_dim = 27
+    x_dim = 25
     y_dim = 17
 
     # Information about players and directions to store for later
@@ -26,12 +26,12 @@ class ChineseCheckersBoard:
 
     # The next player clockwise is player.number + 1
     # The opposite player is (player.number + 3) % 6
-    player_1 = Player("Yellow", 1, yellow_directions, Point(13, 16), Point(13, 0))
-    player_2 = Player("Purple", 2, purple_directions, Point(25, 12), Point(1, 4))
-    player_3 = Player("Green", 3, green_directions, Point(25, 4), Point(1, 12))
-    player_4 = Player("Red", 4, red_directions, Point(13, 0), Point(13, 16))
-    player_5 = Player("Orange", 5, orange_directions, Point(1, 4), Point(25, 12))
-    player_6 = Player("Blue", 6, blue_directions, Point(1, 12), Point(25, 4))
+    player_1 = Player("Yellow", 1, yellow_directions, Point(12, 16), Point(12, 0))
+    player_2 = Player("Purple", 2, purple_directions, Point(24, 12), Point(0, 4))
+    player_3 = Player("Green", 3, green_directions, Point(24, 4), Point(0, 12))
+    player_4 = Player("Red", 4, red_directions, Point(12, 0), Point(12, 16))
+    player_5 = Player("Orange", 5, orange_directions, Point(0, 4), Point(24, 12))
+    player_6 = Player("Blue", 6, blue_directions, Point(0, 12), Point(24, 4))
 
     number_to_player_map = {1: player_1, 2: player_2, 3: player_3, 4: player_4, 5: player_5, 6: player_6}
     color_to_player_map = {"Yellow": player_1, "Purple": player_2, "Green": player_3, "Red": player_4, "Orange": player_5, "Blue": player_6}
@@ -97,7 +97,7 @@ class ChineseCheckersBoard:
                 board[i, j] = Peg(Point(i, j), False, True, "white")
 
         # Initialize the hexagon for the board
-        hexagon_origin = Point(13, 8)
+        hexagon_origin = Point(12, 8)
         for radii in [0, 2, 4, 6, 8]:
             for x in range(-radii, radii + 1):
                 for y in range(-radii, radii + 1):
@@ -282,7 +282,6 @@ class ChineseCheckersBoard:
 if __name__ == "__main__":
     game = ChineseCheckersBoard()
     print(game.check_winner(game.player_1))
-    #game.display_board()
+    game.display_board()
     print(len(game.valid_player_moves(game.player_1)))
-    
     # game.play_game()
