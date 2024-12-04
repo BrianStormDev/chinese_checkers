@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.axes as ax
 from Peg import Peg
-from typing import List
+# from typing import List, Set, Tuple
 from Player import Player
 from Point import Point
 
@@ -147,30 +147,46 @@ class ChineseCheckersBoard:
         plt.show()
 
     # TODO: Here I can either return a list of strings indicating moves, or a list of points...
-    def valid_player_moves(self, player: Player):
+    def valid_player_moves(self, player: Player) -> list[tuple[Point, str, Point]]:
         """
         Generate a list of valid moves 
         returns: List of valid moves (a list of tuples, where each element is a tuple containing the start point and end point)
         """
-        all_moves = set()
+        # all_moves = set()
+
+        # for peg in player.current_pegs: # For each of the pegs of the current player
+        #     all_moves.update(self.valid_peg_moves(peg, player))
+
+        # return list(all_moves)
+
+        all_moves = []
 
         for peg in player.current_pegs: # For each of the pegs of the current player
-            all_moves.update(self.valid_peg_moves(peg, player))
+            all_moves.extend(self.valid_peg_moves(peg, player))
 
-        return list(all_moves)
+        return all_moves
+    
+    def single_peg_valid_player_moves(self, point: Point, player: Player) -> list[tuple[Point, str, Point]]:
+        """
+        Generate a list of valid moves 
+        returns: List of valid moves (a list of tuples, where each element is a tuple containing the start point and end point)
+        """
+        peg = self.board[point.x, point.y]
+        return self.valid_peg_moves(peg, player)
     
     # We should probably include a function that determines the valid moves of a single peg for a player
-    def valid_peg_moves(self, peg: Peg, player: Player) -> list:
-        def valid_jumps_from_point(move_string: str, origin_pos: Point, current_pos: Point) -> list:
+    def valid_peg_moves(self, peg: Peg, player: Player) -> list[tuple[Point, str, Point]]:
+        def valid_jumps_from_point(move_string: str, origin_pos: Point, current_pos: Point) -> set[tuple[Point, str, Point]]:
             """
             Generate a list of valid moves for a singular peg
+            move_string: indicates the moves made up till this point
             origin_pos: indicates the initial position of the peg
             current_pos: indicates the current peg we are looking at
             """
+            # Set containing tuples of 
             jumps = set()
 
-            for move_code in player.directions: # For each possible direction
-                direction = player.directions[move_code]
+            for move_code, direction in player.directions.items(): # For each possible direction
                 one_move_pos = current_pos + direction # Get the one_move_position 
                 jump_move_pos = current_pos + (2 * direction) # Get the jump_move_position
                 
@@ -184,7 +200,7 @@ class ChineseCheckersBoard:
                     # 1. If the move_tuple is in moves, we don't make the recursive jump
                     # 2. If the current_pos is equal to the origin_pos, we don't make the recursive jump
                     if move_tuple not in jumps and (current_pos != origin_pos): 
-                        updated_move_code = move_string + " J" + move_code
+                        updated_move_code = move_string + " J" + move_code # Builds onto the move code string
                         jumps.add((origin_pos, updated_move_code, jump_move_pos)) # We can add a valid move
                         jumps.update(valid_jumps_from_point(updated_move_code, origin_pos, jump_move_pos)) # Add all the other valid moves
             
@@ -194,8 +210,7 @@ class ChineseCheckersBoard:
         
         if peg in player.current_pegs:
             # First determine if we can make any moves one step away 
-            for move_code in player.directions: # For each possible direction
-                direction = player.directions[move_code] # Get the direction
+            for move_code, direction in player.directions.items(): # For each possible direction
                 origin_pos = peg.position # Get the current position of the peg
 
                 # Determine if the singular movement is possible
@@ -275,22 +290,24 @@ class ChineseCheckersBoard:
                 return False
         return True
     
-    def play_game(self):
+    def play_game(self) -> None:
         """Main game loop."""
         self.display_board()
         first_player = self.players[0].number
         current_player = first_player
         while True:
-            print(f"Player {current_player}'s turn. {self.number_to_player_map[current_player].color}")
-
-            moves = input("Enter the position of the peg you want to move as ( , ) and then the move you want to make space seperated.")
+            print(f"Player {current_player}/{self.number_to_player_map[current_player].color}'s turn.")
+            print("Enter the move you want to make as a position x y and then the sequential move commands, all space seperated.")
+            print("Example: 1 2 UR")
+            moves = input("Your Input: ")
 
             if self.check_winner(self.number_to_player_map[current_player]):
-                print(f"Player {current_player} has won! {self.number_to_player_map[current_player].color}")
+                print(f"Player {current_player}/{self.number_to_player_map[current_player].color} has won!")
                 break
             current_player = self.get_next_player(current_player)
 
-    def get_next_player(self, current_player):
+    def get_next_player(self, current_player: int) -> int:
+        """Returns the number of the next player from the current player's number."""
         next_player = (current_player % 6) + 1
         while (self.number_to_player_map[next_player] not in self.players):
             next_player = (next_player % 6) + 1
@@ -299,8 +316,9 @@ class ChineseCheckersBoard:
 if __name__ == "__main__":
     game = ChineseCheckersBoard()
     print(game.check_winner(game.player_1))
-    game.display_board()
+    #game.display_board()
     
     for move in game.valid_player_moves(game.player_1):
         print(move)
+    print(len(game.valid_player_moves(game.player_1)))
     game.play_game()
