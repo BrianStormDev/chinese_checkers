@@ -220,7 +220,7 @@ class ChineseCheckersBoard:
         return list(moves)
 
         
-    def move_piece(self, player: Player, starting_peg, move_command: list[str]) -> bool:
+    def move_piece(self, player: Player, starting_peg: Point, move_command: list[str]) -> bool:
         """Attempt to move a piece for a player"""
         # Anytime we move a piece, the starting_peg must be assigned the color black
         if self.is_valid_move(player, starting_peg, move_command):
