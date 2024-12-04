@@ -188,13 +188,18 @@ class ChineseCheckersBoard:
     #     if self.is_valid_move(player, starting_peg, move_command):
     #         pass
         
+    # TODO Figure out how to incorporate is_valid_move into valid_peg_moves
+    # This has to do with figuring out if a particular move is valid
+    # Should consider starting_point, direction, and whether or not we are jumping (not the player?)
+    # Maybe this should be an inner method? Actually maybe not...
     def is_valid_move(self, starting_pos: Point, direction: Point, player: Player) -> bool:
         """
         Check if the move is valid.
         starting_pos: A Point indicating the starting point of the peg
         direction: A Point indicating the direction of movement
         """
-        target_pos = starting_pos + direction
+        if direction in player.directions.values:
+            target_pos = starting_pos + direction
         if self.is_empty(target_pos) and self.in_bounds(target_pos):
             return True
         else:
