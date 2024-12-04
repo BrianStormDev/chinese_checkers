@@ -161,7 +161,7 @@ class ChineseCheckersBoard:
     
     # We should probably include a function that determines the valid moves of a single peg for a player
     def valid_peg_moves(self, peg: Peg, player: Player) -> list:
-        def valid_jumps_from_point(origin_pos: Point, current_pos: Point) -> list:
+        def valid_jumps_from_point(move_string: str, origin_pos: Point, current_pos: Point) -> list:
             """
             Generate a list of valid moves for a singular peg
             origin_pos: indicates the initial position of the peg
@@ -169,7 +169,8 @@ class ChineseCheckersBoard:
             """
             jumps = set()
 
-            for direction in player.directions.values(): # For each possible direction
+            for move_code in player.directions: # For each possible direction
+                direction = player.directions[move_code]
                 one_move_pos = current_pos + direction # Get the one_move_position 
                 jump_move_pos = current_pos + (2 * direction) # Get the jump_move_position
                 
@@ -183,8 +184,9 @@ class ChineseCheckersBoard:
                     # 1. If the move_tuple is in moves, we don't make the recursive jump
                     # 2. If the current_pos is equal to the origin_pos, we don't make the recursive jump
                     if move_tuple not in jumps and (current_pos != origin_pos): 
-                        jumps.add(move_tuple) # We can add a valid move
-                        jumps.update(valid_jumps_from_point(origin_pos, jump_move_pos)) # Add all the other valid moves
+                        updated_move_code = move_string + " J" + move_code
+                        jumps.add((origin_pos, updated_move_code, jump_move_pos)) # We can add a valid move
+                        jumps.update(valid_jumps_from_point(updated_move_code, origin_pos, jump_move_pos)) # Add all the other valid moves
             
             return jumps
         
@@ -201,8 +203,7 @@ class ChineseCheckersBoard:
                 # 2. Target position is empty
                 single_move_pos = origin_pos + direction
                 if self.in_bounds(single_move_pos) and self.is_empty(single_move_pos):
-                    move_tuple = (origin_pos, single_move_pos)
-                    moves.add(move_tuple)
+                    moves.add((origin_pos, move_code, single_move_pos))
 
                 # Now figure out if we can make any jump movements
                 # 1. Target position is in bounds
@@ -210,9 +211,9 @@ class ChineseCheckersBoard:
                 # 3. The adjacent location (one_move_pos) has a piece next to it
                 jump_move_pos = origin_pos + (2 * direction)
                 if self.in_bounds(jump_move_pos) and self.is_empty(jump_move_pos) and (not self.is_empty(single_move_pos)):
-                    move_tuple = (origin_pos, jump_move_pos)
-                    moves.add(move_tuple)
-                    moves.update(valid_jumps_from_point(origin_pos, jump_move_pos))
+                    updated_move_code = "J" + move_code
+                    moves.add((origin_pos, updated_move_code, jump_move_pos))
+                    moves.update(valid_jumps_from_point(updated_move_code, origin_pos, jump_move_pos))
         else:
             print("This peg doesn't belong to this player!")
 
@@ -283,6 +284,7 @@ if __name__ == "__main__":
     game = ChineseCheckersBoard()
     print(game.check_winner(game.player_1))
     game.display_board()
-    print(len(game.valid_player_moves(game.player_1)))
-    print((game.valid_player_moves(game.player_1)))
+    
+    for move in game.valid_player_moves(game.player_1):
+        print(move)
     # game.play_game()
