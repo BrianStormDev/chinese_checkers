@@ -311,12 +311,29 @@ class ChineseCheckersBoard:
         Converts the string to an array containing a Point and then a series of move commands
         return: [Point, str, str...]
         """
-        print("Enter the move you want to make as a position x y and then the sequential move commands, all space seperated.")
+        print("Enter the move you want to make as a position x y and then the sequential move commands, all space separated.")
         print("Example: 1 2 UR")
-        moves = input("Your Input: ")
-        moves_split = moves.split(" ")    
-        x = moves_split[0]
-        x = moves_split[1]
+        user_input = input("Your Input: ")
+        user_input_split = user_input.split(" ")    
+        while len(user_input_split) < 3 or not user_input_split[0].isnumeric or not user_input_split[1].isnumeric or not self.string_only_contains_moves(user_input_split[2:]):
+            print("Your input was not correctly formatted, try again.")
+            print("Enter the move you want to make as a position x y and then the sequential move commands, all space separated.")
+            print("Example: 1 2 UR")
+            user_input = input("Your Input: ")
+            user_input_split = user_input.split(" ")    
+        x = user_input_split[0]
+        y = user_input_split[1]
+        moves = user_input_split[2:]
+        return [Point(x, y)] + moves
+
+    def string_only_contains_moves(self, moves: list[str]) -> bool:
+        """
+        Checks if a list of string contains only moves a player can do
+        """
+        for move in moves:
+            if move not in self.player_moves:
+                return False
+        return True
 
     def get_next_player(self, current_player: int) -> int:
         """Returns the number of the next player from the current player's number."""
