@@ -26,12 +26,12 @@ class ChineseCheckersBoard:
 
     # The next player clockwise is player.number + 1
     # The opposite player is (player.number + 3) % 6
-    player_1 = Player("Yellow", 1, yellow_directions, Point(12, 16), Point(12, 0))
-    player_2 = Player("Purple", 2, purple_directions, Point(24, 12), Point(0, 4))
-    player_3 = Player("Green", 3, green_directions, Point(24, 4), Point(0, 12))
-    player_4 = Player("Red", 4, red_directions, Point(12, 0), Point(12, 16))
-    player_5 = Player("Orange", 5, orange_directions, Point(0, 4), Point(24, 12))
-    player_6 = Player("Blue", 6, blue_directions, Point(0, 12), Point(24, 4))
+    player_1 = Player("Yellow", 1, yellow_directions, Point(12, 16))
+    player_2 = Player("Purple", 2, purple_directions, Point(24, 12))
+    player_3 = Player("Green", 3, green_directions, Point(24, 4))
+    player_4 = Player("Red", 4, red_directions, Point(12, 0))
+    player_5 = Player("Orange", 5, orange_directions, Point(0, 4))
+    player_6 = Player("Blue", 6, blue_directions, Point(0, 12))
 
     number_to_player_map = {1: player_1, 2: player_2, 3: player_3, 4: player_4, 5: player_5, 6: player_6}
     color_to_player_map = {"Yellow": player_1, "Purple": player_2, "Green": player_3, "Red": player_4, "Orange": player_5, "Blue": player_6}
@@ -133,8 +133,8 @@ class ChineseCheckersBoard:
                 if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
                     print(f"Graph coordinates: ({x}, {y}) | {self.board[x, y]}")
 
-        plt.connect('motion_notify_event', on_mouse_move) # If we want to see everytime the mouse moves
-        #plt.connect('button_press_event', on_mouse_move)  # If we want to see everytime the mouse is clicked
+        #plt.connect('motion_notify_event', on_mouse_move) # If we want to see everytime the mouse moves
+        plt.connect('button_press_event', on_mouse_move)  # If we want to see everytime the mouse is clicked
 
         # Plot the points with their colors
         ax.scatter(x_coords, y_coords, c=colors)
@@ -219,11 +219,11 @@ class ChineseCheckersBoard:
         return list(moves)
 
         
-    # TODO def move_piece(self, player: Player, starting_peg, move_command: list[str]) -> bool:
-    #     """Attempt to move a piece for a player"""
-    #     # Anytime we move a piece, the starting_peg must be assigned the color black
-    #     if self.is_valid_move(player, starting_peg, move_command):
-    #         pass
+    def move_piece(self, player: Player, starting_peg, move_command: list[str]) -> bool:
+        """Attempt to move a piece for a player"""
+        # Anytime we move a piece, the starting_peg must be assigned the color black
+        if self.is_valid_move(player, starting_peg, move_command):
+            pass
         
     # TODO Figure out how to incorporate is_valid_move into valid_peg_moves
     # This has to do with figuring out if a particular move is valid
@@ -244,10 +244,13 @@ class ChineseCheckersBoard:
         
     def check_winner(self, player: Player) -> bool:
         """Check if a player has won."""
-        # For every point in the player's "endzone", we check if that point has the players color, if true, return true
-        endpoints = player.endpoints
-        for point in endpoints:
-            if (self.board[point.x, point.y].color != player.color):
+        # For every point in the opposite player's "endzone", we check if the player's point is in that endzoone
+        current_player_number = player.number
+        opposite_player_number = (current_player_number + 2) % 6 + 1
+        opposite_player = self.number_to_player_map[opposite_player_number]
+        endzone_points = opposite_player.endzone
+        for peg in player.current_pegs:
+            if peg.position not in endzone_points:
                 return False
         return True
     
@@ -267,7 +270,7 @@ class ChineseCheckersBoard:
         """Return whether or not the current position is in bounds"""
         if position.x >= self.x_dim or position.x <= 0 or position.y >= self.y_dim or position.y <= 0:
             return False
-        else:
+        else:   
             return True
         #return self.peg_at_position(position).in_board
         

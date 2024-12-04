@@ -4,7 +4,7 @@ from typing import List
 from Peg import Peg
 
 class Player:
-    def __init__(self, color: str, number: int, directions: List[Point], origin: Point, opposite_origin: Point=None):
+    def __init__(self, color: str, number: int, directions: List[Point], origin: Point):
         """
         Initialize a player.
         color: string indicating the color of the player (e.g., 'red', 'blue')
@@ -18,7 +18,6 @@ class Player:
         self.directions = {}
         self.opposite_directions = {}
         self.origin = origin
-        self.opposite_origin = opposite_origin
         
         # Intialize the player directions
         self.directions["UL"] = directions[0]
@@ -28,18 +27,10 @@ class Player:
         self.directions["DL"] = directions[4]
         self.directions["L"] = directions[5]
 
-        # Initialize the opposite side's directions
-        self.opposite_directions["UL"] = directions[3]
-        self.opposite_directions["UR"] = directions[4]
-        self.opposite_directions["R"] = directions[5]
-        self.opposite_directions["DR"] = directions[0]
-        self.opposite_directions["DL"] = directions[1]
-        self.opposite_directions["L"] = directions[2]
-        
         # Set the origin of the pegs and the current state of pegs
+        self.endzone = set()
         self.initial_pegs = self.initialize_pegs()
         self.current_pegs = self.initial_pegs.copy()
-        self.endpoints = self.initialize_opposite_pegs()
     
     def initialize_pegs(self) -> List[Peg]:
         """
@@ -50,17 +41,10 @@ class Player:
         for i in range(4):
             for j in range(0, i + 1):
                 cur_position = self.origin + self.directions["UL"] * i + self.directions["R"] * j
+                self.endzone.add(cur_position)
                 cur_peg = Peg(cur_position, True, False, self.color)
                 pegs.append(cur_peg)
         return pegs
-        
-    def initialize_opposite_pegs(self):
-        endPoints = []
-        for i in range(4):
-            for j in range(0, i + 1):
-                cur_position = self.opposite_origin + self.opposite_directions["UL"] * i + self.opposite_directions["R"] * j
-                endPoints.append(cur_position)
-        return endPoints
 
     def reset_pegs(self) -> List[Peg]:
         self.current_pegs = self.initial_pegs.copy()
