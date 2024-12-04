@@ -295,15 +295,22 @@ class ChineseCheckersBoard:
         """Main game loop."""
         self.display_board()
         first_player = self.players[0].number
-        current_player = first_player
+        current_player_number = first_player
+        current_player = self.number_to_player_map(current_player_number)
         while True:
-            print(f"Player {current_player}/{self.number_to_player_map[current_player].color}'s turn.")
+            print(f"Player {current_player_number}/{self.number_to_player_map[current_player_number].color}'s turn.")
             moveslist = self.get_user_input()
-
-            if self.check_winner(self.number_to_player_map[current_player]):
-                print(f"Player {current_player}/{self.number_to_player_map[current_player].color} has won!")
+            starting_peg = moveslist[0]
+            move_command = moveslist[1:]
+            while not self.move_piece(current_player, starting_peg, move_command):
+                moveslist = self.get_user_input()
+                starting_peg = moveslist[0]
+                move_command = moveslist[1:]
+            if self.check_winner(current_player):
+                print(f"Player {current_player_number}/{self.number_to_player_map[current_player_number].color} has won!")
                 break
-            current_player = self.get_next_player(current_player)
+            current_player_number = self.get_next_player(current_player_number)
+            current_player = self.number_to_player_map(current_player_number)
 
     def get_user_input(self):
         """
