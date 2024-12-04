@@ -38,15 +38,13 @@ class ChineseCheckersBoard:
         """
         self.num_players = num_players
         self.all_players = [self.player_1, self.player_2, self.player_3, self.player_4, self.player_5, self.player_6]
-        if num_players == 2: 
-            self.players = self.all_players[2]
-        elif num_players == 4: 
-            self.players = self.all_players[4]
-        elif num_players == 6: 
-            self.players = self.all_players[6]
+        self.players = self.all_players[:self.num_players]
         self.x_dim = x_dim
         self.y_dim = y_dim
         self.board = self.initialize_board()
+
+    def initialize_players(self):
+        pass
 
     def initialize_board(self):
         """
@@ -224,6 +222,7 @@ class ChineseCheckersBoard:
             return True
         else: # If the Peg is any other color it is either out of bounds or occupied
             return False
+        #return self.board[position.x][position.y].is_empty
         
     def in_bounds(self, position: Point) -> bool:
         """Return whether or not the current position is in bounds"""
@@ -244,5 +243,5 @@ if __name__ == "__main__":
     game = ChineseCheckersBoard(X_DIM, Y_DIM, 2)
     print(game.check_winner(game.player_1))
     print(len(game.valid_player_moves(game.player_1)))
-    # game.display_board()
+    game.display_board()
     # game.play_game()
