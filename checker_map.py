@@ -196,7 +196,7 @@ class ChineseCheckersBoard:
             # First determine if we can make any moves one step away 
             for move_code in player.directions: # For each possible direction
                 direction = player.directions[move_code] # Get the direction
-                origin_pos = peg.peg_position() # Get the current position of the peg
+                origin_pos = peg.position # Get the current position of the peg
 
                 # Determine if the singular movement is possible
                 # 1. Target position is in bounds
@@ -242,18 +242,6 @@ class ChineseCheckersBoard:
             return True
         else:
             return False
-        
-    def check_winner(self, player: Player) -> bool:
-        """Check if a player has won."""
-        # For every point in the opposite player's "endzone", we check if the player's point is in that endzoone
-        current_player_number = player.number
-        opposite_player_number = (current_player_number + 2) % 6 + 1
-        opposite_player = self.number_to_player_map[opposite_player_number]
-        endzone_points = opposite_player.endzone
-        for peg in player.current_pegs:
-            if peg.position not in endzone_points:
-                return False
-        return True
     
     def peg_at_position(self, position: Point) -> Peg:
         """Return the Peg located at the position"""
@@ -275,13 +263,38 @@ class ChineseCheckersBoard:
             return True
         #return self.peg_at_position(position).in_board
         
+    def check_winner(self, player: Player) -> bool:
+        """Check if a player has won."""
+        # For every point in the opposite player's "endzone", we check if the player's point is in that endzoone
+        current_player_number = player.number
+        opposite_player_number = (current_player_number + 2) % 6 + 1
+        opposite_player = self.number_to_player_map[opposite_player_number]
+        endzone_points = opposite_player.endzone
+        for peg in player.current_pegs:
+            if peg.position not in endzone_points:
+                return False
+        return True
+    
     def play_game(self):
         """Main game loop."""
         self.display_board()
-        current_player = 1
+        first_player = self.players[0].number
+        current_player = first_player
         while True:
-            print(f"Player {current_player}'s turn.")
-            pass
+            print(f"Player {current_player}'s turn. {self.number_to_player_map[current_player].color}")
+
+            moves = input("Enter the position of the peg you want to move as ( , ) and then the move you want to make space seperated.")
+
+            if self.check_winner(self.number_to_player_map[current_player]):
+                print(f"Player {current_player} has won! {self.number_to_player_map[current_player].color}")
+                break
+            current_player = self.get_next_player(current_player)
+
+    def get_next_player(self, current_player):
+        next_player = (current_player % 6) + 1
+        while (self.number_to_player_map[next_player] not in self.players):
+            next_player = (next_player % 6) + 1
+        return next_player
 
 if __name__ == "__main__":
     game = ChineseCheckersBoard()
@@ -290,4 +303,4 @@ if __name__ == "__main__":
     
     for move in game.valid_player_moves(game.player_1):
         print(move)
-    # game.play_game()
+    game.play_game()
