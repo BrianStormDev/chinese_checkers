@@ -167,8 +167,7 @@ class ChineseCheckersBoard:
             """
             jumps = set()
 
-            for move_code in player.directions: # For each possible direction
-                direction = player.directions[move_code] # Get the direction
+            for direction in player.directions.values(): # For each possible direction
                 one_move_pos = current_pos + direction # Get the one_move_position 
                 jump_move_pos = current_pos + (2 * direction) # Get the jump_move_position
                 
@@ -260,15 +259,15 @@ class ChineseCheckersBoard:
             return True
         else: # If the Peg is any other color it is either out of bounds or occupied
             return False
-        #return self.board[position.x][position.y].is_empty
+        #return self.peg_at_position(position).is_empty
         
     def in_bounds(self, position: Point) -> bool:
         """Return whether or not the current position is in bounds"""
-        # if position.x >= self.x_dim or position.x <= 0 or position.y >= self.y_dim or position.y <= 0:
-        #     return False
-        # else:
-        #     return True
-        return self.board[position.x, position.y].in_board
+        if position.x >= self.x_dim or position.x <= 0 or position.y >= self.y_dim or position.y <= 0:
+            return False
+        else:
+            return True
+        #return self.peg_at_position(position).in_board
         
     def play_game(self):
         """Main game loop."""
