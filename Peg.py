@@ -35,6 +35,8 @@ class Peg:
         return Point(self.position.x, self.position.y)
         
     def __str__(self):
-        position_str = f'Position: {str(self.position)}'
-        color_str = f'Color: {self.color}'
-        return position_str + " " + color_str
+        position_str = f'Position: {str(self.position)} | '
+        color_str = f'Color: {self.color} | '
+        in_board = f'In Board: {self.in_board} | '
+        is_empty = f'Is Empty: {self.is_empty} '
+        return position_str + color_str + in_board + is_empty

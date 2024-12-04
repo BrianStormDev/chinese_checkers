@@ -1,12 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.axes as ax
 from Peg import Peg
 from typing import List
 from Player import Player
 from Point import Point
-
-X_DIM = 25
-Y_DIM = 17
 
 # The key thing to note is that a chinese checkers board has players, not a player having a board
 # But each player has a set of pieces, representing what pegs they occupy
@@ -14,69 +12,95 @@ Y_DIM = 17
 # The board associates a triangle as the end for each of the players
 
 class ChineseCheckersBoard:
-    # Information about players and directions to store for later
     # Class attributes
+    x_dim = 27
+    y_dim = 17
+
+    # Information about players and directions to store for later
     yellow_directions = [Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0)]
+    purple_directions = [Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1)]
+    green_directions = [Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1)]
     red_directions = [Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0)]
     orange_directions = [Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1)]
-    purple_directions = [Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1)]
     blue_directions = [Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1)]
-    green_directions = [Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1)]
 
-    player_1 = Player("Yellow", 1, yellow_directions, Point(12, 16), Point(12, 0))
-    player_2 = Player("Red", 2, red_directions, Point(12, 0), Point(12, 16))
-    player_3 = Player("Orange", 3, orange_directions, Point(0, 4), Point(24, 12))
-    player_4 = Player("Purple", 4, purple_directions, Point(24, 12), Point(0, 4))
-    player_5 = Player("Blue", 5, blue_directions, Point(0, 12), Point(24, 4))
-    player_6 = Player("Green", 6, green_directions, Point(24, 4), Point(0, 12))
+    # The next player clockwise is player.number + 1
+    # The opposite player is (player.number + 3) % 6
+    player_1 = Player("Yellow", 1, yellow_directions, Point(13, 16), Point(13, 0))
+    player_2 = Player("Purple", 2, purple_directions, Point(25, 12), Point(1, 4))
+    player_3 = Player("Green", 3, green_directions, Point(25, 4), Point(1, 12))
+    player_4 = Player("Red", 4, red_directions, Point(13, 0), Point(13, 16))
+    player_5 = Player("Orange", 5, orange_directions, Point(1, 4), Point(25, 12))
+    player_6 = Player("Blue", 6, blue_directions, Point(1, 12), Point(25, 4))
 
-    def __init__(self, x_dim: int, y_dim: int, num_players=2):
+    number_to_player_map = {1: player_1, 2: player_2, 3: player_3, 4: player_4, 5: player_5, 6: player_6}
+    color_to_player_map = {"Yellow": player_1, "Purple": player_2, "Green": player_3, "Red": player_4, "Orange": player_5, "Blue": player_6}
+    player_colors = ["Yellow", "Purple", "Green", "Red", "Orange", "Blue"]
+    all_players = [player_1, player_2, player_3, player_4, player_5, player_6]
+
+    def __init__(self):
         """
         Initialize a Board
-        x_dim: An integer representing the x dimension of the board
-        y_dim: An integer representing the y dimension of the board
         """
-        self.num_players = num_players
-        self.all_players = [self.player_1, self.player_2, self.player_3, self.player_4, self.player_5, self.player_6]
-        self.players = self.all_players[:self.num_players]
-        self.x_dim = x_dim
-        self.y_dim = y_dim
+        self.num_players = self.initialize_num_players()
+        self.players = self.initialize_players()
+        print(self.players)
         self.board = self.initialize_board()
 
-    def initialize_players(self):
-        pass
+    def initialize_num_players(self):
+        """
+        Initializing the number of players
+        """
+        print("\nInitializing the number of players.")
+        number = input("Enter the number of players: ")
+        while not number.isnumeric() or int(number) < 1 or int(number) > 6 or int(number) % 2 == 1:
+            print("Make sure that you input a number that is 2, 4, or 6.")
+            number = input("Enter the number of players: ")
+        return int(number)
+
+    def initialize_players(self) -> list[Player]:
+        """
+        Initializing the players in the gam
+        """
+        print("\nInitializing the players.")
+        current_player_number = 1
+        list_of_players = []
+        while current_player_number < self.num_players:
+            color = input(f"Input the color of player {current_player_number}: ")
+            while color not in self.player_colors or self.color_to_player_map[color] in list_of_players:
+                print("The color you inputted is either already a player or not a possible player.")
+                color = input(f"Input the color of player {current_player_number}: ")
+            # Adding the player corresponding to the color the user input
+            player = self.color_to_player_map[color]
+            list_of_players.append(player)
+
+            # Adding the player corresponding to the opposite color of the user input
+            player_number = player.number
+            player2 = self.number_to_player_map[(player_number + 2) % 6 + 1]
+            list_of_players.append(player2)
+
+            # Change the current_player_number
+            current_player_number += 2
+        return list_of_players
 
     def initialize_board(self):
         """
         Initialize a Board
         """
         # The idea is that any untouchable spaces are white, so we can just make the whole board white, then fill in the gaps
+        print("\nInitializing the board.")
         board = np.ndarray((self.x_dim, self.y_dim), dtype=object)
         for i in range(self.x_dim):
             for j in range(self.y_dim):
                 board[i, j] = Peg(Point(i, j), False, True, "white")
 
-        # # Initialize the hexagon for the board
-        # bottom_hexagon_origin = Point(8, 4)
-        # for i in range(5):
-        #     board[bottom_hexagon_origin.x, bottom_hexagon_origin.y] = Peg(bottom_hexagon_origin, False, True, "black")
-        #     for j in range(5 + i):
-        #         cur_position = bottom_hexagon_origin + (i * Point(-1, 1)) + (j * Point(2, 0))
-        #         board[cur_position.x, cur_position.y] = Peg(cur_position, False, True, "Black")
-        # top_hexagon_origin = Point(8, 12)
-        # for i in range(4):
-        #     board[top_hexagon_origin.x, top_hexagon_origin.y] = Peg(top_hexagon_origin, False, True, "black")
-        #     for j in range(5 + i):
-        #         cur_position = top_hexagon_origin + (i * Point(-1, -1)) + (j * Point(2, 0))
-        #         board[cur_position.x, cur_position.y] = Peg(cur_position, False, True, "Black")
-
         # Initialize the hexagon for the board
-        hexagon_origin = Point(12, 8)
+        hexagon_origin = Point(13, 8)
         for radii in [0, 2, 4, 6, 8]:
             for x in range(-radii, radii + 1):
                 for y in range(-radii, radii + 1):
                     if abs(x) + abs(y) == radii:
-                        board[x + hexagon_origin.x, y + hexagon_origin.y] =  Peg(Point(x, y) + hexagon_origin, False, True, "Black")
+                        board[x + hexagon_origin.x, y + hexagon_origin.y] =  Peg(Point(x, y) + hexagon_origin, True, True, "Black")
 
         # Initialize the players for the board
         for player in self.all_players:
@@ -96,14 +120,28 @@ class ChineseCheckersBoard:
             x_coords.append(peg.position.x)
             y_coords.append(peg.position.y)
 
+        fig, ax = plt.subplots()  # Create figure and axes
+
+        def on_mouse_move(event):
+            if event.inaxes:  # Ensure the event is within the axes
+                # Transform mouse coordinates to data coordinates
+                data_coords = ax.transData.inverted().transform((event.x, event.y))
+                x = round(data_coords[0])
+                y = round(data_coords[1])
+                if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
+                    print(f"Graph coordinates: ({x}, {y}) | {self.board[x, y]}")
+
+        plt.connect('motion_notify_event', on_mouse_move) # If we want to see everytime the mouse moves
+        #plt.connect('button_press_event', on_mouse_move)  # If we want to see everytime the mouse is clicked
+
         # Plot the points with their colors
-        plt.scatter(x_coords, y_coords, c=colors)
-        plt.xlabel('X-axis')
-        plt.xticks(list(range(self.x_dim)))
-        plt.ylabel('Y-axis')
-        plt.yticks(list(range(self.y_dim)))
-        plt.title('Checker Board Visualization')
-        plt.grid()
+        ax.scatter(x_coords, y_coords, c=colors)
+        ax.set_xlabel('X-axis')
+        ax.set_xticks(list(range(self.x_dim)))
+        ax.set_ylabel('Y-axis')
+        ax.set_yticks(list(range(self.y_dim)))
+        ax.set_title('Checker Board Visualization')
+        ax.grid()
         plt.show()
 
     # TODO: Here I can either return a list of strings indicating moves, or a list of points...
@@ -226,10 +264,11 @@ class ChineseCheckersBoard:
         
     def in_bounds(self, position: Point) -> bool:
         """Return whether or not the current position is in bounds"""
-        if position.x >= self.x_dim or position.x <= 0 or position.y >= self.y_dim or position.y <= 0:
-            return False
-        else:
-            return True
+        # if position.x >= self.x_dim or position.x <= 0 or position.y >= self.y_dim or position.y <= 0:
+        #     return False
+        # else:
+        #     return True
+        return self.board[position.x, position.y].in_board
         
     def play_game(self):
         """Main game loop."""
@@ -240,8 +279,9 @@ class ChineseCheckersBoard:
             pass
 
 if __name__ == "__main__":
-    game = ChineseCheckersBoard(X_DIM, Y_DIM, 2)
+    game = ChineseCheckersBoard()
     print(game.check_winner(game.player_1))
-    print(len(game.valid_player_moves(game.player_1)))
     game.display_board()
+    print(len(game.valid_player_moves(game.player_1)))
+    
     # game.play_game()

@@ -13,10 +13,10 @@ class Point:
         return Point(scalar * self.x, scalar * self.y)
     
     def __repr__(self):
-        return f'Point({self.x}, {self.y})'
+        return f'Point ({self.x}, {self.y})'
     
     def __string__(self):
-        return f'Point({self.x}, {self.y})'
+        return f'Point ({self.x}, {self.y})'
 
     def __iter__(self):
         return iter((self.x, self.y))

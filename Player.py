@@ -86,3 +86,6 @@ class Player:
         if peg_index != -1:
             self.current_pegs[peg_index].position = target_position
         print("There is either no peg or this peg does not belong to player")
+
+    def __repr__(self):
+            return f'{self.color}'
