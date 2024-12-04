@@ -147,19 +147,11 @@ class ChineseCheckersBoard:
         ax.grid()
         plt.show()
 
-    # TODO: Here I can either return a list of strings indicating moves, or a list of points...
     def valid_player_moves(self, player: Player) -> list[tuple[Point, str, Point]]:
         """
         Generate a list of valid moves 
         returns: List of valid moves (a list of tuples, where each element is a tuple containing the start point and end point)
         """
-        # all_moves = set()
-
-        # for peg in player.current_pegs: # For each of the pegs of the current player
-        #     all_moves.update(self.valid_peg_moves(peg, player))
-
-        # return list(all_moves)
-
         all_moves = []
 
         for peg in player.current_pegs: # For each of the pegs of the current player
@@ -175,7 +167,6 @@ class ChineseCheckersBoard:
         peg = self.board[point.x, point.y]
         return self.valid_peg_moves(peg, player)
     
-    # We should probably include a function that determines the valid moves of a single peg for a player
     def valid_peg_moves(self, peg: Peg, player: Player) -> list[tuple[Point, str, Point]]:
         def valid_jumps_from_point(move_string: str, origin_pos: Point, current_pos: Point) -> set[tuple[Point, str, Point]]:
             """
@@ -232,28 +223,25 @@ class ChineseCheckersBoard:
                     moves.update(valid_jumps_from_point(updated_move_code, origin_pos, jump_move_pos))
         else:
             print("This peg doesn't belong to this player!")
-
         return list(moves)
-
         
-    def move_piece(self, player: Player, starting_peg: Point, move_command: list[str]) -> bool:
-        """Attempt to move a piece for a player"""
+    def move_piece(self, player: Player, starting_pos: Point, move_command: list[str]) -> bool:
+        """
+        Attempt to move a piece for a player
+        return: If the movement is successful, the board and player will be modified and the function will return True
+        """
         # Anytime we move a piece, the starting_peg must be assigned the color black
-        if self.is_valid_move(player, starting_peg, move_command):
+        if self.is_valid_move(player, starting_pos, move_command):
             pass
         
-    # TODO Figure out how to incorporate is_valid_move into valid_peg_moves
-    # This has to do with figuring out if a particular move is valid
-    # Should consider starting_point, direction, and whether or not we are jumping (not the player?)
-    # Maybe this should be an inner method? Actually maybe not...
-    def is_valid_move(self, starting_pos: Point, direction: Point, player: Player) -> bool:
+    def is_valid_move(self, starting_pos: Point, direction: Point) -> bool:
         """
         Check if the move is valid.
         starting_pos: A Point indicating the starting point of the peg
         direction: A Point indicating the direction of movement
+        return: If the singular move is possible, return True
         """
-        if direction in player.directions.values:
-            target_pos = starting_pos + direction
+        target_pos = starting_pos + direction
         if self.is_empty(target_pos) and self.in_bounds(target_pos):
             return True
         else:
@@ -265,44 +253,28 @@ class ChineseCheckersBoard:
     
     def is_empty(self, position: Point) -> bool:
         """Return whether or not there is Peg located at a certain position"""
-        if self.board[position.x][position.y].color == "Black":
-            return True
-        else: # If the Peg is any other color it is either out of bounds or occupied
-            return False
-        #return self.peg_at_position(position).is_empty
+        return self.peg_at_position(position).is_empty
         
     def in_bounds(self, position: Point) -> bool:
         """Return whether or not the current position is in bounds"""
-        if position.x >= self.x_dim or position.x <= 0 or position.y >= self.y_dim or position.y <= 0:
-            return False
-        else:   
-            return True
-        #return self.peg_at_position(position).in_board
-        
-    def check_winner(self, player: Player) -> bool:
-        """Check if a player has won."""
-        # For every point in the opposite player's "endzone", we check if the player's point is in that endzoone
-        current_player_number = player.number
-        opposite_player_number = (current_player_number + 2) % 6 + 1
-        opposite_player = self.number_to_player_map[opposite_player_number]
-        endzone_points = opposite_player.endzone
-        for peg in player.current_pegs:
-            if peg.position not in endzone_points:
-                return False
-        return True
+        # First checks to see if the position is in the array structure before checking if the position is in the playable area
+        if position.x < self.x_dim and position.x >= 0 and position.y < self.y_dim and position.y >= 0:
+            return self.peg_at_position(position).in_board
+        return False
     
     def play_game(self) -> None:
         """Main game loop."""
         self.display_board()
         first_player = self.players[0].number
         current_player_number = first_player
-        current_player = self.number_to_player_map(current_player_number)
+        current_player = self.number_to_player_map[current_player_number]
         while True:
             print(f"Player {current_player_number}/{self.number_to_player_map[current_player_number].color}'s turn.")
             moveslist = self.get_user_input()
             starting_peg = moveslist[0]
             move_command = moveslist[1:]
             while not self.move_piece(current_player, starting_peg, move_command):
+                print("The command you inputed was not valid. Either the point you're trying to move isn't yours or the end one of the jumps along the way is invalid.")
                 moveslist = self.get_user_input()
                 starting_peg = moveslist[0]
                 move_command = moveslist[1:]
@@ -316,6 +288,7 @@ class ChineseCheckersBoard:
         """
         Prompts the user for the move they want to make.
         Converts the string to an array containing a Point and then a series of move commands
+        Only ensures that the input is formatted correctly, NOT that the command is possible
         return: [Point, str, str...]
         """
         print("Enter the move you want to make as a position x y and then the sequential move commands, all space separated.")
@@ -341,7 +314,19 @@ class ChineseCheckersBoard:
             if move not in self.player_moves:
                 return False
         return True
-
+    
+    def check_winner(self, player: Player) -> bool:
+        """Check if a player has won."""
+        # For every point in the opposite player's "endzone", we check if the player's point is in that endzoone
+        current_player_number = player.number
+        opposite_player_number = (current_player_number + 2) % 6 + 1
+        opposite_player = self.number_to_player_map[opposite_player_number]
+        endzone_points = opposite_player.endzone
+        for peg in player.current_pegs:
+            if peg.position not in endzone_points:
+                return False
+        return True
+    
     def get_next_player(self, current_player: int) -> int:
         """Returns the number of the next player from the current player's number."""
         next_player = (current_player % 6) + 1
@@ -353,7 +338,6 @@ if __name__ == "__main__":
     game = ChineseCheckersBoard()
     print(game.check_winner(game.player_1))
     #game.display_board()
-    
     for move in game.valid_player_moves(game.player_1):
         print(move)
     print(len(game.valid_player_moves(game.player_1)))
