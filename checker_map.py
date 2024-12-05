@@ -248,10 +248,25 @@ class ChineseCheckersBoard:
                 direction = player.directions[actual_move]
             else:
                 direction = player.directions[move]
-                if self.is_valid_move(player, current_pos, direction, True, False):
+                if self.is_valid_move(player, current_pos, direction, False, False):
                     current_pos += direction
                 else:
                     return False
+                
+            # Adjust the current and starting pos
+            # There are references to the peg in the board array and also in the player list
+            # Ensure that the board array points to the correct peg and the items in the player list are correct
+            # Must be mutated
+
+            print(player.current_pegs)
+            initial_peg = self.peg_at_position(starting_pos)  
+            final_peg = self.peg_at_position(current_pos)  
+            initial_peg.position = current_pos
+            final_peg.position = starting_pos
+            self.board[current_pos.x, current_pos.y] = initial_peg
+            self.board[starting_pos.x, starting_pos.y] = final_peg
+
+            print(player.current_pegs)
         return True
         
     def is_valid_move(self, player: Player, starting_pos: Point, direction: Point, is_jump: bool, is_swap: bool) -> bool:
@@ -273,7 +288,7 @@ class ChineseCheckersBoard:
             return self.is_empty(target_pos) and self.in_bounds(target_pos)
     
     def is_valid_swap(self, player: Player):
-        pass
+        opposite = self.get_opposite_player(player)
     
     def peg_at_position(self, position: Point) -> Peg:
         """Return the Peg located at the position"""
@@ -297,14 +312,18 @@ class ChineseCheckersBoard:
         current_player = first_player
         while True:
             print(f"Player {current_player.number}/{current_player.color}'s turn.")
+            for move in game.valid_player_moves(current_player):
+                print(move)
+            print()
             moveslist = self.get_user_input()
             starting_peg = moveslist[0]
             move_command = moveslist[1:]
             while not self.move_piece(current_player, starting_peg, move_command):
-                print("The command you inputed was not valid. Either the point you're trying to move isn't yours or the end one of the jumps along the way is invalid.")
+                print("The command you input is not possible. \n")
                 moveslist = self.get_user_input()
                 starting_peg = moveslist[0]
                 move_command = moveslist[1:]
+            self.display_board()    
             if self.check_winner(current_player):
                 print(f"Player {current_player.number}/{current_player.color} has won!")
                 break
@@ -322,13 +341,13 @@ class ChineseCheckersBoard:
         user_input = input("Your Input: ")
         user_input_split = user_input.split(" ")    
         while len(user_input_split) < 3 or not user_input_split[0].isnumeric or not user_input_split[1].isnumeric or not self.valid_move_string(user_input_split[2:]):
-            print("Your input was not correctly formatted, try again.")
+            print("\nYour input was not correctly formatted, try again.")
             print("Enter the move you want to make as a position x y and then the sequential move commands, all space separated.")
             print("Example: 1 2 UR")
             user_input = input("Your Input: ")
             user_input_split = user_input.split(" ")    
-        x = user_input_split[0]
-        y = user_input_split[1]
+        x = int(user_input_split[0])
+        y = int(user_input_split[1])
         moves = user_input_split[2:]
         return [Point(x, y)] + moves
 
@@ -368,7 +387,7 @@ class ChineseCheckersBoard:
         """Check if a player has won."""
         # For every point in the opposite player's "endzone", we check if the player's point is in that endzoone
         opposite_player = self.get_opposite_player(player)
-        endzone_points = opposite_player.endzone
+        endzone_points = opposite_player.endzone_points
         for peg in player.current_pegs:
             if peg.position not in endzone_points:
                 return False
@@ -376,21 +395,18 @@ class ChineseCheckersBoard:
     
     def get_opposite_player(self, player: Player) -> Player:
         """Returns the opposite player of the input player."""
-        opposite_player = (player + 2) % 6 + 1
+        player_number = player.number
+        opposite_player = (player_number + 2) % 6 + 1
         return self.number_to_player_map[opposite_player]
 
     def get_next_player(self, current_player: Player) -> Player:
         """Returns the player after the input player."""
-        next_player = (current_player % 6) + 1
+        current_player_number = current_player.number
+        next_player = (current_player_number % 6) + 1
         while (self.number_to_player_map[next_player] not in self.players):
             next_player = (next_player % 6) + 1
         return self.number_to_player_map[next_player]
 
 if __name__ == "__main__":
     game = ChineseCheckersBoard()
-    print(game.check_winner(game.player_1))
-    #game.display_board()
-    for move in game.valid_player_moves(game.player_1):
-        print(move)
-    print(len(game.valid_player_moves(game.player_1)))
     game.play_game()

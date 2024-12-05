@@ -13,7 +13,13 @@ class Peg:
         self.in_board = in_board
         self.is_empty = is_empty
         self.color = color
-        
+    def __repr__(self):
+        # position_str = f'Position: {str(self.position)}'
+        # color_str = f'Color: {self.color} | '
+        # in_board = f'In Board: {self.in_board} | '
+        # is_empty = f'Is Empty: {self.is_empty} '
+        return str(self.position) + self.color # + color_str + in_board + is_empty    
+    
     def __str__(self):
         position_str = f'Position: {str(self.position)} | '
         color_str = f'Color: {self.color} | '

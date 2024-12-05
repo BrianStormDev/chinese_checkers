@@ -27,7 +27,7 @@ class Player:
         self.directions["L"] = directions[5]
 
         # Set the origin of the pegs and the current state of pegs
-        self.endzone = set()
+        self.endzone_points = set()
         self.initial_pegs = self.initialize_pegs()
         self.current_pegs = self.initial_pegs.copy()
     
@@ -40,7 +40,7 @@ class Player:
         for i in range(4):
             for j in range(0, i + 1):
                 cur_position = self.origin + self.directions["UL"] * i + self.directions["R"] * j
-                self.endzone.add(cur_position)
+                self.endzone_points.add(cur_position)
                 cur_peg = Peg(cur_position, True, False, self.color)
                 pegs.append(cur_peg)
         return pegs
