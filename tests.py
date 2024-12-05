@@ -1,14 +1,15 @@
 from checker_map import ChineseCheckersBoard
 
-def test1() -> bool:
-    pass
+def jump_loop_test() -> bool:
+    red_positions = [[12, 0, "Red"], [13, 1, "Red"], [15, 3, "Red"], [15, 5, "Red"], [13, 5, "Red"], [13, 3, "Red"]]
+    game = ChineseCheckersBoard([2, [ChineseCheckersBoard.player_1, ChineseCheckersBoard.player_4], red_positions])
+    game.display_board()
+    print(len(game.valid_moves(game.player_1)))
     
 def test2() -> bool:
     pass
 
 if __name__ == "__main__":
-    game = ChineseCheckersBoard([2, [ChineseCheckersBoard.player_1, ChineseCheckersBoard.player_4], [16, 8, "Red"]])
-    print(len(game.valid_moves(game.player_1)))
-    test2()
+    jump_loop_test()
     # game.display_board()
     # game.play_game()

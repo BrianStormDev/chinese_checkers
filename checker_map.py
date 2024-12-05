@@ -63,7 +63,7 @@ class ChineseCheckersBoard:
         self.num_players = input[0]
         self.players = input[1]
         self.non_players = set(self.all_players) - set(self.players)
-        remaining_pieces = input[2:]
+        remaining_pieces = input[2]
 
         # The idea is that any untouchable spaces are white, so we can just make the whole board white, then fill in the gaps
         print("\nInitializing the board.")
@@ -91,6 +91,7 @@ class ChineseCheckersBoard:
 
         # Each piece is a tuple (x, y, color)
         for piece in remaining_pieces:
+            print(piece)
             piece_x = piece[0]
             piece_y = piece[1]
             piece_color = piece[2]
