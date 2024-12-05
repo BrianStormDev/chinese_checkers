@@ -40,7 +40,7 @@ class ChineseCheckersBoard:
     basic_moves = ["UL", "UR", "R", "DR", "DL", "L"]
     jump_moves = ["JUL", "JUR", "JR", "JDR", "JDL", "JL"]
     swap_moves = ["SUL", "SUR", "SR", "SDR", "SDL", "SL"]
-    player_moves = basic_moves + swap_moves + swap_moves
+    player_moves = basic_moves + jump_moves + swap_moves
 
     def __init__(self, custom=None):
         """
@@ -58,28 +58,15 @@ class ChineseCheckersBoard:
         Initializes the board from a custom input which is a list
         input[0]: number of players
         input[1]: players in the game as a list [game.player1, game.player2]
-        input[2:]: list of lists where each inner list is of the form [x, y, color]
+        input[2]: list of lists where each inner list is of the form [x, y, color]
         """
         self.num_players = input[0]
         self.players = input[1]
         self.non_players = set(self.all_players) - set(self.players)
         remaining_pieces = input[2]
 
-        # The idea is that any untouchable spaces are white, so we can just make the whole board white, then fill in the gaps
-        print("\nInitializing the board.")
-        self.board = np.ndarray((self.x_dim, self.y_dim), dtype=object)
-        for i in range(self.x_dim):
-            for j in range(self.y_dim):
-                self.board[i, j] = Peg(Point(i, j), False, True, "white")
-
-        # Initialize the hexagon for the board
-        hexagon_origin = Point(12, 8)
-        for radii in [0, 2, 4, 6, 8]:
-            for x in range(-radii, radii + 1):
-                for y in range(-radii, radii + 1):
-                    if abs(x) + abs(y) == radii:
-                        self.board[x + hexagon_origin.x, y + hexagon_origin.y] =  Peg(Point(x, y) + hexagon_origin, True, True, "Black")
-
+        self.board = self.initialize_empty_board()
+        self.display_board()
         # Set the pegs of the non_players
         for player in self.non_players:
             for peg in player.current_pegs:
@@ -91,7 +78,6 @@ class ChineseCheckersBoard:
 
         # Each piece is a tuple (x, y, color)
         for piece in remaining_pieces:
-            print(piece)
             piece_x = piece[0]
             piece_y = piece[1]
             piece_color = piece[2]
@@ -101,6 +87,43 @@ class ChineseCheckersBoard:
             self.board[piece[0], piece[1]] = new_peg
 
         self.display_board()
+
+    def initialize_empty_board(self):
+        # The idea is that any untouchable spaces are white, so we can just make the whole board white, then fill in the gaps
+        print("\nInitializing the board.")
+        board = np.ndarray((self.x_dim, self.y_dim), dtype=object)
+        for i in range(self.x_dim):
+            for j in range(self.y_dim):
+                board[i, j] = Peg(Point(i, j), False, True, "white")
+
+        # Initialize the hexagon for the board
+        hexagon_origin = Point(12, 8)
+        for radii in [0, 2, 4, 6, 8]:
+            for x in range(-radii, radii + 1):
+                for y in range(-radii, radii + 1):
+                    if abs(x) + abs(y) == radii:
+                        board[x + hexagon_origin.x, y + hexagon_origin.y] =  Peg(Point(x, y) + hexagon_origin, True, True, "Black")
+        
+        # Initializing the corners of the empty board
+        self.initialize_corner(board, Point(12, 16), Point(1, -1), Point(-2, 0))
+        self.initialize_corner(board, Point(24, 12), Point(-1, -1), Point(-1, 1))
+        self.initialize_corner(board, Point(24, 4), Point(-2, 0), Point(1, 1))
+        self.initialize_corner(board, Point(12, 0), Point(-1, 1), Point(2, 0))
+        self.initialize_corner(board, Point(0, 4), Point(1, 1), Point(1, -1))
+        self.initialize_corner(board, Point(0, 12), Point(2, 0), Point(-1, -1))
+        
+        return board
+    
+    def initialize_corner(self, boardInput, point: Point, ul: Point, r: Point):
+        """
+        Initializes a corner of the board to be all black empty pegs
+        """
+        for i in range(4):
+            for j in range(0, i + 1):
+                cur_position = point + ul * i + r * j
+                cur_peg = Peg(cur_position, True, True, "Black")
+                boardInput[cur_position.x, cur_position.y] = cur_peg
+
 
     def initialize_num_players(self) -> int:
         """
@@ -145,20 +168,7 @@ class ChineseCheckersBoard:
         """
         Initialize a Board
         """
-        # The idea is that any untouchable spaces are white, so we can just make the whole board white, then fill in the gaps
-        print("\nInitializing the board.")
-        board = np.ndarray((self.x_dim, self.y_dim), dtype=object)
-        for i in range(self.x_dim):
-            for j in range(self.y_dim):
-                board[i, j] = Peg(Point(i, j), False, True, "white")
-
-        # Initialize the hexagon for the board
-        hexagon_origin = Point(12, 8)
-        for radii in [0, 2, 4, 6, 8]:
-            for x in range(-radii, radii + 1):
-                for y in range(-radii, radii + 1):
-                    if abs(x) + abs(y) == radii:
-                        board[x + hexagon_origin.x, y + hexagon_origin.y] =  Peg(Point(x, y) + hexagon_origin, True, True, "Black")
+        board = self.initialize_empty_board()
 
         # Initialize the players for the board
         for player in self.all_players:
@@ -210,7 +220,6 @@ class ChineseCheckersBoard:
         all_moves = []
 
         for peg in player.current_pegs: # For each of the pegs of the current player
-            print(peg.position)
             all_moves.extend(self.valid_peg_moves(peg, player))
 
         return all_moves
@@ -307,14 +316,12 @@ class ChineseCheckersBoard:
             if (self.in_endzone(player, starting_pos) and not self.in_endzone(player, current_pos)):
                 return False
             
-            print(player.current_pegs)
             initial_peg = self.peg_at_position(starting_pos)  
             final_peg = self.peg_at_position(current_pos)  
             initial_peg.position = current_pos
             final_peg.position = starting_pos
             self.board[current_pos.x, current_pos.y] = initial_peg
             self.board[starting_pos.x, starting_pos.y] = final_peg
-            print(player.current_pegs)
 
         return True
         
@@ -456,7 +463,7 @@ class ChineseCheckersBoard:
         """Check if a player has won."""
         # For every point in the opposite player's "endzone", we check if the player's point is in that endzoone
         for peg in player.current_pegs:
-            if self.in_endzone(player, peg.position):
+            if not self.in_endzone(player, peg.position):
                 return False
         return True
     
