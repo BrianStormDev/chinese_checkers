@@ -37,7 +37,10 @@ class ChineseCheckersBoard:
     color_to_player_map = {"Yellow": player_1, "Purple": player_2, "Green": player_3, "Red": player_4, "Orange": player_5, "Blue": player_6}
     player_colors = ["Yellow", "Purple", "Green", "Red", "Orange", "Blue"]
     all_players = [player_1, player_2, player_3, player_4, player_5, player_6]
-    player_moves = ["UL", "UR", "R", "DR", "DL", "L"]
+    basic_moves = ["UL", "UR", "R", "DR", "DL", "L"]
+    jump_moves = ["JUL", "JUR", "JR", "JDR", "JDL", "JL", "SJUL", "SJUR", "SJR", "SJDR", "SJDL", "SJL"]
+    swap_moves = ["SUL", "SUR", "SR", "SDR", "SDL", "SL", "SJUL", "SJUR", "SJR", "SJDR", "SJDL", "SJL"]
+    player_moves = basic_moves + ["JUL", "JUR", "JR", "JDR", "JDL", "JL"] + swap_moves
 
     def __init__(self):
         """
@@ -80,10 +83,10 @@ class ChineseCheckersBoard:
             color2 = player2.color
             list_of_players.append(player2)
 
-            print(f'Player {current_player_number} is now color {color} and Player {current_player_number + 1} is now color {color2}.')
+            print(f"Player {current_player_number} is now color {color} and Player {current_player_number + 1} is now color {color2}.")
             # Change the current_player_number
             current_player_number += 2
-        print(f'The players are {list_of_players}.')
+        print(f"The players are {list_of_players}.")
         return list_of_players
 
     def initialize_board(self):
@@ -134,16 +137,16 @@ class ChineseCheckersBoard:
                 if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
                     print(f"Graph coordinates: ({x}, {y}) | {self.board[x, y]}")
 
-        #plt.connect('motion_notify_event', on_mouse_move) # If we want to see everytime the mouse moves
-        plt.connect('button_press_event', on_mouse_move)  # If we want to see everytime the mouse is clicked
+        #plt.connect("motion_notify_event", on_mouse_move) # If we want to see everytime the mouse moves
+        plt.connect("button_press_event", on_mouse_move)  # If we want to see everytime the mouse is clicked
 
         # Plot the points with their colors
         ax.scatter(x_coords, y_coords, c=colors)
-        ax.set_xlabel('X-axis')
+        ax.set_xlabel("X-axis")
         ax.set_xticks(list(range(self.x_dim)))
-        ax.set_ylabel('Y-axis')
+        ax.set_ylabel("Y-axis")
         ax.set_yticks(list(range(self.y_dim)))
-        ax.set_title('Checker Board Visualization')
+        ax.set_title("Checker Board Visualization")
         ax.grid()
         plt.show()
 
@@ -180,7 +183,7 @@ class ChineseCheckersBoard:
 
             for move_code, direction in player.directions.items(): # For each possible direction
                 one_move_pos = current_pos + direction # Get the one_move_position 
-                jump_move_pos = current_pos + (2 * direction) # Get the jump_move_position
+                jump_move_pos = current_pos + (direction * 2) # Get the jump_move_position
                 
                 # Determine if we are allowed to make a jump:
                 # 1. Target position is in bounds
@@ -216,7 +219,7 @@ class ChineseCheckersBoard:
                 # 1. Target position is in bounds
                 # 2. Target position is empty
                 # 3. The adjacent location (one_move_pos) has a piece next to it
-                jump_move_pos = origin_pos + (2 * direction)
+                jump_move_pos = origin_pos + (direction * 2)
                 if self.in_bounds(jump_move_pos) and self.is_empty(jump_move_pos) and (not self.is_empty(single_move_pos)):
                     updated_move_code = "J" + move_code
                     moves.add((origin_pos, updated_move_code, jump_move_pos))
@@ -230,11 +233,28 @@ class ChineseCheckersBoard:
         Attempt to move a piece for a player
         return: If the movement is successful, the board and player will be modified and the function will return True
         """
-        # Anytime we move a piece, the starting_peg must be assigned the color black
-        if self.is_valid_move(player, starting_pos, move_command):
-            pass
+        current_pos = starting_pos
+        swap_queue = []
+        for move in move_command:
+            if move[0] == "J":
+                actual_move = move[1:]
+                direction = player.directions[actual_move] * 2
+                if self.is_valid_move(player, current_pos, direction, True, False):
+                    current_pos += direction
+                else:
+                    return False
+            elif move[0] == "S":
+                actual_move = move[1:]
+                direction = player.directions[actual_move]
+            else:
+                direction = player.directions[move]
+                if self.is_valid_move(player, current_pos, direction, True, False):
+                    current_pos += direction
+                else:
+                    return False
+        return True
         
-    def is_valid_move(self, starting_pos: Point, direction: Point) -> bool:
+    def is_valid_move(self, player: Player, starting_pos: Point, direction: Point, is_jump: bool, is_swap: bool) -> bool:
         """
         Check if the move is valid.
         starting_pos: A Point indicating the starting point of the peg
@@ -242,10 +262,18 @@ class ChineseCheckersBoard:
         return: If the singular move is possible, return True
         """
         target_pos = starting_pos + direction
-        if self.is_empty(target_pos) and self.in_bounds(target_pos):
-            return True
+        if is_jump and is_swap:
+            midpoint = starting_pos + direction * (0.5)
+        elif is_jump:
+            midpoint = starting_pos + direction * (0.5)
+            return self.is_empty(target_pos) and self.in_bounds(target_pos) and not self.is_empty(midpoint)
+        elif is_swap:
+            pass
         else:
-            return False
+            return self.is_empty(target_pos) and self.in_bounds(target_pos)
+    
+    def is_valid_swap(self, player: Player):
+        pass
     
     def peg_at_position(self, position: Point) -> Peg:
         """Return the Peg located at the position"""
@@ -265,11 +293,10 @@ class ChineseCheckersBoard:
     def play_game(self) -> None:
         """Main game loop."""
         self.display_board()
-        first_player = self.players[0].number
-        current_player_number = first_player
-        current_player = self.number_to_player_map[current_player_number]
+        first_player = self.players[0]
+        current_player = first_player
         while True:
-            print(f"Player {current_player_number}/{self.number_to_player_map[current_player_number].color}'s turn.")
+            print(f"Player {current_player.number}/{current_player.color}'s turn.")
             moveslist = self.get_user_input()
             starting_peg = moveslist[0]
             move_command = moveslist[1:]
@@ -279,10 +306,9 @@ class ChineseCheckersBoard:
                 starting_peg = moveslist[0]
                 move_command = moveslist[1:]
             if self.check_winner(current_player):
-                print(f"Player {current_player_number}/{self.number_to_player_map[current_player_number].color} has won!")
+                print(f"Player {current_player.number}/{current_player.color} has won!")
                 break
-            current_player_number = self.get_next_player(current_player_number)
-            current_player = self.number_to_player_map(current_player_number)
+            current_player = self.get_next_player(current_player)
 
     def get_user_input(self):
         """
@@ -295,7 +321,7 @@ class ChineseCheckersBoard:
         print("Example: 1 2 UR")
         user_input = input("Your Input: ")
         user_input_split = user_input.split(" ")    
-        while len(user_input_split) < 3 or not user_input_split[0].isnumeric or not user_input_split[1].isnumeric or not self.string_only_contains_moves(user_input_split[2:]):
+        while len(user_input_split) < 3 or not user_input_split[0].isnumeric or not user_input_split[1].isnumeric or not self.valid_move_string(user_input_split[2:]):
             print("Your input was not correctly formatted, try again.")
             print("Enter the move you want to make as a position x y and then the sequential move commands, all space separated.")
             print("Example: 1 2 UR")
@@ -306,33 +332,59 @@ class ChineseCheckersBoard:
         moves = user_input_split[2:]
         return [Point(x, y)] + moves
 
-    def string_only_contains_moves(self, moves: list[str]) -> bool:
+    def valid_move_string(self, moves: list[str]) -> bool:
         """
-        Checks if a list of string contains only moves a player can do
+        Checks if the list of moves is valid
+        Every move has to be in the list of all possible player moves
+        If there is a standard move, there can only be one standard move
+        If there is a jump, every move has to be a jump
         """
+        # If a player is prevented from winning because of the presence of an opposing peg in the destination area, 
+        # the player is entitled to swap the opposing peg with that of his own peg. This applies for both a single hole move and any part of a hopping move.
+
+        basic_exists = False
+        jump_count = 0
+
+        # Checks if all of the moves are even in the list of moves
         for move in moves:
             if move not in self.player_moves:
                 return False
+            if move in self.basic_moves:
+                basic_exists = True
+            elif move in self.jump_moves:
+                jump_count += 1
+
+        # If there is a basic move, ensure that the movelist is only that move
+        if basic_exists and len(moves) != 1:
+            return False
+        
+        # If there is a jump move, ensure that all moves are jump moves
+        if jump_count != 0 and jump_count != len(moves):
+            return False
+        
         return True
     
     def check_winner(self, player: Player) -> bool:
         """Check if a player has won."""
         # For every point in the opposite player's "endzone", we check if the player's point is in that endzoone
-        current_player_number = player.number
-        opposite_player_number = (current_player_number + 2) % 6 + 1
-        opposite_player = self.number_to_player_map[opposite_player_number]
+        opposite_player = self.get_opposite_player(player)
         endzone_points = opposite_player.endzone
         for peg in player.current_pegs:
             if peg.position not in endzone_points:
                 return False
         return True
     
-    def get_next_player(self, current_player: int) -> int:
-        """Returns the number of the next player from the current player's number."""
+    def get_opposite_player(self, player: Player) -> Player:
+        """Returns the opposite player of the input player."""
+        opposite_player = (player + 2) % 6 + 1
+        return self.number_to_player_map[opposite_player]
+
+    def get_next_player(self, current_player: Player) -> Player:
+        """Returns the player after the input player."""
         next_player = (current_player % 6) + 1
         while (self.number_to_player_map[next_player] not in self.players):
             next_player = (next_player % 6) + 1
-        return next_player
+        return self.number_to_player_map[next_player]
 
 if __name__ == "__main__":
     game = ChineseCheckersBoard()
