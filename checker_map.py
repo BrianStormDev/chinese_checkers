@@ -223,14 +223,15 @@ class ChineseCheckersBoard:
         return self.valid_peg_moves(peg, player)
     
     def valid_peg_moves(self, peg: Peg, player: Player) -> list[tuple[Point, str, Point]]:
-        def valid_jumps_from_point(move_string: str, origin_pos: Point, current_pos: Point) -> set[tuple[Point, str, Point]]:
+        def valid_jumps_from_point(visited_positions: set, move_string: str, origin_pos: Point, current_pos: Point) -> set[tuple[Point, str, Point]]:
             """
             Generate a list of valid moves for a singular peg
+            visited_positions: indicates all of the points we have visited before
             move_string: indicates the moves made up till this point
             origin_pos: indicates the initial position of the peg
             current_pos: indicates the current peg we are looking at
             """
-            # Set containing tuples of 
+            # Set containing tuples of the possible moves
             jumps = set()
 
             for move_code, direction in player.directions.items(): # For each possible direction
@@ -241,15 +242,14 @@ class ChineseCheckersBoard:
                 # 2. Target position is empty
                 # 3. The adjacent location (one_move_pos) has a piece next to it
                 if self.in_bounds(jump_move_pos) and self.is_empty(jump_move_pos) and (not self.is_empty(one_move_pos)):
-                    move_tuple = (origin_pos, jump_move_pos)
                     # Determine if we stop jumping:
                     # 1. If the move_tuple is in moves, we don't make the recursive jump
-                    # 2. If the current_pos is equal to the origin_pos, we don't make the recursive jump
-                    if move_tuple not in jumps and (current_pos != origin_pos): 
-                        updated_move_code = move_string + " J" + move_code # Builds onto the move code string
-                        jumps.add((origin_pos, updated_move_code, jump_move_pos)) # We can add a valid move
-                        jumps.update(valid_jumps_from_point(updated_move_code, origin_pos, jump_move_pos)) # Add all the other valid moves
-            
+                    # 2. If the jump will result in the same position, we don't make the recursive jump
+                    if jump_move_pos not in visited_positions and (jump_move_pos != origin_pos): 
+                        updated_move_code = move_string + "J" + move_code + " " # Builds onto the move code string
+                        jumps.add((origin_pos, updated_move_code[:-1], jump_move_pos)) # We can add a valid move
+                        visited_positions.add(jump_move_pos) # Update the visited positions
+                        jumps.update(valid_jumps_from_point(visited_positions, updated_move_code, origin_pos, jump_move_pos)) # Add all the other valid moves
             return jumps
         
         moves = set()
@@ -267,14 +267,7 @@ class ChineseCheckersBoard:
                     moves.add((origin_pos, move_code, single_move_pos))
 
                 # Now figure out if we can make any jump movements
-                # 1. Target position is in bounds
-                # 2. Target position is empty
-                # 3. The adjacent location (one_move_pos) has a piece next to it
-                jump_move_pos = origin_pos + (direction * 2)
-                if self.in_bounds(jump_move_pos) and self.is_empty(jump_move_pos) and (not self.is_empty(single_move_pos)):
-                    updated_move_code = "J" + move_code
-                    moves.add((origin_pos, updated_move_code, jump_move_pos))
-                    moves.update(valid_jumps_from_point(updated_move_code, origin_pos, jump_move_pos))
+                moves.update(valid_jumps_from_point(set(), '', origin_pos, origin_pos))
         else:
             print("This peg doesn't belong to this player!")
         return list(moves)
