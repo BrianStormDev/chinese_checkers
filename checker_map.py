@@ -285,7 +285,6 @@ class ChineseCheckersBoard:
         return: If the movement is successful, the board and player will be modified and the function will return True
         """
         current_pos = starting_pos
-        swap_queue = []
         for move in move_command:
             if move[0] == "J":
                 actual_move = move[1:]
@@ -316,8 +315,8 @@ class ChineseCheckersBoard:
             final_peg.position = starting_pos
             self.board[current_pos.x, current_pos.y] = initial_peg
             self.board[starting_pos.x, starting_pos.y] = final_peg
-
             print(player.current_pegs)
+
         return True
         
     def is_valid_move(self, player: Player, starting_pos: Point, direction: Point, is_jump: bool, is_swap: bool) -> bool:
@@ -338,7 +337,7 @@ class ChineseCheckersBoard:
         else:
             return self.is_empty(target_pos) and self.in_bounds(target_pos)
     
-    def is_valid_swap(self, player: Player):
+    def is_valid_swap(self, player: Player) -> bool:
         opposite = self.get_opposite_player(player)
     
     def peg_at_position(self, position: Point) -> Peg:
