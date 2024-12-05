@@ -80,12 +80,12 @@ class ChineseCheckersBoard:
                     if abs(x) + abs(y) == radii:
                         self.board[x + hexagon_origin.x, y + hexagon_origin.y] =  Peg(Point(x, y) + hexagon_origin, True, True, "Black")
 
-        # Set the pegs of the players that aren't playing
+        # Set the pegs of the non_players
         for player in self.non_players:
             for peg in player.current_pegs:
                 self.board[peg.position.x, peg.position.y] = peg
 
-        # Initialize the players for the board
+        # Set the pegs of the players
         for player in self.players:
             player.current_pegs.clear()
 
