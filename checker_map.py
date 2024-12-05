@@ -290,6 +290,7 @@ class ChineseCheckersBoard:
             elif move[0] == "S":
                 actual_move = move[1:]
                 direction = player.directions[actual_move]
+                #TODO
             else:
                 direction = player.directions[move]
                 if self.is_valid_move(player, current_pos, direction, False, False):
@@ -302,6 +303,10 @@ class ChineseCheckersBoard:
             # Ensure that the board array points to the correct peg and the items in the player list are correct
             # Must be mutated
 
+            # Add an additional check that ensure that if the peg started in the endzone, it can't go out of it
+            if (self.in_endzone(player, starting_pos) and not self.in_endzone(player, current_pos)):
+                return False
+            
             print(player.current_pegs)
             initial_peg = self.peg_at_position(starting_pos)  
             final_peg = self.peg_at_position(current_pos)  
@@ -321,18 +326,32 @@ class ChineseCheckersBoard:
         return: If the singular move is possible, return True
         """
         target_pos = starting_pos + direction
-        if is_jump and is_swap:
-            midpoint = starting_pos + direction * (0.5)
-        elif is_jump:
+
+        # Jump case
+        if is_jump:
             midpoint = starting_pos + direction * (0.5)
             return self.is_empty(target_pos) and self.in_bounds(target_pos) and not self.is_empty(midpoint)
+        
+        # Swap Case
         elif is_swap:
             pass
+            #TODO
+        
+        # Regular Move Case
         else:
             return self.is_empty(target_pos) and self.in_bounds(target_pos)
     
-    def is_valid_swap(self, player: Player) -> bool:
+    def in_endzone(self, player: Player, point: Point) -> bool:
+        """
+        Checks if a point which contains the peg of a player is in the endzone of that player.
+        """
+        opposite_player = self.get_opposite_player(player)
+        endzone_points = opposite_player.endzone_points
+        return point in endzone_points
+
+    def is_valid_swap(self, player: Player, starting_point: Point, end_point: Point) -> bool:
         opposite = self.get_opposite_player(player)
+        #TODO
     
     def peg_at_position(self, position: Point) -> Peg:
         """Return the Peg located at the position"""
@@ -436,10 +455,8 @@ class ChineseCheckersBoard:
     def check_winner(self, player: Player) -> bool:
         """Check if a player has won."""
         # For every point in the opposite player's "endzone", we check if the player's point is in that endzoone
-        opposite_player = self.get_opposite_player(player)
-        endzone_points = opposite_player.endzone_points
         for peg in player.current_pegs:
-            if peg.position not in endzone_points:
+            if self.in_endzone(player, peg.position):
                 return False
         return True
     
