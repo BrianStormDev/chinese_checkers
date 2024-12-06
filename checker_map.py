@@ -84,7 +84,7 @@ class ChineseCheckersBoard:
             piece_x = piece[0]
             piece_y = piece[1]
             piece_color = piece[2]
-            new_peg = Peg(Point(piece_x, piece_y), True, False, piece_color)
+            new_peg = Peg(Point(piece_x, piece_y), piece_color, True, False, )
             player_which_piece_belongs_to = self.color_to_player_map[piece_color]
             player_which_piece_belongs_to.current_pegs.append(new_peg)
             self.board[piece[0], piece[1]] = new_peg
@@ -97,7 +97,7 @@ class ChineseCheckersBoard:
         board = np.ndarray((self.x_dim, self.y_dim), dtype=object)
         for i in range(self.x_dim):
             for j in range(self.y_dim):
-                board[i, j] = Peg(Point(i, j), False, True, "white")
+                board[i, j] = Peg(Point(i, j), "White", False, True)
 
         # Initialize the hexagon for the board
         hexagon_origin = Point(12, 8)
@@ -105,7 +105,7 @@ class ChineseCheckersBoard:
             for x in range(-radii, radii + 1):
                 for y in range(-radii, radii + 1):
                     if abs(x) + abs(y) == radii:
-                        board[x + hexagon_origin.x, y + hexagon_origin.y] =  Peg(Point(x, y) + hexagon_origin, True, True, "Black")
+                        board[x + hexagon_origin.x, y + hexagon_origin.y] =  Peg(Point(x, y) + hexagon_origin, "Black", True, True)
         
         # Initializing the corners of the empty board
         self.initialize_corner(board, Point(12, 16), Point(1, -1), Point(-2, 0))
@@ -124,7 +124,7 @@ class ChineseCheckersBoard:
         for i in range(4):
             for j in range(0, i + 1):
                 cur_position = point + ul * i + r * j
-                cur_peg = Peg(cur_position, True, True, "Black")
+                cur_peg = Peg(cur_position, "Black", True, True)
                 boardInput[cur_position.x, cur_position.y] = cur_peg
 
 
@@ -347,7 +347,7 @@ class ChineseCheckersBoard:
         
         # Swap Case
         elif is_swap:
-            return self.is_valid_swap
+            return self.is_valid_swap(player, starting_pos, target_pos)
         
         # Regular Move Case
         else:
