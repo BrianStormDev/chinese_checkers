@@ -21,7 +21,9 @@ def swapping_test() -> bool:
     # s = game.output_gamestate()
     # game = ChineseCheckersBoard(s)
     # game.display_board()
-    print(game.is_valid_swap(game.player_4, Point(8, 12), Point(9, 13)))
+    for move in game.valid_player_moves(game.player_4):
+        if move[1][0] == "S":
+            print(move)
 
 if __name__ == "__main__":
     # jump_loop_test()

@@ -347,8 +347,7 @@ class ChineseCheckersBoard:
         
         # Swap Case
         elif is_swap:
-            pass
-            #TODO
+            return self.is_valid_swap
         
         # Regular Move Case
         else:
@@ -392,13 +391,13 @@ class ChineseCheckersBoard:
         Checks if a swap between two points is valid for a player
         """
         # First ensure that the end_point is in the endzone
-        if self.in_endzone(player, end_point):
+        if self.in_endzone(player, end_point) and self.in_bounds(end_point):
             # Second ensure that the endzone is full of pegs
             if self.is_endzone_full(player):
-                # Third ensure that you are swapping with a peg of a different color
+                # Third ensure that you are swapping with a peg of a different color (and must be in bounds)
                 starting_peg = self.peg_at_position(starting_point)
                 final_peg = self.peg_at_position(end_point)
-                if starting_peg.color != final_peg.color:
+                if (starting_peg.color != final_peg.color):
                     return True
         return False
     
