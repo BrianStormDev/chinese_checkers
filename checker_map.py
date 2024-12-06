@@ -382,25 +382,24 @@ class ChineseCheckersBoard:
     def play_game(self) -> None:
         """Main game loop."""
         self.display_board()
-        current_player = self.current_player
         while True:
-            print(f"Player {current_player.number}/{current_player.color}'s turn.")
-            for move in self.valid_player_moves(current_player):
+            print(f"Player {self.current_player.number}/{self.current_player.color}'s turn.")
+            for move in self.valid_player_moves(self.current_player):
                 print(move)
             print()
             moveslist = self.get_user_input()
             starting_peg = moveslist[0]
             move_command = moveslist[1:]
-            while not self.move_piece(current_player, starting_peg, move_command):
+            while not self.move_piece(self.current_player, starting_peg, move_command):
                 print("The command you input is not possible. \n")
                 moveslist = self.get_user_input()
                 starting_peg = moveslist[0]
                 move_command = moveslist[1:]
             self.display_board()    
-            if self.check_winner(current_player):
-                print(f"Player {current_player.number}/{current_player.color} has won!")
+            if self.check_winner(self.current_player):
+                print(f"Player {self.current_player.number}/{self.current_player.color} has won!")
                 break
-            current_player = self.get_next_player(current_player)
+            self.current_player = self.get_next_player(self.current_player)
 
     def get_user_input(self):
         """
@@ -484,10 +483,18 @@ class ChineseCheckersBoard:
             next_player = (next_player % 6) + 1
         return self.number_to_player_map[next_player]
     
-    def update_game(self, player_input):
+    def update_game(self, moveslist) -> bool:
         """
         Updates the gamestate based on the player_input
+        Returns if the move happened
         """
+        print(f"Player {self.current_player.number}/{self.current_player.color}'s turn.")
+        starting_peg = moveslist[0]
+        move_command = moveslist[1:]
+        move_happened = self.move_piece(self.current_player, starting_peg, move_command)
+        self.display_board()    
+        self.current_player = self.get_next_player(self.current_player)
+        return move_happened
 
     def output_gamestate(self):
         """
