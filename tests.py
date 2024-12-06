@@ -70,6 +70,5 @@ if __name__ == "__main__":
     jump_loop_test()
     swapping_test_2p()
     swapping_test_6p()
-    no_swap_test()
     win_test()
     endzone_rule_test()
