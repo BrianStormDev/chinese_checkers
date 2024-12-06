@@ -141,7 +141,7 @@ class ChineseCheckersBoard:
 
     def initialize_players(self) -> list[Player]:
         """
-        Initializing the players in the gam
+        Initializing the players in the game
         """
         print("\nInitializing the players.")
         current_player_number = 1
@@ -249,13 +249,8 @@ class ChineseCheckersBoard:
             jumps = set()
 
             for move_code, direction in player.directions.items(): # For each possible direction
-                one_move_pos = current_pos + direction # Get the one_move_position 
-                jump_move_pos = current_pos + (direction * 2) # Get the jump_move_position
-                # Determine if we are allowed to make a jump:
-                # 1. Target position is in bounds
-                # 2. Target position is empty
-                # 3. The adjacent location (one_move_pos) has a piece next to it
-                if self.in_bounds(jump_move_pos) and self.is_empty(jump_move_pos) and (not self.is_empty(one_move_pos)):
+                if self.is_valid_move(player, current_pos, direction, True, False):
+                    jump_move_pos = current_pos + (direction * 2) # Get the jump_move_position
                     # Determine if we stop jumping:
                     # 1. If the move_tuple is in moves, we don't make the recursive jump
                     # 2. If the jump will result in the same position, we don't make the recursive jump
@@ -269,15 +264,12 @@ class ChineseCheckersBoard:
         moves = set()
         
         if peg in player.current_pegs:
-            # First determine if we can make any moves one step away 
             for move_code, direction in player.directions.items(): # For each possible direction
                 origin_pos = peg.position # Get the current position of the peg
 
-                # Determine if the singular movement is possible
-                # 1. Target position is in bounds
-                # 2. Target position is empty
-                single_move_pos = origin_pos + direction
-                if self.in_bounds(single_move_pos) and self.is_empty(single_move_pos):
+                # First determine if we can make any moves one step away 
+                if self.is_valid_move(player, origin_pos, direction, False, False):
+                    single_move_pos = origin_pos + direction
                     moves.add((origin_pos, move_code, single_move_pos))
 
                 # Now figure out if we can make any jump movements
@@ -293,13 +285,15 @@ class ChineseCheckersBoard:
         """
         current_pos = starting_pos
         for move in move_command:
+            # Checks if the move is a jump
             if move[0] == "J":
                 actual_move = move[1:]
-                direction = player.directions[actual_move] * 2
+                direction = player.directions[actual_move]
                 if self.is_valid_move(player, current_pos, direction, True, False):
                     current_pos += direction
                 else:
                     return False
+            # Checks if the move is a swap
             elif move[0] == "S":
                 actual_move = move[1:]
                 direction = player.directions[actual_move]
@@ -307,6 +301,7 @@ class ChineseCheckersBoard:
                     current_pos += direction
                 else:
                     return False
+            # Checks if the move is a regular move
             else:
                 direction = player.directions[move]
                 if self.is_valid_move(player, current_pos, direction, False, False):
@@ -342,12 +337,9 @@ class ChineseCheckersBoard:
         direction: A Point indicating the direction of movement
         return: If the singular move is possible, return True
         """
-        target_pos = starting_pos + direction
-
         # Jump case
         if is_jump:
-            midpoint = starting_pos + direction * (0.5)
-            return self.is_empty(target_pos) and self.in_bounds(target_pos) and not self.is_empty(midpoint)
+            return self.is_valid_jump(player, starting_pos, direction)
         
         # Swap Case
         elif is_swap:
@@ -356,7 +348,20 @@ class ChineseCheckersBoard:
         
         # Regular Move Case
         else:
+            target_pos = starting_pos + direction
             return self.is_empty(target_pos) and self.in_bounds(target_pos)
+    
+    def is_valid_jump(self, player: Player, starting_pos: Point, direction: Point):
+        """
+        Checks if a jump is valid
+        """
+        # Determine if we are allowed to make a jump:
+            # 1. Target position is in bounds
+            # 2. Target position is empty
+            # 3. The adjacent location (one_move_pos) has a piece next to it
+        target_pos = starting_pos + direction * 2
+        midpoint = starting_pos + direction 
+        return self.is_empty(target_pos) and self.in_bounds(target_pos) and not self.is_empty(midpoint)
 
     def is_endzone_full(self, player: Player) -> bool:
         """
@@ -382,13 +387,15 @@ class ChineseCheckersBoard:
         """
         Checks if a swap between two points is valid for a player
         """
-        # First ensure that the endzone is full of pegs
-        if self.is_endzone_full(player):
-            # Then ensure that you are swapping with a peg of a different color
-            starting_peg = self.peg_at_position(starting_point)
-            final_peg = self.peg_at_position(end_point)
-            if starting_peg.color != final_peg.color:
-                return True
+        # First ensure that the end_point is in the endzone
+        if self.in_endzone(player, end_point):
+            # Second ensure that the endzone is full of pegs
+            if self.is_endzone_full(player):
+                # Third ensure that you are swapping with a peg of a different color
+                starting_peg = self.peg_at_position(starting_point)
+                final_peg = self.peg_at_position(end_point)
+                if starting_peg.color != final_peg.color:
+                    return True
         return False
     
     def peg_at_position(self, position: Point) -> Peg:
