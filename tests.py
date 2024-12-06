@@ -10,7 +10,7 @@ def jump_loop_test() -> bool:
     game.display_board()
     #game.display_board()
     #print(len(game.valid_moves(game.player_1)))
-    game.play_game()
+    game.play_game_terminal()
     
 def test2() -> bool:
     pass

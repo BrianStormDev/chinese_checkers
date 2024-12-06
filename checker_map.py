@@ -303,7 +303,10 @@ class ChineseCheckersBoard:
             elif move[0] == "S":
                 actual_move = move[1:]
                 direction = player.directions[actual_move]
-                #TODO
+                if self.is_valid_move(player, current_pos, direction, False, True):
+                    current_pos += direction
+                else:
+                    return False
             else:
                 direction = player.directions[move]
                 if self.is_valid_move(player, current_pos, direction, False, False):
@@ -319,15 +322,18 @@ class ChineseCheckersBoard:
         # Add an additional check that ensure that if the peg started in the endzone, it can't go out of it
         if (self.in_endzone(player, starting_pos) and not self.in_endzone(player, current_pos)):
             return False
-
-        initial_peg = self.peg_at_position(starting_pos)  
-        final_peg = self.peg_at_position(current_pos)  
-        initial_peg.position = current_pos
-        final_peg.position = starting_pos
-        self.board[current_pos.x, current_pos.y] = initial_peg
-        self.board[starting_pos.x, starting_pos.y] = final_peg
+        
+        self.swap_pegs(starting_pos, current_pos)        
 
         return True
+    
+    def swap_pegs(self, starting_pos: Point, final_pos: Point) -> None:
+        initial_peg = self.peg_at_position(starting_pos)  
+        final_peg = self.peg_at_position(final_pos)  
+        initial_peg.position = final_pos
+        final_peg.position = starting_pos
+        self.board[final_pos.x, final_pos.y] = initial_peg
+        self.board[starting_pos.x, starting_pos.y] = final_peg
         
     def is_valid_move(self, player: Player, starting_pos: Point, direction: Point, is_jump: bool, is_swap: bool) -> bool:
         """
@@ -361,8 +367,12 @@ class ChineseCheckersBoard:
         return point in endzone_points
 
     def is_valid_swap(self, player: Player, starting_point: Point, end_point: Point) -> bool:
-        opposite = self.get_opposite_player(player)
+        # First ensure that the endzone is full of pegs
+        opposite_player = self.get_opposite_player(player)
+        endzone_points = opposite_player.endzone_points
         #TODO
+
+        # Ensure that the starting point is outside of the endzone and the endpoint is in the endzone
     
     def peg_at_position(self, position: Point) -> Peg:
         """Return the Peg located at the position"""
@@ -379,7 +389,7 @@ class ChineseCheckersBoard:
             return self.peg_at_position(position).in_board
         return False
     
-    def play_game(self) -> None:
+    def play_game_terminal(self) -> None:
         """Main game loop."""
         self.display_board()
         while True:
@@ -516,7 +526,76 @@ class ChineseCheckersBoard:
                 piece_positions.append(piece)
         gamestate.append(piece_positions)
         return gamestate
+    
+    def play_game_UI(self):
+        """Display the board using matplotlib with dynamic updates"""
+
+        fig, ax = plt.subplots()  # Create figure and axes
+
+        def redraw_board():
+            """Redraw the board with updated peg positions and colors"""
+            colors = []
+            x_coords = []
+            y_coords = []
+            flatArray = self.board.flatten()
+            for peg in flatArray:
+                colors.append(peg.color)
+                x_coords.append(peg.position.x)
+                y_coords.append(peg.position.y)
+            ax.cla()  # Clear the current axes
+            ax.scatter(x_coords, y_coords, c=colors)  # Redraw pegs
+            ax.set_xlabel("X-axis")
+            ax.set_xticks(list(range(self.x_dim)))
+            ax.set_ylabel("Y-axis")
+            ax.set_yticks(list(range(self.y_dim)))
+            ax.set_title("Checker Board Visualization")
+            ax.grid()
+            fig.canvas.draw_idle()  # Update the plot
+
+        buffer = []
+
+        def on_mouse_move(event):
+            if event.inaxes:  # Ensure the event is within the axes
+                data_coords = ax.transData.inverted().transform((event.x, event.y))
+                x = round(data_coords[0])
+                y = round(data_coords[1])
+                if 0 <= x < self.x_dim and 0 <= y < self.y_dim:
+                    point = Point(x, y)
+                    if buffer:
+                        possible_moves = self.single_peg_valid_player_moves(buffer[0], self.current_player)
+                        possible_endpoints = [move[2] for move in possible_moves]
+                        if point in possible_endpoints:  # Move is valid
+                            self.swap_pegs(buffer[0], point)
+                            print(f"Peg moved to point ({point.x}, {point.y})")
+                            if self.check_winner(self.current_player):
+                                print(f"Player {self.current_player.number}/{self.current_player.color} has won!")
+                            self.current_player = self.get_next_player(self.current_player)
+                            buffer.clear()
+                            redraw_board()  # Redraw the board
+                        else:
+                            print("Invalid move.")
+                    else:
+                        if self.peg_at_position(point) in self.current_player.current_pegs:
+                            possible_moves = self.single_peg_valid_player_moves(point, self.current_player)
+                            if len(possible_moves) > 0:
+                                print(f"Selected peg at point ({point.x}, {point.y}).")
+                                buffer.append(point)
+                            else:
+                                print("This peg has no valid moves.")
+                        else:
+                            print("Not a valid peg to move.")
+            else:
+                print(f"Player {self.current_player.number}/{self.current_player.color}'s turn.")
+                for move in self.valid_player_moves(self.current_player):
+                    print(move)
+                print()
+                buffer.clear()
+
+        fig.canvas.mpl_connect("button_press_event", on_mouse_move)  # Mouse click event
+        redraw_board()  # Initial draw
+        plt.show()
 
 if __name__ == "__main__":
     game = ChineseCheckersBoard()
-    game.play_game()
+    #game.play_game_terminal()
+    game.play_game_UI()
