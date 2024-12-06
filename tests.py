@@ -6,14 +6,12 @@ def jump_loop_test() -> bool:
     yellow_positions = [[9, 3, "Yellow"]]
     positions = red_positions + yellow_positions
     game = ChineseCheckersBoard([2, [ChineseCheckersBoard.player_1, ChineseCheckersBoard.player_4], 1, positions])
-    s = game.output_gamestate()
-    game = ChineseCheckersBoard(s)
-    game.display_board()
-    #game.display_board()
-    #print(len(game.valid_moves(game.player_1)))
-    game.play_game_terminal()
+    # Assuming that moves are counted correctly under the loop, we should have 26 
+    for move in game.valid_player_moves(game.player_4):
+        print(move)
+    return len(game.valid_player_moves(game.player_4)) == 29
     
-def swapping_test() -> bool:
+def swapping_test_2p() -> bool:
     red_positions = [[8, 12, "Red"], [10, 14, "Red"], [11, 15, "Red"], [12, 16, "Red"], [11, 13, "Red"], [12, 14, "Red"], [13, 15, "Red"], [13, 13, "Red"], [14, 14, "Red"], [15, 13, "Red"]]
     yellow_positions = [[9, 13, "Yellow"]]
     positions = red_positions + yellow_positions
@@ -26,7 +24,7 @@ def swapping_test() -> bool:
             print(move)
 
 if __name__ == "__main__":
-    # jump_loop_test()
-    swapping_test()
+    print(jump_loop_test())
+    swapping_test_2p()
     # game.display_board()
     # game.play_game()
