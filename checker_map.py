@@ -568,12 +568,15 @@ class ChineseCheckersBoard:
         """
         returns the gamestate which can be used to initialize a custom board
         """
+        # Appending the number of players
         gamestate = []
         gamestate.append(self.num_players)
 
+        # Appending the color of players
         player_colors = [player.color for player in self.players]
         gamestate.append(player_colors)
 
+        # Append the index of the current player
         current_player = self.current_player
         current_player_index = self.players.index(current_player)
         gamestate.append(current_player_index)
@@ -666,6 +669,7 @@ class ChineseCheckersBoard:
             else:
                 print(f"\nPlayer {self.current_player.number}/{self.current_player.color}'s turn.")
                 print("If you want to cancel the current peg you have selected, click outside the graph.\n")
+                print(self.output_gamestate())
                 buffer.clear()
 
         fig.canvas.mpl_connect("button_press_event", on_mouse_move)  # Mouse click event
