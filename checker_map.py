@@ -357,11 +357,11 @@ class ChineseCheckersBoard:
         # Regular Move Case
         else:
             return self.is_empty(target_pos) and self.in_bounds(target_pos)
-    
-    # is endzone full
-    # if so, allow a peg to swap with a nonempty spot, of not your color
 
     def is_endzone_full(self, player: Player) -> bool:
+        """
+        Checks if the endzone of this player is full
+        """
         opposite_player = self.get_opposite_player(player)
         endzone_points = opposite_player.endzone_points
         for point in endzone_points:
@@ -379,12 +379,17 @@ class ChineseCheckersBoard:
         return point in endzone_points
 
     def is_valid_swap(self, player: Player, starting_point: Point, end_point: Point) -> bool:
+        """
+        Checks if a swap between two points is valid for a player
+        """
         # First ensure that the endzone is full of pegs
-        opposite_player = self.get_opposite_player(player)
-        endzone_points = opposite_player.endzone_points
-        #TODO
-
-        # Ensure that the starting point is outside of the endzone and the endpoint is in the endzone
+        if self.is_endzone_full(player):
+            # Then ensure that you are swapping with a peg of a different color
+            starting_peg = self.peg_at_position(starting_point)
+            final_peg = self.peg_at_position(end_point)
+            if starting_peg.color != final_peg.color:
+                return True
+        return False
     
     def peg_at_position(self, position: Point) -> Peg:
         """Return the Peg located at the position"""
