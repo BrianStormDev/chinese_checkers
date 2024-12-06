@@ -193,6 +193,8 @@ class ChineseCheckersBoard:
 
         # Initialize the players for the board
         for player in self.all_players:
+            # Reset the pegs of the player
+            player.reset_pegs()
             for peg in player.current_pegs:
                 board[peg.position.x, peg.position.y] = peg
 
@@ -464,7 +466,6 @@ class ChineseCheckersBoard:
 
             # Keep the loop going until someone has won the game
             if self.check_winner(self.current_player):
-                print(f"Player {self.current_player.number}/{self.current_player.color} has won!")
                 break
 
             # Get the next player
@@ -536,6 +537,7 @@ class ChineseCheckersBoard:
         for peg in player.current_pegs:
             if not self.in_endzone(player, peg.position):
                 return False
+        print(f"Player {self.current_player.number}/{self.current_player.color} has won!")
         return True
     
     def get_opposite_player(self, player: Player) -> Player:
@@ -618,32 +620,44 @@ class ChineseCheckersBoard:
         def on_mouse_move(event):
             if event.inaxes:  # Ensure the event is within the axes
                 # Transform mouse coordinates to data coordinates   
-
                 data_coords = ax.transData.inverted().transform((event.x, event.y))
                 x = round(data_coords[0])
                 y = round(data_coords[1])
+
+                # If the press is on the actual graph
                 if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
                     point = Point(x, y)
+
                     # If a point has already been pressed, attempt the move
                     if buffer:
+
                         # Checks that the endpoint is a point that can be reached
                         possible_moves = self.point_valid_moves(buffer[0], self.current_player)
                         possible_endpoints = [move[2] for move in possible_moves]
-                        if point in possible_endpoints: #Piece can start at point and end at point, do the swap
+
+                        # If the final point is in the possible_endpoints
+                        if point in possible_endpoints: 
+                            # Swap the pegs
                             self.swap_pegs(buffer[0], point)
                             print(f"Peg being moved to point ({point.x}, {point.y})")
-                            if self.check_winner(self.current_player):
-                                print(f"Player {self.current_player.number}/{self.current_player.color} has won!")
+
+                            # check if someone has won
+                            self.check_winner(self.current_player)
+
+                            # Get the next player, clear the buffer, and redraw the board    
                             self.current_player = self.get_next_player(self.current_player)
                             buffer.clear()
                             redraw_board()
                         else:
+                            # If the final point is not in the possible_endpoints
                             print("The point you pressed is not a valid spot to move to")
+
                     # If there is nothing in the buffer
                     else:
                         # Ensure the peg trying to be moved is in the list of the player's pegs
                         if self.peg_at_position(point) in self.current_player.current_pegs:
                             possible_moves = self.point_valid_moves(point, self.current_player)
+
                             # Also check that this peg has a possible move:
                             if len(possible_moves) > 0: 
                                 print(f"Selected peg at point ({point.x}, {point.y}).")
@@ -654,6 +668,7 @@ class ChineseCheckersBoard:
                             print("The point you pressed is not a valid peg to move in the current player's pegs")
             else:
                 print(f"Player {self.current_player.number}/{self.current_player.color}'s turn.")
+                print(f"Possible player moves of player {self.current_player.number}/{self.current_player.color}:")
                 for move in self.valid_player_moves(self.current_player):
                     print([move[0]] + [move[2]])
                 print()
