@@ -4,7 +4,6 @@ from Point import Point
 from Peg import Peg
 from Player import Player
 from typing import List, Tuple
-import sys
 
 class ChineseCheckersBoard:
     # Class attributes
@@ -14,7 +13,9 @@ class ChineseCheckersBoard:
     # players
     # current_player
     # board
-    # winners
+    # winning_players
+    # fig, ax
+    # scatter
 
     # Information about players and directions to store for later
     yellow_directions = [Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0)]
@@ -57,11 +58,9 @@ class ChineseCheckersBoard:
             self.num_players = self.initialize_num_players()
             self.players = self.initialize_players()
             self.current_player = self.players[0]
-            self.winners = []
+            self.winning_players = []
             print("\nInitializing the board.")
             self.board = self.initialize_board()
-        self.fig, self.ax = None, None
-        self.scatter = None
 
     def initialize_custom_board(self, input: List) -> None:
         """
@@ -99,7 +98,7 @@ class ChineseCheckersBoard:
 
         # Set the list of winners
         winners = input[3]
-        self.winners = [self.color_to_player[color] for color in winners]
+        self.winning_players = [self.color_to_player[color] for color in winners]
 
         # Each piece is a tuple (x, y, color)
         piece_positions = input[4]
@@ -219,10 +218,6 @@ class ChineseCheckersBoard:
         self.fig, self.ax = plt.subplots()  # Create figure and axes
         self.scatter = self.ax.scatter(x_coords, y_coords, c=colors)
 
-        def on_close(event):
-            print("The plot has been closed. The game has ended.")
-            sys.exit()
-
         def on_mouse_click(event) -> None:
             # Ensure the event is within the axes
             if event.inaxes:
@@ -233,8 +228,7 @@ class ChineseCheckersBoard:
                 if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
                     print(f"Graph coordinates: ({x}, {y}) | {self.board[x, y]}")
 
-        # Connect the close event and button press event to their callback functions
-        self.fig.canvas.mpl_connect('close_event', on_close)
+        # Connect the button press event to the callback function
         self.fig.canvas.mpl_connect("button_press_event", on_mouse_click)
 
         self.ax.set_xlabel("X-axis")
@@ -256,6 +250,11 @@ class ChineseCheckersBoard:
         self.scatter.set_facecolor(colors)
         self.ax.figure.canvas.draw_idle()
         plt.pause(0.01) 
+
+    def display_until_window_close(self):
+        """Keep the board displayed until the user closes the window"""
+        plt.ioff()
+        plt.show()
 
     #####################################################################################################################################################################
     # Movement Functions
@@ -497,62 +496,75 @@ class ChineseCheckersBoard:
         buffer = []
 
         def on_mouse_press(event) -> None:
-             # Ensure the event is within the axes
-            if event.inaxes: 
+            # If the game is not over yet
+            if not self.is_game_over(0):
 
-                # Transform mouse coordinates to data coordinates   
-                data_coords = ax.transData.inverted().transform((event.x, event.y))
-                x = round(data_coords[0])
-                y = round(data_coords[1])
+                # Ensure the event is within the axes
+                if event.inaxes: 
 
-                # If the press is on the actual graph
-                if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
-                    point = Point(x, y)
+                    # Transform mouse coordinates to data coordinates   
+                    data_coords = ax.transData.inverted().transform((event.x, event.y))
+                    x = round(data_coords[0])
+                    y = round(data_coords[1])
 
-                    # If a point has already been pressed, attempt the move
-                    if buffer:
+                    # If the press is on the actual graph
+                    if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
+                        point = Point(x, y)
 
-                        # Checks that the endpoint is a point that can be reached
-                        possible_moves = self.point_valid_moves(buffer[0], self.current_player)
-                        possible_endpoints = [move[2] for move in possible_moves]
+                        # If a point has already been pressed, attempt the move
+                        if buffer:
 
-                        # If the final point is in the possible_endpoints
-                        if point in possible_endpoints: 
-                            # Swap the pegs
-                            self.swap_pegs(buffer[0], point)
-                            print(f"Peg being moved to point ({point.x}, {point.y})")
+                            # Checks that the endpoint is a point that can be reached
+                            possible_moves = self.point_valid_moves(buffer[0], self.current_player)
+                            possible_endpoints = [move[2] for move in possible_moves]
 
-                            # check if someone has won
-                            if self.check_player_won(self.current_player):
-                                print(f"Player {self.current_player.number}/{self.current_player.color} has won!")
+                            # If the final point is in the possible_endpoints
+                            if point in possible_endpoints: 
+                                # Swap the pegs
+                                self.swap_pegs(buffer[0], point)
+                                print(f"Peg being moved to point ({point.x}, {point.y})")
 
-                            # Get the next player, clear the buffer, and redraw the board    
-                            self.current_player = self.get_next_player(self.current_player)
-                            buffer.clear()
-                            redraw_board()
-                        else:
-                            # If the final point is not in the possible_endpoints
-                            print("The point you pressed is not a valid spot to move to")
+                                # check if someone has won
+                                if self.check_player_won(self.current_player):
+                                    print(f"Player {self.current_player.number}/{self.current_player.color} has won in place {len(self.winning_players) + 1}!")
+                                    self.winning_players.append(self.current_player)
 
-                    # If there is nothing in the buffer
-                    else:
-                        # Ensure the peg trying to be moved is in the list of the player's pegs
-                        if self.peg_at_position(point) in self.current_player.current_pegs:
-                            possible_moves = self.point_valid_moves(point, self.current_player)
+                                # Get the next player, clear the buffer, and redraw the board    
+                                self.current_player = self.get_next_player(self.current_player)
 
-                            # Also check that this peg has a possible move:
-                            if len(possible_moves) > 0: 
-                                print(f"Selected peg at point ({point.x}, {point.y}).\n")
-                                buffer.append(point)
+                                # Checks to see if the game is over
+                                if (self.is_game_over(1)):
+                                    # Appends the last place finisher
+                                    self.winning_players.append(self.current_player)
+                                    print(f"The game is over! The order of winning is {self.winning_players}.")
+
+                                buffer.clear()
+                                redraw_board()
                             else:
-                                print("This peg has no spots to which it can go to.")
+                                # If the final point is not in the possible_endpoints
+                                print("The point you pressed is not a valid spot to move to")
+
+                        # If there is nothing in the buffer
                         else:
-                            print("The point you pressed is not a valid peg to move in the current player's pegs")
+                            # Ensure the peg trying to be moved is in the list of the player's pegs
+                            if self.peg_at_position(point) in self.current_player.current_pegs:
+                                possible_moves = self.point_valid_moves(point, self.current_player)
+
+                                # Also check that this peg has a possible move:
+                                if len(possible_moves) > 0: 
+                                    print(f"Selected peg at point ({point.x}, {point.y}).\n")
+                                    buffer.append(point)
+                                else:
+                                    print("This peg has no spots to which it can go to.")
+                            else:
+                                print("The point you pressed is not a valid peg to move in the current player's pegs")
+                else:
+                    print(f"\nPlayer {self.current_player.number}/{self.current_player.color}'s turn.")
+                    print("If you want to cancel the current peg you have selected, click outside the graph.\n")
+                    print(self.output_gamestate())
+                    buffer.clear()
             else:
-                print(f"\nPlayer {self.current_player.number}/{self.current_player.color}'s turn.")
-                print("If you want to cancel the current peg you have selected, click outside the graph.\n")
-                print(self.output_gamestate())
-                buffer.clear()
+                print(f"The game is over! The order of winning is {self.winning_players}.")
 
         # Calls on_mouse_press when the user clicks on the graph
         fig.canvas.mpl_connect("button_press_event", on_mouse_press)  
@@ -572,7 +584,7 @@ class ChineseCheckersBoard:
     def play_game_terminal(self) -> None:
         """Main game loop."""
         self.display_board()
-        while True:
+        while not self.is_game_over(0):
             # Print which player it is and all their possible moves
             print(f"Player {self.current_player.number}/{self.current_player.color}'s turn.\n")
 
@@ -597,11 +609,15 @@ class ChineseCheckersBoard:
 
             # Keep the loop going until someone has won the game
             if self.check_player_won(self.current_player):
-                print(f"Player {self.current_player.number}/{self.current_player.color} has won!")
-                break
+                print(f"Player {self.current_player.number}/{self.current_player.color} has won in place {len(self.winners) + 1}!")
+                self.winning_players.append(self.current_player)
 
             # Get the next player
             self.current_player = self.get_next_player(self.current_player)
+
+        # Appends the last place finisher
+        self.winning_players.append(self.current_player)
+        print(f"The game is over! The order of winning is {self.winning_players}.")
 
     def get_user_input(self) -> List:
         """
@@ -691,10 +707,16 @@ class ChineseCheckersBoard:
     def get_next_player(self, current_player: Player) -> Player:
         """Returns the player after the input player."""
         current_player_number = current_player.number
-        next_player = (current_player_number % 6) + 1
-        while (self.number_to_player[next_player] not in self.players):
-            next_player = (next_player % 6) + 1
-        return self.number_to_player[next_player]
+        next_player_number = (current_player_number % 6) + 1
+        next_player = self.number_to_player[next_player_number]
+
+        # Converts the self.winners which is a list of colors to a list of players
+        while next_player not in self.players or next_player in self.winning_players:
+            next_player_number = (next_player_number % 6) + 1
+            next_player = self.number_to_player[next_player_number]
+            # print(next_player_number)
+            # print(self.winning_players)
+        return next_player
 
     #####################################################################################################################################################################
     # FUNCTIONAL CODE
@@ -710,8 +732,11 @@ class ChineseCheckersBoard:
         y = moveslist[1]
         starting_peg = Point(x, y)
         move_command = moveslist[2:]
-        move_happened = self.move_piece(self.current_player, starting_peg, move_command)   
-        self.current_player = self.get_next_player(self.current_player)
+        move_happened = self.move_piece(self.current_player, starting_peg, move_command) 
+        if (self.check_player_won(self.current_player)):
+            self.winning_players.append(self.current_player)  
+        if not self.is_game_over(0):
+            self.current_player = self.get_next_player(self.current_player)
         return move_happened
 
     def format_for_update_func_possible_moves(self, player: Player) -> List:
@@ -749,7 +774,8 @@ class ChineseCheckersBoard:
         gamestate.append(current_player.color)
         
         # Append the list of winners
-        gamestate.append(game.winners)
+        winning_colors = [player.color for player in self.winning_players]
+        gamestate.append(winning_colors)
 
         # Append the remaining pieces on the board
         piece_positions = []
@@ -760,6 +786,15 @@ class ChineseCheckersBoard:
                 piece_positions.append(piece)
         gamestate.append(piece_positions)
         return gamestate
+    
+    def is_game_over(self, difference: int) -> bool:
+        """
+        Checks to see if the length of players - length of winning players is difference
+        """
+        if difference == 1:
+            return len(self.winning_players) == (len(self.players) - 1)
+        elif difference == 0:
+            return len(self.winning_players) == len(self.players)
 
 if __name__ == "__main__":
     game = ChineseCheckersBoard()
