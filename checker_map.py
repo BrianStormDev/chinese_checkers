@@ -505,7 +505,8 @@ class ChineseCheckersBoard:
                             print(f"Peg being moved to point ({point.x}, {point.y})")
 
                             # check if someone has won
-                            self.check_player_won(self.current_player)
+                            if self.check_player_won(self.current_player):
+                                print(f"Player {self.current_player.number}/{self.current_player.color} has won!")
 
                             # Get the next player, clear the buffer, and redraw the board    
                             self.current_player = self.get_next_player(self.current_player)
@@ -561,6 +562,7 @@ class ChineseCheckersBoard:
 
             # Keep the loop going until someone has won the game
             if self.check_player_won(self.current_player):
+                print(f"Player {self.current_player.number}/{self.current_player.color} has won!")
                 break
 
             # Get the next player
@@ -632,7 +634,6 @@ class ChineseCheckersBoard:
         for peg in player.current_pegs:
             if not self.in_endzone(player, peg.position):
                 return False
-        print(f"Player {self.current_player.number}/{self.current_player.color} has won!")
         return True
     
     def get_opposite_player(self, player: Player) -> Player:
