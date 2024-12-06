@@ -547,6 +547,12 @@ class ChineseCheckersBoard:
             # Print which player it is and all their possible moves
             print(f"Player {self.current_player.number}/{self.current_player.color}'s turn.\n")
 
+            # Print the possible moves
+            print("The possible moves are: ")
+            for move in self.valid_player_moves(self.current_player):
+                print(self.format_possible_move(move))
+            print()
+
             # Loop until the move is possible
             moveslist = self.get_user_input()
             starting_peg = moveslist[0]
@@ -576,13 +582,11 @@ class ChineseCheckersBoard:
         return: [Point, str, str...]
         """
         print("Enter the move you want to make as a position x y and then the sequential move commands, all space separated.")
-        print("Example: 1 2 UR")
         user_input = input("Your Input: ")
         user_input_split = user_input.split(" ")
         while len(user_input_split) < 3 or not user_input_split[0].isnumeric or not user_input_split[1].isnumeric or not self.valid_move_string(user_input_split[2:]):
             print("\nYour input was not correctly formatted, try again.")
             print("Enter the move you want to make as a position x y and then the sequential move commands, all space separated.")
-            print("Example: 1 2 UR")
             user_input = input("Your Input: ")
             user_input_split = user_input.split(" ")
         x = int(user_input_split[0])
@@ -628,6 +632,20 @@ class ChineseCheckersBoard:
         
         return True
     
+    def format_possible_move(self, move):
+        """
+        Format's a possible move from self.valid_player_moves into a format that can be input into the terminal
+        Ex: x y move_command move_command ...
+        """
+        move_string = ""
+        move_string += str(move[0].x)
+        move_string += " "
+        move_string += str(move[0].y)
+        move_string += " "
+        for command in move[1:-1]:
+            move_string += command
+        return move_string
+
     def check_player_won(self, player: Player) -> bool:
         """Check if a player has won."""
         # For every point in the opposite player's "endzone", we check if the player's point is in that endzoone
@@ -656,9 +674,14 @@ class ChineseCheckersBoard:
         """
         Updates the gamestate based on the player_input
         Returns if the move happened
+        moveslist[0]: x-coordinate of peg
+        moveslist[1]: y-coordinate of peg
+        moveslist[2:]: list of move commands (strings)
         """
-        starting_peg = moveslist[0]
-        move_command = moveslist[1:]
+        x = moveslist[0]
+        y = moveslist[1]
+        starting_peg = Point(x, y)
+        move_command = moveslist[2:]
         move_happened = self.move_piece(self.current_player, starting_peg, move_command)   
         self.current_player = self.get_next_player(self.current_player)
         return move_happened
@@ -691,5 +714,5 @@ class ChineseCheckersBoard:
 
 if __name__ == "__main__":
     game = ChineseCheckersBoard()
-    #game.play_game_terminal()
-    game.play_game_UI()
+    game.play_game_terminal()
+    #game.play_game_UI()

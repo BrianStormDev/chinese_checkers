@@ -1,5 +1,4 @@
 from checker_map import ChineseCheckersBoard
-from Point import Point
 
 def jump_loop_test() -> None:
     red_positions = [[12, 0, "Red"], [13, 1, "Red"], [15, 3, "Red"], [15, 5, "Red"], [13, 5, "Red"], [13, 3, "Red"]]
@@ -54,13 +53,13 @@ def no_swap_test() -> None:
 def win_test() -> None:
     game = ChineseCheckersBoard([2, ['Red', 'Yellow'], 0, [[16, 12, 'Red'], [12, 16, 'Red'], [9, 13, 'Red'], [12, 14, 'Red'], [11, 15, 'Red'], [15, 13, 'Red'], [10, 14, 'Red'], [13, 15, 'Red'], [11, 13, 'Red'], [13, 13, 'Red'], [7, 11, 'Yellow'], [19, 9, 'Yellow'], [12, 8, 'Yellow'], [13, 5, 'Yellow'], [8, 10, 'Yellow'], [9, 9, 'Yellow'], [17, 11, 'Yellow'], [9, 7, 'Yellow'], [13, 7, 'Yellow'], [5, 9, 'Yellow']]])
     player = game.color_to_player["Red"]
-    game.update_game([Point (16, 12), 'JUL'])
+    game.update_game([16, 12, 'JUL'])
     assert game.check_player_won(player) == True, "Win Test Failed!"
     print("Win Test Passed!")
 
 def endzone_rule_test() -> None:
     game = ChineseCheckersBoard([2, ['Red', 'Yellow'], 0, [[16, 12, 'Red'], [12, 16, 'Red'], [9, 13, 'Red'], [12, 14, 'Red'], [11, 15, 'Red'], [15, 13, 'Red'], [10, 14, 'Red'], [13, 15, 'Red'], [11, 13, 'Red'], [13, 13, 'Red'], [7, 11, 'Yellow'], [19, 9, 'Yellow'], [12, 8, 'Yellow'], [13, 5, 'Yellow'], [8, 10, 'Yellow'], [9, 9, 'Yellow'], [17, 11, 'Yellow'], [9, 7, 'Yellow'], [13, 7, 'Yellow'], [5, 9, 'Yellow']]])
-    assert game.update_game([Point (13, 13), 'DL']) == False, "Endzone Rule Failed!"
+    assert game.update_game([13, 13, 'DL']) == False, "Endzone Rule Failed!"
     print("Endzone Rule Passed!")
 
 if __name__ == "__main__":
