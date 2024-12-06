@@ -70,20 +70,22 @@ def endzone_rule_test() -> None:
     assert game.update_game([13, 13, 'DL']) == False, "Endzone Rule Failed!"
     print("Endzone Rule Passed!")
 
-def function_game_loop_test():
+def function_game_loop_test_2p():
     red_positions = [[12, 0, 'Red'], [11, 1, 'Red'], [13, 1, 'Red'], [10, 2, 'Red'], [12, 2, 'Red'], [14, 2, 'Red'], [9, 3, 'Red'], [11, 3, 'Red'], [13, 3, 'Red'], [15, 3, 'Red']]
     yellow_positions = [[12, 16, 'Yellow'], [13, 15, 'Yellow'], [11, 15, 'Yellow'], [14, 14, 'Yellow'], [12, 14, 'Yellow'], [10, 14, 'Yellow'], [15, 13, 'Yellow'], [13, 13, 'Yellow'], [11, 13, 'Yellow'], [9, 13, 'Yellow']]
     positions = red_positions + yellow_positions
     game = ChineseCheckersBoard([2, ['Red', 'Yellow'], 'Red', [], positions])
+    game.display_board()
     for i in tqdm(range(10000)):
             #print(game.format_for_update_func_possible_moves(game.current_player))
             moves = game.format_for_update_func_possible_moves(game.current_player)
             if (len(moves) != 0):
                 i = np.random.randint(0, len(moves))
                 game.update_game(moves[i])
+                game.update_board()
             else:
                 break
-    game.display_board()
+    game.update_board()
 
 if __name__ == "__main__":
     jump_loop_test()
@@ -91,4 +93,4 @@ if __name__ == "__main__":
     swapping_test_6p()
     win_test()
     endzone_rule_test()
-    function_game_loop_test()
+    function_game_loop_test_2p()
