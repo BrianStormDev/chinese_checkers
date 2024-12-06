@@ -351,8 +351,7 @@ class ChineseCheckersBoard:
         
         # Swap Case
         elif is_swap:
-            pass
-            #TODO
+            return self.is_valid_swap(player, starting_pos, target_pos)
         
         # Regular Move Case
         else:
