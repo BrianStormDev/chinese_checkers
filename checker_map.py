@@ -556,39 +556,47 @@ class ChineseCheckersBoard:
 
         def on_mouse_move(event):
             if event.inaxes:  # Ensure the event is within the axes
+                # Transform mouse coordinates to data coordinates   
+
                 data_coords = ax.transData.inverted().transform((event.x, event.y))
                 x = round(data_coords[0])
                 y = round(data_coords[1])
-                if 0 <= x < self.x_dim and 0 <= y < self.y_dim:
+                if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
                     point = Point(x, y)
+                    # If a point has already been pressed, attempt the move
                     if buffer:
+                        # Checks that the endpoint is a point that can be reached
                         possible_moves = self.single_peg_valid_player_moves(buffer[0], self.current_player)
                         possible_endpoints = [move[2] for move in possible_moves]
-                        if point in possible_endpoints:  # Move is valid
+                        if point in possible_endpoints: #Piece can start at point and end at point, do the swap
                             self.swap_pegs(buffer[0], point)
-                            print(f"Peg moved to point ({point.x}, {point.y})")
+                            print(f"Peg being moved to point ({point.x}, {point.y})")
                             if self.check_winner(self.current_player):
                                 print(f"Player {self.current_player.number}/{self.current_player.color} has won!")
                             self.current_player = self.get_next_player(self.current_player)
                             buffer.clear()
-                            redraw_board()  # Redraw the board
+                            redraw_board()
                         else:
-                            print("Invalid move.")
+                            print("The point you pressed is not a valid spot to move to")
+                    # If there is nothing in the buffer
                     else:
+                        # Ensure the peg trying to be moved is in the list of the player's pegs
                         if self.peg_at_position(point) in self.current_player.current_pegs:
                             possible_moves = self.single_peg_valid_player_moves(point, self.current_player)
-                            if len(possible_moves) > 0:
+                            # Also check that this peg has a possible move:
+                            if len(possible_moves) > 0: 
                                 print(f"Selected peg at point ({point.x}, {point.y}).")
                                 buffer.append(point)
                             else:
-                                print("This peg has no valid moves.")
+                                print("This peg has no spots to which it can go to.")
                         else:
-                            print("Not a valid peg to move.")
+                            print("The point you pressed is not a valid peg to move in the current player's pegs")
             else:
                 print(f"Player {self.current_player.number}/{self.current_player.color}'s turn.")
                 for move in self.valid_player_moves(self.current_player):
-                    print(move)
+                    print([move[0]] + [move[2]])
                 print()
+                print("If you want to cancel the current peg you have selected, click outside the graph.")
                 buffer.clear()
 
         fig.canvas.mpl_connect("button_press_event", on_mouse_move)  # Mouse click event
