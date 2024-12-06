@@ -46,9 +46,16 @@ class Player:
         return pegs
 
     def reset_pegs(self) -> List[Peg]:
+        """
+        Resets the players current_pegs
+        Clears their current_pegs and then makes a deep copy of their initial_pegs
+        """
         self.current_pegs.clear()
         for peg in self.initial_pegs:
             self.current_pegs.append(peg.copy())
 
     def __repr__(self):
+        return f'Player {self.number}/{self.color}'
+
+    def __str__(self):
         return f'Player {self.number}/{self.color}'

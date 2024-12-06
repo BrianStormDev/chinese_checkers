@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from Peg import Peg
-# from typing import List, Set, Tuple
-from Player import Player
 from Point import Point
+from Peg import Peg
+from Player import Player
+from typing import List, Tuple
 
 class ChineseCheckersBoard:
     # Class attributes
@@ -45,7 +45,7 @@ class ChineseCheckersBoard:
 
     #####################################################################################################################################################################
     # Board Setup Functions
-    def __init__(self, game_state=None):
+    def __init__(self, game_state=None) -> None:
         """
         Initialize the game
         """
@@ -58,7 +58,7 @@ class ChineseCheckersBoard:
             print("\nInitializing the board.")
             self.board = self.initialize_board()
 
-    def initialize_custom_board(self, input):
+    def initialize_custom_board(self, input: List) -> None:
         """
         Initializes the board from a custom input which is a list
         input[0]: number of players in the game
@@ -102,12 +102,12 @@ class ChineseCheckersBoard:
             player_of_peg.current_pegs.append(peg)
             self.board[piece_x, piece_y] = peg
 
-    def initialize_empty_board(self):
+    def initialize_empty_board(self) -> np.ndarray[Peg]:
         """
         Initialize a board with white pegs in the background and black pegs in the playable region
         """
         # Fill the whole board as white pegs
-        board = np.ndarray((self.x_dim, self.y_dim), dtype=object)
+        board = np.ndarray((self.x_dim, self.y_dim), dtype=Peg)
         for i in range(self.x_dim):
             for j in range(self.y_dim):
                 board[i, j] = Peg(Point(i, j), "White", False, True)
@@ -132,7 +132,7 @@ class ChineseCheckersBoard:
         
         return board
     
-    def initialize_corner(self, board, point: Point, ul: Point, r: Point):
+    def initialize_corner(self, board: np.ndarray[Peg], point: Point, ul: Point, r: Point):
         """
         Initializes a corner of the board to be all black empty pegs
         """
@@ -153,7 +153,7 @@ class ChineseCheckersBoard:
             number = input("Enter the number of players: ")
         return int(number)
 
-    def initialize_players(self) -> list[Player]:
+    def initialize_players(self) -> List[Player]:
         """
         Initializing the players in the game
         """
@@ -183,7 +183,7 @@ class ChineseCheckersBoard:
         print(f"The players are {list_of_players}.")
         return list_of_players
 
-    def initialize_board(self):
+    def initialize_board(self) -> np.ndarray[Peg]:
         """
         Initialize a Board
         """
@@ -211,8 +211,9 @@ class ChineseCheckersBoard:
 
         fig, ax = plt.subplots()  # Create figure and axes
 
-        def on_mouse_move(event):
-            if event.inaxes:  # Ensure the event is within the axes
+        def on_mouse_move(event) -> None:
+            # Ensure the event is within the axes
+            if event.inaxes:
                 # Transform mouse coordinates to data coordinates
                 data_coords = ax.transData.inverted().transform((event.x, event.y))
                 x = round(data_coords[0])
@@ -236,7 +237,7 @@ class ChineseCheckersBoard:
     #####################################################################################################################################################################
     # Movement Functions
 
-    def valid_player_moves(self, player: Player) -> list[tuple[Point, str, Point]]:
+    def valid_player_moves(self, player: Player) -> List[Tuple[Point, str, Point]]:
         """
         TESTING PURPOSES
         Generate a list of valid moves 
@@ -249,7 +250,7 @@ class ChineseCheckersBoard:
 
         return all_moves
     
-    def point_valid_moves(self, point: Point, player: Player) -> list[tuple[Point, str, Point]]:
+    def point_valid_moves(self, point: Point, player: Player) -> List[Tuple[Point, str, Point]]:
         """
         Generate a list of valid moves 
         returns: List of valid moves (a list of tuples, where each element is a tuple containing the start point and end point)
@@ -257,8 +258,8 @@ class ChineseCheckersBoard:
         peg = self.peg_at_position(point)
         return self.valid_peg_moves(peg, player)
     
-    def valid_peg_moves(self, peg: Peg, player: Player) -> list[tuple[Point, str, Point]]:
-        def valid_jumps_from_point(visited_positions: set, move_string: str, origin_pos: Point, current_pos: Point) -> set[tuple[Point, str, Point]]:
+    def valid_peg_moves(self, peg: Peg, player: Player) -> List[Tuple[Point, str, Point]]:
+        def valid_jumps_from_point(visited_positions: set, move_string: str, origin_pos: Point, current_pos: Point) -> set[Tuple[Point, str, Point]]:
             """
             Generate a list of valid moves for a singular peg
             visited_positions: indicates all of the points we have visited before
@@ -303,7 +304,7 @@ class ChineseCheckersBoard:
             print("This peg doesn't belong to this player!")
         return list(moves)
         
-    def move_piece(self, player: Player, starting_pos: Point, move_command: list[str]) -> bool:
+    def move_piece(self, player: Player, starting_pos: Point, move_command: List[str]) -> bool:
         """
         Attempt to move a piece for a player
         return: If the movement is successful, the board and player will be modified and the function will return True
@@ -453,12 +454,12 @@ class ChineseCheckersBoard:
     #####################################################################################################################################################################
     # Gameplay Functions
 
-    def play_game_UI(self):
+    def play_game_UI(self) -> None:
         """Display the board using matplotlib with dynamic updates"""
 
         fig, ax = plt.subplots()  # Create figure and axes
 
-        def redraw_board():
+        def redraw_board() -> None:
             """Redraw the board with updated peg positions and colors"""
             colors = []
             x_coords = []
@@ -480,7 +481,7 @@ class ChineseCheckersBoard:
 
         buffer = []
 
-        def on_mouse_move(event):
+        def on_mouse_move(event) -> None:
             if event.inaxes:  # Ensure the event is within the axes
                 # Transform mouse coordinates to data coordinates   
                 data_coords = ax.transData.inverted().transform((event.x, event.y))
@@ -574,7 +575,7 @@ class ChineseCheckersBoard:
             # Get the next player
             self.current_player = self.get_next_player(self.current_player)
 
-    def get_user_input(self):
+    def get_user_input(self) -> List:
         """
         Prompts the user for the move they want to make.
         Converts the string to an array containing a Point and then a series of move commands
@@ -594,7 +595,7 @@ class ChineseCheckersBoard:
         moves = user_input_split[2:]
         return [Point(x, y)] + moves
 
-    def valid_move_string(self, moves: list[str]) -> bool:
+    def valid_move_string(self, moves: List[str]) -> bool:
         """
         Checks if the list of moves is valid
         Every move has to be in the list of all possible player moves
@@ -632,7 +633,7 @@ class ChineseCheckersBoard:
         
         return True
     
-    def format_possible_move(self, move):
+    def format_possible_move(self, move: List) -> str:
         """
         Format's a possible move from self.valid_player_moves into a format that can be input into the terminal
         Ex: x y move_command move_command ...
@@ -670,7 +671,7 @@ class ChineseCheckersBoard:
 
     #####################################################################################################################################################################
     # FUNCTIONAL CODE
-    def update_game(self, moveslist) -> bool:
+    def update_game(self, moveslist: List) -> bool:
         """
         Updates the gamestate based on the player_input
         Returns if the move happened
@@ -686,7 +687,7 @@ class ChineseCheckersBoard:
         self.current_player = self.get_next_player(self.current_player)
         return move_happened
 
-    def output_gamestate(self):
+    def output_gamestate(self) -> List:
         """
         returns the gamestate which can be used to initialize a custom board
         """
@@ -714,5 +715,5 @@ class ChineseCheckersBoard:
 
 if __name__ == "__main__":
     game = ChineseCheckersBoard()
-    game.play_game_terminal()
-    #game.play_game_UI()
+    #game.play_game_terminal()
+    game.play_game_UI()

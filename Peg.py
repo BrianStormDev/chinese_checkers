@@ -14,12 +14,15 @@ class Peg:
         self.in_board = in_board
         self.is_empty = is_empty
 
+    def copy(self):
+        return Peg(self.position, self.color, self.in_board, self.is_empty)
+    
     def __repr__(self):
         position_str = f'Position: {str(self.position)} | '
         color_str = f'Color: {self.color} | '
         in_board = f'In Board: {self.in_board} | '
         is_empty = f'Is Empty: {self.is_empty} '
-        return position_str + color_str + in_board + is_empty   
+        return position_str + color_str + in_board + is_empty
     
     def __str__(self):
         position_str = f'Position: {str(self.position)} | '
@@ -27,6 +30,3 @@ class Peg:
         in_board = f'In Board: {self.in_board} | '
         is_empty = f'Is Empty: {self.is_empty} '
         return position_str + color_str + in_board + is_empty
-    
-    def copy(self):
-        return Peg(self.position, self.color, self.in_board, self.is_empty)
