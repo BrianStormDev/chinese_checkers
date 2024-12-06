@@ -26,12 +26,12 @@ class ChineseCheckersBoard:
 
     # The next player clockwise is player.number + 1
     # The opposite player is (player.number + 3) % 6
-    player_1 = Player("Yellow", 1, yellow_directions, Point(12, 16))
-    player_2 = Player("Purple", 2, purple_directions, Point(24, 12))
-    player_3 = Player("Green", 3, green_directions, Point(24, 4))
-    player_4 = Player("Red", 4, red_directions, Point(12, 0))
-    player_5 = Player("Orange", 5, orange_directions, Point(0, 4))
-    player_6 = Player("Blue", 6, blue_directions, Point(0, 12))
+    player_1 = Player(1, "Yellow", Point(12, 16), yellow_directions)
+    player_2 = Player(2, "Purple", Point(24, 12), purple_directions)
+    player_3 = Player(3, "Green", Point(24, 4), green_directions)
+    player_4 = Player(4,"Red", Point(12, 0), red_directions)
+    player_5 = Player(5, "Orange", Point(0, 4), orange_directions)
+    player_6 = Player(6, "Blue", Point(0, 12), blue_directions)
 
     number_to_player_map = {1: player_1, 2: player_2, 3: player_3, 4: player_4, 5: player_5, 6: player_6}
     color_to_player_map = {"Yellow": player_1, "Purple": player_2, "Green": player_3, "Red": player_4, "Orange": player_5, "Blue": player_6}
@@ -84,7 +84,7 @@ class ChineseCheckersBoard:
             piece_x = piece[0]
             piece_y = piece[1]
             piece_color = piece[2]
-            new_peg = Peg(Point(piece_x, piece_y), piece_color, True, False, )
+            new_peg = Peg(Point(piece_x, piece_y), piece_color, True, False)
             player_which_piece_belongs_to = self.color_to_player_map[piece_color]
             player_which_piece_belongs_to.current_pegs.append(new_peg)
             self.board[piece[0], piece[1]] = new_peg
@@ -343,18 +343,18 @@ class ChineseCheckersBoard:
         """
         # Jump case
         if is_jump:
-            return self.is_valid_jump(player, starting_pos, direction)
+            return self.is_valid_jump(starting_pos, direction)
         
         # Swap Case
         elif is_swap:
-            return self.is_valid_swap(player, starting_pos, target_pos)
+            return self.is_valid_swap(player, starting_pos, direction)
         
         # Regular Move Case
         else:
             target_pos = starting_pos + direction
             return self.is_empty(target_pos) and self.in_bounds(target_pos)
     
-    def is_valid_jump(self, player: Player, starting_pos: Point, direction: Point):
+    def is_valid_jump(self, starting_pos: Point, direction: Point):
         """
         Checks if a jump is valid
         """
@@ -386,10 +386,11 @@ class ChineseCheckersBoard:
         endzone_points = opposite_player.endzone_points
         return point in endzone_points
 
-    def is_valid_swap(self, player: Player, starting_point: Point, end_point: Point) -> bool:
+    def is_valid_swap(self, player: Player, starting_point: Point, direction: Point) -> bool:
         """
-        Checks if a swap between two points is valid for a player
+        Checks if a swap between two points is valid for a player   
         """
+        end_point = starting_point + direction
         # First ensure that the end_point is in the endzone
         if self.in_endzone(player, end_point):
             # Second ensure that the endzone is full of pegs
