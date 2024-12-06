@@ -358,6 +358,18 @@ class ChineseCheckersBoard:
         else:
             return self.is_empty(target_pos) and self.in_bounds(target_pos)
     
+    # is endzone full
+    # if so, allow a peg to swap with a nonempty spot, of not your color
+
+    def is_endzone_full(self, player: Player) -> bool:
+        opposite_player = self.get_opposite_player(player)
+        endzone_points = opposite_player.endzone_points
+        for point in endzone_points:
+            peg = self.peg_at_position(point)
+            if peg.is_empty:
+                return False
+        return True
+    
     def in_endzone(self, player: Player, point: Point) -> bool:
         """
         Checks if a point which contains the peg of a player is in the endzone of that player.
