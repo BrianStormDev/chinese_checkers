@@ -1,15 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.axes as ax
 from Peg import Peg
 # from typing import List, Set, Tuple
 from Player import Player
 from Point import Point
-
-# The key thing to note is that a chinese checkers board has players, not a player having a board
-# But each player has a set of pieces, representing what pegs they occupy
-# The board associates a triangle as the start for each of the players
-# The board associates a triangle as the end for each of the players
 
 class ChineseCheckersBoard:
     # Class attributes
@@ -33,21 +27,30 @@ class ChineseCheckersBoard:
     player_5 = Player(5, "Orange", Point(0, 4), orange_directions)
     player_6 = Player(6, "Blue", Point(0, 12), blue_directions)
 
-    number_to_player_map = {1: player_1, 2: player_2, 3: player_3, 4: player_4, 5: player_5, 6: player_6}
-    color_to_player_map = {"Yellow": player_1, "Purple": player_2, "Green": player_3, "Red": player_4, "Orange": player_5, "Blue": player_6}
+    # Useful player relations
+    number_to_player = {1: player_1, 2: player_2, 3: player_3, 4: player_4, 5: player_5, 6: player_6}
+    color_to_player = {"Yellow": player_1, "Purple": player_2, "Green": player_3, "Red": player_4, "Orange": player_5, "Blue": player_6}
     player_colors = ["Yellow", "Purple", "Green", "Red", "Orange", "Blue"]
     all_players = [player_1, player_2, player_3, player_4, player_5, player_6]
+
+    # Useful move lists
     basic_moves = ["UL", "UR", "R", "DR", "DL", "L"]
     jump_moves = ["JUL", "JUR", "JR", "JDR", "JDL", "JL"]
     swap_moves = ["SUL", "SUR", "SR", "SDR", "SDL", "SL"]
     player_moves = basic_moves + jump_moves + swap_moves
 
-    def __init__(self, custom=None):
+    # Class attributes
+    # num_players
+    # players
+    # current_player
+    # board
+
+    def __init__(self, game_state=None):
         """
-        Initialize a Board
+        Initialize the game
         """
-        if custom:
-            self.initialize_custom_board(custom)
+        if game_state:
+            self.initialize_custom_board(game_state)
         else:
             self.num_players = self.initialize_num_players()
             self.players = self.initialize_players()
@@ -57,21 +60,27 @@ class ChineseCheckersBoard:
     def initialize_custom_board(self, input):
         """
         Initializes the board from a custom input which is a list
-        input[0]: number of players
-        input[1]: players in the game as a list [game.player1, game.player2]
+        input[0]: number of players in the game
+        input[1]: players in the game as a list of colors ["Red", "Yellow"]
         input[2]: current player, as an index in the number of players
         input[3]: list of lists where each inner list is of the form [x, y, color]
         """
+        # Initializing the number of players
         self.num_players = input[0]
-        self.players = input[1]
-        self.non_players = set(self.all_players) - set(self.players)
+
+        # Initializing the players
+        player_colors = input[1]
+        self.players = [self.color_to_player[color] for color in player_colors]
+
+        
         self.current_player = self.players[input[2]]
         remaining_pieces = input[3]
 
         self.board = self.initialize_empty_board()
 
         # Set the pegs of the non_players
-        for player in self.non_players:
+        non_players = set(self.all_players) - set(self.players)
+        for player in non_players:
             for peg in player.current_pegs:
                 self.board[peg.position.x, peg.position.y] = peg
 
@@ -85,7 +94,7 @@ class ChineseCheckersBoard:
             piece_y = piece[1]
             piece_color = piece[2]
             new_peg = Peg(Point(piece_x, piece_y), piece_color, True, False)
-            player_which_piece_belongs_to = self.color_to_player_map[piece_color]
+            player_which_piece_belongs_to = self.color_to_player[piece_color]
             player_which_piece_belongs_to.current_pegs.append(new_peg)
             self.board[piece[0], piece[1]] = new_peg
 
@@ -127,7 +136,6 @@ class ChineseCheckersBoard:
                 cur_peg = Peg(cur_position, "Black", True, True)
                 boardInput[cur_position.x, cur_position.y] = cur_peg
 
-
     def initialize_num_players(self) -> int:
         """
         Initializing the number of players
@@ -148,16 +156,16 @@ class ChineseCheckersBoard:
         list_of_players = []
         while current_player_number < self.num_players:
             color = input(f"Input the color of player {current_player_number}: ")
-            while color not in self.player_colors or self.color_to_player_map[color] in list_of_players:
+            while color not in self.player_colors or self.color_to_player[color] in list_of_players:
                 print("The color you inputted is either already a player or not a possible player.")
                 color = input(f"Input the color of player {current_player_number}: ")
             # Adding the player corresponding to the color the user input
-            player = self.color_to_player_map[color]
+            player = self.color_to_player[color]
             list_of_players.append(player)
 
             # Adding the player corresponding to the opposite color of the user input
             player_number = player.number
-            player2 = self.number_to_player_map[(player_number + 2) % 6 + 1]
+            player2 = self.number_to_player[(player_number + 2) % 6 + 1]
             color2 = player2.color
             list_of_players.append(player2)
 
@@ -233,7 +241,7 @@ class ChineseCheckersBoard:
         Generate a list of valid moves 
         returns: List of valid moves (a list of tuples, where each element is a tuple containing the start point and end point)
         """
-        peg = self.board[point.x, point.y]
+        peg = self.peg_at_position(point)
         return self.valid_peg_moves(peg, player)
     
     def valid_peg_moves(self, peg: Peg, player: Player) -> list[tuple[Point, str, Point]]:
@@ -322,13 +330,13 @@ class ChineseCheckersBoard:
         if (self.in_endzone(player, starting_pos) and not self.in_endzone(player, current_pos)):
             return False
         
-        self.swap_pegs(starting_pos, current_pos)        
+        self.swap_pegs(starting_pos, current_pos)
 
         return True
     
     def swap_pegs(self, starting_pos: Point, final_pos: Point) -> None:
-        initial_peg = self.peg_at_position(starting_pos)  
-        final_peg = self.peg_at_position(final_pos)  
+        initial_peg = self.peg_at_position(starting_pos)
+        final_peg = self.peg_at_position(final_pos)
         initial_peg.position = final_pos
         final_peg.position = starting_pos
         self.board[final_pos.x, final_pos.y] = initial_peg
@@ -388,7 +396,7 @@ class ChineseCheckersBoard:
 
     def is_valid_swap(self, player: Player, starting_point: Point, direction: Point) -> bool:
         """
-        Checks if a swap between two points is valid for a player   
+        Checks if a swap between two points is valid for a player
         """
         end_point = starting_point + direction
         # First ensure that the end_point is in the endzone
@@ -433,7 +441,7 @@ class ChineseCheckersBoard:
                 moveslist = self.get_user_input()
                 starting_peg = moveslist[0]
                 move_command = moveslist[1:]
-            self.display_board()    
+            self.display_board()
             if self.check_winner(self.current_player):
                 print(f"Player {self.current_player.number}/{self.current_player.color} has won!")
                 break
@@ -449,13 +457,13 @@ class ChineseCheckersBoard:
         print("Enter the move you want to make as a position x y and then the sequential move commands, all space separated.")
         print("Example: 1 2 UR")
         user_input = input("Your Input: ")
-        user_input_split = user_input.split(" ")    
+        user_input_split = user_input.split(" ")
         while len(user_input_split) < 3 or not user_input_split[0].isnumeric or not user_input_split[1].isnumeric or not self.valid_move_string(user_input_split[2:]):
             print("\nYour input was not correctly formatted, try again.")
             print("Enter the move you want to make as a position x y and then the sequential move commands, all space separated.")
             print("Example: 1 2 UR")
             user_input = input("Your Input: ")
-            user_input_split = user_input.split(" ")    
+            user_input_split = user_input.split(" ")
         x = int(user_input_split[0])
         y = int(user_input_split[1])
         moves = user_input_split[2:]
@@ -511,15 +519,15 @@ class ChineseCheckersBoard:
         """Returns the opposite player of the input player."""
         player_number = player.number
         opposite_player = (player_number + 2) % 6 + 1
-        return self.number_to_player_map[opposite_player]
+        return self.number_to_player[opposite_player]
 
     def get_next_player(self, current_player: Player) -> Player:
         """Returns the player after the input player."""
         current_player_number = current_player.number
         next_player = (current_player_number % 6) + 1
-        while (self.number_to_player_map[next_player] not in self.players):
+        while (self.number_to_player[next_player] not in self.players):
             next_player = (next_player % 6) + 1
-        return self.number_to_player_map[next_player]
+        return self.number_to_player[next_player]
     
     def update_game(self, moveslist) -> bool:
         """
