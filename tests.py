@@ -18,12 +18,9 @@ def swapping_test_2p() -> None:
     yellow_positions = [[9, 13, "Yellow"]]
     positions = red_positions + yellow_positions
     game = ChineseCheckersBoard([2, ["Yellow", "Red"], 1, positions])
-    # s = game.output_gamestate()
-    # game = ChineseCheckersBoard(s)
-    # game.display_board()
-    for move in game.valid_player_moves(game.player_4):
-        if move[1][0] == "S":
-            print(move)
+    valid_swap_moves = [move for move in game.valid_player_moves(game.player_4) if move[1][0] == "S"]
+    assert len(valid_swap_moves) == 3, "Two Player Swap Test Failed!"
+    print("Two Player Swap Test Passed!")
 
 def swapping_test_6p() -> None:
     """
