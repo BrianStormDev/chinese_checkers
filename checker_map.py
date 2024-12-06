@@ -233,7 +233,7 @@ class ChineseCheckersBoard:
         Generate a list of valid moves 
         returns: List of valid moves (a list of tuples, where each element is a tuple containing the start point and end point)
         """
-        peg = self.board[point.x, point.y]
+        peg = self.peg_at_position(point)
         return self.valid_peg_moves(peg, player)
     
     def valid_peg_moves(self, peg: Peg, player: Player) -> list[tuple[Point, str, Point]]:
