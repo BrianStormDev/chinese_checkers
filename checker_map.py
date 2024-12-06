@@ -364,7 +364,7 @@ class ChineseCheckersBoard:
         """
         # Jump case
         if is_jump:
-            return self.is_valid_jump(starting_pos, direction)
+            return self.is_valid_jump(player, starting_pos, direction)
         
         # Swap Case
         elif is_swap:
@@ -373,9 +373,12 @@ class ChineseCheckersBoard:
         # Regular Move Case
         else:
             target_pos = starting_pos + direction
-            return self.is_empty(target_pos) and self.in_bounds(target_pos)
+            if self.in_endzone(player, starting_pos):
+                return self.is_empty(target_pos) and self.in_bounds(target_pos) and self.in_endzone(player, target_pos)
+            else:
+                return self.is_empty(target_pos) and self.in_bounds(target_pos)
     
-    def is_valid_jump(self, starting_pos: Point, direction: Point):
+    def is_valid_jump(self, player: Player, starting_pos: Point, direction: Point) -> bool:
         """
         Checks if a jump is valid
         """
@@ -383,16 +386,21 @@ class ChineseCheckersBoard:
             # 1. Target position is in bounds
             # 2. Target position is empty
             # 3. The adjacent location (one_move_pos) has a piece next to it
+        # If we start in the endzone, we have an extra condition:
+            # 4. The target position must be in the endzone
         target_pos = starting_pos + direction * 2
         midpoint = starting_pos + direction 
-        return self.is_empty(target_pos) and self.in_bounds(target_pos) and not self.is_empty(midpoint)
+        if self.in_endzone(player, starting_pos):
+            return self.is_empty(target_pos) and self.in_bounds(target_pos) and not self.is_empty(midpoint) and self.in_endzone(player, target_pos)
+        else:
+            return self.is_empty(target_pos) and self.in_bounds(target_pos) and not self.is_empty(midpoint)
     
     def is_valid_swap(self, player: Player, starting_point: Point, direction: Point) -> bool:
         """
         Checks if a swap between two points is valid for a player
         """
         end_point = starting_point + direction
-        # First ensure that the end_point is in the endzone
+        # First ensure that the end_point is in the endzone (you can't swap out of the endzone!)
         if self.in_endzone(player, end_point) and self.in_bounds(end_point):
             # Second ensure that the endzone is full of pegs
             if self.is_endzone_full(player):
