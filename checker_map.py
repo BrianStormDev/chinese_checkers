@@ -13,6 +13,7 @@ class ChineseCheckersBoard:
     # players
     # current_player
     # board
+    # winners
 
     # Information about players and directions to store for later
     yellow_directions = [Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0)]
@@ -55,6 +56,7 @@ class ChineseCheckersBoard:
             self.num_players = self.initialize_num_players()
             self.players = self.initialize_players()
             self.current_player = self.players[0]
+            self.winners = []
             print("\nInitializing the board.")
             self.board = self.initialize_board()
 
@@ -63,8 +65,9 @@ class ChineseCheckersBoard:
         Initializes the board from a custom input which is a list
         input[0]: number of players in the game
         input[1]: players in the game as a list of colors ["Red", "Yellow"]
-        input[2]: current player, as an index in the number of players
-        input[3]: list of lists where each inner list is of the form [x, y, color]
+        input[2]: current player, as a color
+        input[3]: list of winners as colors
+        input[4]: list of lists where each inner list is of the form [x, y, color]
         """
         # Initializing the number of players
         self.num_players = input[0]
@@ -74,8 +77,8 @@ class ChineseCheckersBoard:
         self.players = [self.color_to_player[color] for color in player_colors]
 
         # Initializing the current player
-        current_player_index = input[2]
-        self.current_player = self.players[current_player_index]
+        current_player_color = input[2]
+        self.current_player = self.color_to_player[current_player_color]
         
         # Initializing the empty board
         self.board = self.initialize_empty_board()
@@ -91,8 +94,12 @@ class ChineseCheckersBoard:
         for player in self.players:
             player.current_pegs.clear()
 
+        # Set the list of winners
+        winners = input[3]
+        self.winners = [self.color_to_player[color] for color in winners]
+
         # Each piece is a tuple (x, y, color)
-        piece_positions = input[3]
+        piece_positions = input[4]
         for piece in piece_positions:
             piece_x = piece[0]
             piece_y = piece[1]
@@ -551,7 +558,7 @@ class ChineseCheckersBoard:
             # Print the possible moves
             print("The possible moves are: ")
             for move in self.valid_player_moves(self.current_player):
-                print(self.format_possible_move(move))
+                print(self.format_for_print_func_possible_moves(move))
             print()
 
             # Loop until the move is possible
@@ -633,7 +640,7 @@ class ChineseCheckersBoard:
         
         return True
     
-    def format_possible_move(self, move: List) -> str:
+    def format_for_print_func_possible_moves(self, move: List) -> str:
         """
         Format's a possible move from self.valid_player_moves into a format that can be input into the terminal
         Ex: x y move_command move_command ...
@@ -643,8 +650,7 @@ class ChineseCheckersBoard:
         move_string += " "
         move_string += str(move[0].y)
         move_string += " "
-        for command in move[1:-1]:
-            move_string += command
+        move_string += move[1]
         return move_string
 
     def check_player_won(self, player: Player) -> bool:
@@ -687,6 +693,24 @@ class ChineseCheckersBoard:
         self.current_player = self.get_next_player(self.current_player)
         return move_happened
 
+    def format_for_update_func_possible_moves(self, player: Player) -> List:
+        """
+        Format's a possible move from self.valid_player_moves into a format that can be input as a function call to update_gaame
+        Ex: [x, y, move_command move_command ...]
+        """
+        movesList = []
+        valid_player_moves = self.valid_player_moves(player)
+        for move in valid_player_moves:
+            formattedMove = []
+            formattedMove.append(move[0].x)
+            formattedMove.append(move[0].y)
+            string_moves = move[1]
+            string_list = string_moves.split(" ")
+            for command in string_list:
+                formattedMove.append(command)
+            movesList.append(formattedMove)
+        return movesList
+
     def output_gamestate(self) -> List:
         """
         returns the gamestate which can be used to initialize a custom board
@@ -699,11 +723,14 @@ class ChineseCheckersBoard:
         player_colors = [player.color for player in self.players]
         gamestate.append(player_colors)
 
-        # Append the index of the current player
+        # Append the color of the current player
         current_player = self.current_player
-        current_player_index = self.players.index(current_player)
-        gamestate.append(current_player_index)
+        gamestate.append(current_player.color)
         
+        # Append the list of winners
+        gamestate.append(game.winners)
+
+        # Append the remaining pieces on the board
         piece_positions = []
         for player in self.players:
             for peg in player.current_pegs:
