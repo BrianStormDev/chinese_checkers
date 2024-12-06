@@ -408,7 +408,7 @@ class ChineseCheckersBoard:
     
     def is_empty(self, position: Point) -> bool:
         """Return whether or not there is Peg located at a certain position"""
-        return self.peg_at_position(position).is_empty
+        return not self.in_bounds(position) or self.peg_at_position(position).is_empty
         
     def in_bounds(self, position: Point) -> bool:
         """Return whether or not the current position is in bounds"""
