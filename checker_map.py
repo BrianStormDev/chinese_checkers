@@ -83,6 +83,7 @@ class ChineseCheckersBoard:
         # Set the pegs of the non_players
         non_players = set(self.all_players) - set(self.players)
         for player in non_players:
+            player.reset_pegs()
             for peg in player.current_pegs:
                 self.board[peg.position.x, peg.position.y] = peg
 
@@ -561,7 +562,6 @@ class ChineseCheckersBoard:
         Updates the gamestate based on the player_input
         Returns if the move happened
         """
-        print(f"Player {self.current_player.number}/{self.current_player.color}'s turn.")
         starting_peg = moveslist[0]
         move_command = moveslist[1:]
         move_happened = self.move_piece(self.current_player, starting_peg, move_command)   
