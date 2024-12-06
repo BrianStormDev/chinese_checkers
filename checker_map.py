@@ -165,7 +165,7 @@ class ChineseCheckersBoard:
         while number_of_players < self.num_players:
             color = input(f"Input the color of Player {number_of_players}: ")
             while color not in self.player_colors or self.color_to_player[color] in list_of_players:
-                print("The color you inputted is either already a player or not a possible player.")
+                print("\nThe color you inputted is either already a player or not a possible player.")
                 color = input(f"Input the color of Player {number_of_players}: ")
 
             # Adding the player corresponding to the color the user input
@@ -237,6 +237,7 @@ class ChineseCheckersBoard:
 
     def valid_player_moves(self, player: Player) -> list[tuple[Point, str, Point]]:
         """
+        TESTING PURPOSES
         Generate a list of valid moves 
         returns: List of valid moves (a list of tuples, where each element is a tuple containing the start point and end point)
         """
@@ -446,10 +447,6 @@ class ChineseCheckersBoard:
         while True:
             # Print which player it is and all their possible moves
             print(f"Player {self.current_player.number}/{self.current_player.color}'s turn.\n")
-            print(f"Possible player moves of player {self.current_player.number}/{self.current_player.color}:")
-            for move in self.valid_player_moves(self.current_player):
-                print(move)
-            print()
 
             # Loop until the move is possible
             moveslist = self.get_user_input()
@@ -660,19 +657,15 @@ class ChineseCheckersBoard:
 
                             # Also check that this peg has a possible move:
                             if len(possible_moves) > 0: 
-                                print(f"Selected peg at point ({point.x}, {point.y}).")
+                                print(f"Selected peg at point ({point.x}, {point.y}).\n")
                                 buffer.append(point)
                             else:
                                 print("This peg has no spots to which it can go to.")
                         else:
                             print("The point you pressed is not a valid peg to move in the current player's pegs")
             else:
-                print(f"Player {self.current_player.number}/{self.current_player.color}'s turn.")
-                print(f"Possible player moves of player {self.current_player.number}/{self.current_player.color}:")
-                for move in self.valid_player_moves(self.current_player):
-                    print([move[0]] + [move[2]])
-                print()
-                print("If you want to cancel the current peg you have selected, click outside the graph.")
+                print(f"\nPlayer {self.current_player.number}/{self.current_player.color}'s turn.")
+                print("If you want to cancel the current peg you have selected, click outside the graph.\n")
                 buffer.clear()
 
         fig.canvas.mpl_connect("button_press_event", on_mouse_move)  # Mouse click event
@@ -681,5 +674,5 @@ class ChineseCheckersBoard:
 
 if __name__ == "__main__":
     game = ChineseCheckersBoard()
-    game.play_game_terminal()
-    #game.play_game_UI()
+    #game.play_game_terminal()
+    game.play_game_UI()

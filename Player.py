@@ -1,4 +1,3 @@
-import numpy as np
 from Point import Point
 from typing import List
 from Peg import Peg
@@ -29,8 +28,8 @@ class Player:
         # Set the origin of the pegs and the current state of pegs
         self.endzone_points = set()
         self.initial_pegs = self.initialize_pegs()
-        self.current_pegs = self.initial_pegs
-        #self.reset_pegs()
+        self.current_pegs = []
+        self.reset_pegs()
     
     def initialize_pegs(self) -> List[Peg]:
         """
