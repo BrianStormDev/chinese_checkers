@@ -1,7 +1,7 @@
 from Point import Point
 
 class Peg:
-    def __init__(self, position: Point, color: str, in_board: bool, is_empty: bool):
+    def __init__(self, position: Point, color: str, in_board: bool, is_empty: bool) -> None:
         """
         Initialize a peg.
         position: Point indicating the position of the peg

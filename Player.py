@@ -1,9 +1,9 @@
 from Point import Point
-from typing import List
 from Peg import Peg
+from typing import List
 
 class Player:
-    def __init__(self, number: int, color: str, origin: Point, directions: List[Point]):
+    def __init__(self, number: int, color: str, origin: Point, directions: List[Point]) -> None:
         """
         Initialize a player.
         number: integer indicating the number of the player
