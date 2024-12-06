@@ -266,13 +266,17 @@ class ChineseCheckersBoard:
         if peg in player.current_pegs:
             for move_code, direction in player.directions.items(): # For each possible direction
                 origin_pos = peg.position # Get the current position of the peg
+                single_move_pos = origin_pos + direction
 
                 # First determine if we can make any moves one step away 
                 if self.is_valid_move(player, origin_pos, direction, False, False):
-                    single_move_pos = origin_pos + direction
                     moves.add((origin_pos, move_code, single_move_pos))
 
-                # Now figure out if we can make any jump movements
+                # Second determine if we can make any swaps
+                if self.is_valid_move(player, origin_pos, direction, False, True):
+                    moves.add((origin_pos, "S" + move_code, single_move_pos))
+
+                # Finally determine if we can make any jumps
                 moves.update(valid_jumps_from_point(set(), '', origin_pos, origin_pos))
         else:
             print("This peg doesn't belong to this player!")
