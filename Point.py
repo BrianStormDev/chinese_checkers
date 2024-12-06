@@ -32,6 +32,6 @@ class Point:
             return 4 * x * x - 3 * x + y + 1
         if (ax > ay and x <= 0): 
             return 4 * x * x - x - y + 1
-        if (ax <= ay and y>0):
+        if (ax <= ay and y > 0):
             return 4 * y * y - y - x + 1
         return 4 * y * y - 3 * y + x + 1

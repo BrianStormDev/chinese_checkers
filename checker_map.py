@@ -55,6 +55,7 @@ class ChineseCheckersBoard:
             self.num_players = self.initialize_num_players()
             self.players = self.initialize_players()
             self.current_player = self.players[0]
+            print("\nInitializing the board.")
             self.board = self.initialize_board()
 
     def initialize_custom_board(self, input):
@@ -100,15 +101,11 @@ class ChineseCheckersBoard:
             player_of_peg.current_pegs.append(peg)
             self.board[piece_x, piece_y] = peg
 
-        # Display the board
-        self.display_board()
-
     def initialize_empty_board(self):
         """
         Initialize a board with white pegs in the background and black pegs in the playable region
         """
         # Fill the whole board as white pegs
-        print("\nInitializing the board.")
         board = np.ndarray((self.x_dim, self.y_dim), dtype=object)
         for i in range(self.x_dim):
             for j in range(self.y_dim):
@@ -462,7 +459,7 @@ class ChineseCheckersBoard:
             self.display_board()
 
             # Keep the loop going until someone has won the game
-            if self.check_winner(self.current_player):
+            if self.check_player_won(self.current_player):
                 break
 
             # Get the next player
@@ -528,7 +525,7 @@ class ChineseCheckersBoard:
         
         return True
     
-    def check_winner(self, player: Player) -> bool:
+    def check_player_won(self, player: Player) -> bool:
         """Check if a player has won."""
         # For every point in the opposite player's "endzone", we check if the player's point is in that endzoone
         for peg in player.current_pegs:
@@ -559,8 +556,7 @@ class ChineseCheckersBoard:
         print(f"Player {self.current_player.number}/{self.current_player.color}'s turn.")
         starting_peg = moveslist[0]
         move_command = moveslist[1:]
-        move_happened = self.move_piece(self.current_player, starting_peg, move_command)
-        self.display_board()    
+        move_happened = self.move_piece(self.current_player, starting_peg, move_command)   
         self.current_player = self.get_next_player(self.current_player)
         return move_happened
 
@@ -642,7 +638,7 @@ class ChineseCheckersBoard:
                             print(f"Peg being moved to point ({point.x}, {point.y})")
 
                             # check if someone has won
-                            self.check_winner(self.current_player)
+                            self.check_player_won(self.current_player)
 
                             # Get the next player, clear the buffer, and redraw the board    
                             self.current_player = self.get_next_player(self.current_player)

@@ -59,15 +59,26 @@ def no_swap_test() -> None:
     print("No Swap Test Passed!")
 
 def win_test() -> None:
-    game = ChineseCheckersBoard([2, ['Red', 'Yellow'], 1, [[19, 7, 'Red'], [12, 16, 'Red'], [12, 12, 'Red'], [12, 14, 'Red'], [11, 15, 'Red'], [16, 12, 'Red'], [10, 14, 'Red'], [13, 15, 'Red'], [13, 13, 'Red'], [14, 14, 'Red'], [7, 11, 'Yellow'], [19, 9, 'Yellow'], [8, 12, 'Yellow'], [11, 7, 'Yellow'], [8, 10, 'Yellow'], [9, 9, 'Yellow'], [17, 11, 'Yellow'], [9, 7, 'Yellow'], [9, 11, 'Yellow'], [5, 9, 'Yellow']]])
+    game = ChineseCheckersBoard([2, ['Red', 'Yellow'], 0, [[16, 12, 'Red'], [12, 16, 'Red'], [9, 13, 'Red'], [12, 14, 'Red'], [11, 15, 'Red'], [15, 13, 'Red'], [10, 14, 'Red'], [13, 15, 'Red'], [11, 13, 'Red'], [13, 13, 'Red'], [7, 11, 'Yellow'], [19, 9, 'Yellow'], [12, 8, 'Yellow'], [13, 5, 'Yellow'], [8, 10, 'Yellow'], [9, 9, 'Yellow'], [17, 11, 'Yellow'], [9, 7, 'Yellow'], [13, 7, 'Yellow'], [5, 9, 'Yellow']]])
     game.display_board()
-    game.play_game_UI()
+    player = game.color_to_player["Red"]
+    game.update_game([Point (16, 12), 'JUL'])
+    assert game.check_player_won(player) == True, "Win Test Failed"
+    print("Win Test Passed")
+
+def endzone_rule_test() -> None:
+    game = ChineseCheckersBoard([2, ['Red', 'Yellow'], 0, [[16, 12, 'Red'], [12, 16, 'Red'], [9, 13, 'Red'], [12, 14, 'Red'], [11, 15, 'Red'], [15, 13, 'Red'], [10, 14, 'Red'], [13, 15, 'Red'], [11, 13, 'Red'], [13, 13, 'Red'], [7, 11, 'Yellow'], [19, 9, 'Yellow'], [12, 8, 'Yellow'], [13, 5, 'Yellow'], [8, 10, 'Yellow'], [9, 9, 'Yellow'], [17, 11, 'Yellow'], [9, 7, 'Yellow'], [13, 7, 'Yellow'], [5, 9, 'Yellow']]])
+    game.update_game([Point (13, 13), 'DL'])
+    game.display_board()
+    assert game.update_game([Point (13, 13), 'DL']) == False, "Endzone Rule Failed"
+    print("Endzone Rule Passed")
 
 if __name__ == "__main__":
     #jump_loop_test()
     #swapping_test_2p()
     #swapping_test_6p()
     win_test()
+    endzone_rule_test()
     #no_swap_test()
     # game.display_board()
     # game.play_game()
