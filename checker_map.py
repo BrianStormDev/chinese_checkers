@@ -51,6 +51,7 @@ class ChineseCheckersBoard:
         else:
             self.num_players = self.initialize_num_players()
             self.players = self.initialize_players()
+            self.current_player = self.players[0]
             self.board = self.initialize_board()
 
     def initialize_custom_board(self, input):
@@ -58,15 +59,17 @@ class ChineseCheckersBoard:
         Initializes the board from a custom input which is a list
         input[0]: number of players
         input[1]: players in the game as a list [game.player1, game.player2]
-        input[2]: list of lists where each inner list is of the form [x, y, color]
+        input[2]: current player, as an index in the number of players
+        input[3]: list of lists where each inner list is of the form [x, y, color]
         """
         self.num_players = input[0]
         self.players = input[1]
         self.non_players = set(self.all_players) - set(self.players)
-        remaining_pieces = input[2]
+        self.current_player = self.players[input[2]]
+        remaining_pieces = input[3]
 
         self.board = self.initialize_empty_board()
-        self.display_board()
+
         # Set the pegs of the non_players
         for player in self.non_players:
             for peg in player.current_pegs:
@@ -162,6 +165,7 @@ class ChineseCheckersBoard:
             # Change the current_player_number
             current_player_number += 2
         print(f"The players are {list_of_players}.")
+        
         return list_of_players
 
     def initialize_board(self):
@@ -312,16 +316,16 @@ class ChineseCheckersBoard:
             # Ensure that the board array points to the correct peg and the items in the player list are correct
             # Must be mutated
 
-            # Add an additional check that ensure that if the peg started in the endzone, it can't go out of it
-            if (self.in_endzone(player, starting_pos) and not self.in_endzone(player, current_pos)):
-                return False
-            
-            initial_peg = self.peg_at_position(starting_pos)  
-            final_peg = self.peg_at_position(current_pos)  
-            initial_peg.position = current_pos
-            final_peg.position = starting_pos
-            self.board[current_pos.x, current_pos.y] = initial_peg
-            self.board[starting_pos.x, starting_pos.y] = final_peg
+        # Add an additional check that ensure that if the peg started in the endzone, it can't go out of it
+        if (self.in_endzone(player, starting_pos) and not self.in_endzone(player, current_pos)):
+            return False
+
+        initial_peg = self.peg_at_position(starting_pos)  
+        final_peg = self.peg_at_position(current_pos)  
+        initial_peg.position = current_pos
+        final_peg.position = starting_pos
+        self.board[current_pos.x, current_pos.y] = initial_peg
+        self.board[starting_pos.x, starting_pos.y] = final_peg
 
         return True
         
@@ -378,11 +382,10 @@ class ChineseCheckersBoard:
     def play_game(self) -> None:
         """Main game loop."""
         self.display_board()
-        first_player = self.players[0]
-        current_player = first_player
+        current_player = self.current_player
         while True:
             print(f"Player {current_player.number}/{current_player.color}'s turn.")
-            for move in game.valid_player_moves(current_player):
+            for move in self.valid_player_moves(current_player):
                 print(move)
             print()
             moveslist = self.get_user_input()
@@ -480,6 +483,32 @@ class ChineseCheckersBoard:
         while (self.number_to_player_map[next_player] not in self.players):
             next_player = (next_player % 6) + 1
         return self.number_to_player_map[next_player]
+    
+    def update_game(self, player_input):
+        """
+        Updates the gamestate based on the player_input
+        """
+
+    def output_gamestate(self):
+        """
+        returns the gamestate which can be used to initialize a custom board
+        """
+        gamestate = []
+        gamestate.append(self.num_players)
+        gamestate.append(self.players)
+
+        current_player = self.current_player
+        current_player_index = self.players.index(current_player)
+        gamestate.append(current_player_index)
+        
+        piece_positions = []
+        for player in self.players:
+            for peg in player.current_pegs:
+                peg_position = peg.position
+                piece = [peg_position.x, peg_position.y, peg.color]
+                piece_positions.append(piece)
+        gamestate.append(piece_positions)
+        return gamestate
 
 if __name__ == "__main__":
     game = ChineseCheckersBoard()
