@@ -28,17 +28,17 @@ class ChineseCheckersBoard:
 
     # The next player clockwise is player.number + 1
     # The opposite player is (player.number + 3) % 6
-    player_1 = Player(1, "Yellow", Point(12, 16), yellow_directions)
+    player_1 = Player(1, 'Gold', Point(12, 16), yellow_directions)
     player_2 = Player(2, "Purple", Point(24, 12), purple_directions)
     player_3 = Player(3, "Green", Point(24, 4), green_directions)
     player_4 = Player(4,"Red", Point(12, 0), red_directions)
-    player_5 = Player(5, "Orange", Point(0, 4), orange_directions)
+    player_5 = Player(5, 'Darkorange', Point(0, 4), orange_directions)
     player_6 = Player(6, "Blue", Point(0, 12), blue_directions)
 
     # Useful player relations
     number_to_player = {1: player_1, 2: player_2, 3: player_3, 4: player_4, 5: player_5, 6: player_6}
-    color_to_player = {"Yellow": player_1, "Purple": player_2, "Green": player_3, "Red": player_4, "Orange": player_5, "Blue": player_6}
-    player_colors = ["Yellow", "Purple", "Green", "Red", "Orange", "Blue"]
+    color_to_player = {'Gold': player_1, "Purple": player_2, "Green": player_3, "Red": player_4, 'Darkorange': player_5, "Blue": player_6}
+    player_colors = ['Gold', "Purple", "Green", "Red", 'Darkorange', "Blue"]
     all_players = [player_1, player_2, player_3, player_4, player_5, player_6]
 
     # Useful move lists
@@ -67,7 +67,7 @@ class ChineseCheckersBoard:
         """
         Initializes the board from a custom input which is a list
         input[0]: number of players in the game
-        input[1]: players in the game as a list of colors ["Red", "Yellow"]
+        input[1]: players in the game as a list of colors ["Red", 'Gold']
         input[2]: current player, as a color
         input[3]: list of winners as colors
         input[4]: list of lists where each inner list is of the form [x, y, color]
