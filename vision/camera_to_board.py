@@ -1,10 +1,13 @@
 from ultralytics import YOLO
+# import torch
 import cv2, cvzone
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from Peg import Peg
 from Point import Point
 import matplotlib.pyplot as plt
+
+print('Import Success')
 
 nice = Peg(Point(1, 2), True, True, 'black')
 
@@ -15,7 +18,8 @@ class_names = ['yellow', 'blue', EMPTY, 'purple', 'green', 'red', 'orange']
 
 model = YOLO("best.pt")
 
-image_path = "data/unused/IMG_2789.jpg" 
+# image_path = "data/test/images/IMG_2784.JPG" 
+image_path = "../saved_images/image_1.jpg" 
 image = cv2.imread(image_path)
 
 print('Loading done')
