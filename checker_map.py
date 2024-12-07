@@ -1,9 +1,10 @@
+#!/usr/bin/env python
 import numpy as np
 import matplotlib.pyplot as plt
 from Point import Point
 from Peg import Peg
 from Player import Player
-from typing import List, Tuple
+from typing import List, Tuple, Set
 
 class ChineseCheckersBoard:
     # Class attributes
@@ -111,7 +112,7 @@ class ChineseCheckersBoard:
             player_of_peg.current_pegs.append(peg)
             self.board[piece_x, piece_y] = peg
 
-    def initialize_empty_board(self) -> np.ndarray[Peg]:
+    def initialize_empty_board(self) -> np.ndarray:
         """
         Initialize a board with white pegs in the background and black pegs in the playable region
         """
@@ -141,7 +142,7 @@ class ChineseCheckersBoard:
         
         return board
     
-    def initialize_corner(self, board: np.ndarray[Peg], point: Point, ul: Point, r: Point):
+    def initialize_corner(self, board: np.ndarray, point: Point, ul: Point, r: Point):
         """
         Initializes a corner of the board to be all black empty pegs
         """
@@ -192,7 +193,7 @@ class ChineseCheckersBoard:
         print(f"The players are {list_of_players}.")
         return list_of_players
 
-    def initialize_board(self) -> np.ndarray[Peg]:
+    def initialize_board(self) -> np.ndarray:
         """
         Initialize a Board
         """
@@ -281,7 +282,7 @@ class ChineseCheckersBoard:
         return self.valid_peg_moves(peg, player)
     
     def valid_peg_moves(self, peg: Peg, player: Player) -> List[Tuple[Point, str, Point]]:
-        def valid_jumps_from_point(visited_positions: set, move_string: str, origin_pos: Point, current_pos: Point) -> set[Tuple[Point, str, Point]]:
+        def valid_jumps_from_point(visited_positions: set, move_string: str, origin_pos: Point, current_pos: Point) -> Set[Tuple[Point, str, Point]]:
             """
             Generate a list of valid moves for a singular peg
             visited_positions: indicates all of the points we have visited before
@@ -460,7 +461,7 @@ class ChineseCheckersBoard:
     
     def peg_at_position(self, position: Point) -> Peg:
         """Return the Peg located at the position"""
-        return self.board[position.x][position.y]
+        return self.board[position.x, position.y]
     
     def is_empty(self, position: Point) -> bool:
         """Return whether or not there is Peg located at a certain position"""
@@ -504,8 +505,8 @@ class ChineseCheckersBoard:
 
                     # Transform mouse coordinates to data coordinates   
                     data_coords = ax.transData.inverted().transform((event.x, event.y))
-                    x = round(data_coords[0])
-                    y = round(data_coords[1])
+                    x = int(round(data_coords[0]))
+                    y = int(round(data_coords[1]))
 
                     # If the press is on the actual graph
                     if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
@@ -542,7 +543,7 @@ class ChineseCheckersBoard:
                                 redraw_board()
                             else:
                                 # If the final point is not in the possible_endpoints
-                                print("The point you pressed is not a valid spot to move to")
+                                print("The point you pressed is not a valid spot to move to.")
 
                         # If there is nothing in the buffer
                         else:
@@ -557,7 +558,7 @@ class ChineseCheckersBoard:
                                 else:
                                     print("This peg has no spots to which it can go to.")
                             else:
-                                print("The point you pressed is not a valid peg to move in the current player's pegs")
+                                print("The point you pressed is not a valid peg to move in the current player's pegs.")
                 else:
                     print(f"\nPlayer {self.current_player.number}/{self.current_player.color}'s turn.")
                     print("If you want to cancel the current peg you have selected, click outside the graph.\n")
@@ -798,5 +799,5 @@ class ChineseCheckersBoard:
 
 if __name__ == "__main__":
     game = ChineseCheckersBoard()
-    game.play_game_terminal()
-    #game.play_game_UI()
+    #game.play_game_terminal()
+    game.play_game_UI()

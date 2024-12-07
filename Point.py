@@ -10,7 +10,7 @@ class Point:
         return Point(self.x + o.x, self.y + o.y)
     
     def __mul__(self, scalar):
-        return Point(self.x * scalar, self.y * scalar)
+        return Point(int(self.x * scalar), int(self.y * scalar))
     
     def __repr__(self):
         return f'Point ({self.x}, {self.y})'
