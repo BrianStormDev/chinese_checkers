@@ -7,7 +7,7 @@ def jump_loop_test() -> None:
     yellow_positions = [[9, 3, "Yellow"]]
     positions = red_positions + yellow_positions
     game = ChineseCheckersBoard([2, ["Yellow", "Red"], "Red", [], positions])
-    # Assuming that moves are counted correctly under the loop, we should have 26 
+    # Assuming that moves are counted correctly under the loop, we should have 29
     assert len(game.valid_player_moves(game.player_4)) == 29, "Jump Loop Test Failed!"
     print("Jump Loop Test Passed!")
     
