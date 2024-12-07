@@ -1,43 +1,32 @@
 from Point import Point
 
 class Peg:
-    def __init__(self, position: Point, in_board: bool, is_empty: bool, color: str):
+    def __init__(self, position: Point, color: str, in_board: bool, is_empty: bool) -> None:
         """
         Initialize a peg.
-        is_empty: boolean indicating if the peg is empty
-        in_board: boolean indicating if the peg is a slot on the board
-        color: string indicating the color of the piece on the peg (e.g., 'red', 'blue')
         position: Point indicating the position of the peg
+        color: string indicating the color of the peg
+        in_board: boolean indicating if the peg is a slot on the board
+        is_empty: boolean indicating if the peg is empty
         """
         self.position = position
+        self.color = color
         self.in_board = in_board
         self.is_empty = is_empty
-        self.color = color
-
-    def place_piece(self, color):
-        """
-        Place a piece on this peg.
-        color: string indicating the color of the piece on the peg (e.g., 'red', 'blue')
-        """
-        if not self.is_empty:
-            raise ValueError("Peg is already occupied.")
-        self.is_empty = False
-        self.color = color
-
-    def remove_piece(self):
-        """Remove a piece from this peg."""
-        if self.is_empty:
-            raise ValueError("Peg is already empty.")
-        self.is_empty = True
-        self.color = None
-
-    def peg_position(self):
-        return Point(self.position.x, self.position.y)
-    
-    def change_y(self, new_y): 
-        self.position.change_y(new_y)
         
+    def copy(self):
+        return Peg(self.position, self.color, self.in_board, self.is_empty)
+    
+    def __repr__(self):
+        position_str = f'Position: {str(self.position)} | '
+        color_str = f'Color: {self.color} | '
+        in_board = f'In Board: {self.in_board} | '
+        is_empty = f'Is Empty: {self.is_empty} '
+        return position_str + color_str + in_board + is_empty
+    
     def __str__(self):
-        position_str = f'Position: {str(self.position)}'
-        color_str = f'Color: {self.color}'
-        return position_str + " " + color_str
+        position_str = f'Position: {str(self.position)} | '
+        color_str = f'Color: {self.color} | '
+        in_board = f'In Board: {self.in_board} | '
+        is_empty = f'Is Empty: {self.is_empty} '
+        return position_str + color_str + in_board + is_empty
