@@ -6,5 +6,6 @@
 # testing this directory and lists subdirectories to be tested as well.
 subdirs("gtest")
 subdirs("ar_tag")
+subdirs("sawyer_full_stack")
 subdirs("ar_track_alvar_msgs")
 subdirs("ar_track_alvar")

@@ -55,6 +55,7 @@ CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_
 # The main recursive "all" target.
 all: gtest/all
 all: ar_tag/all
+all: sawyer_full_stack/all
 all: ar_track_alvar_msgs/all
 all: ar_track_alvar/all
 
@@ -63,6 +64,7 @@ all: ar_track_alvar/all
 # The main recursive "preinstall" target.
 preinstall: gtest/preinstall
 preinstall: ar_tag/preinstall
+preinstall: sawyer_full_stack/preinstall
 preinstall: ar_track_alvar_msgs/preinstall
 preinstall: ar_track_alvar/preinstall
 
@@ -76,6 +78,7 @@ clean: CMakeFiles/tests.dir/clean
 clean: CMakeFiles/download_extra_data.dir/clean
 clean: gtest/clean
 clean: ar_tag/clean
+clean: sawyer_full_stack/clean
 clean: ar_track_alvar_msgs/clean
 clean: ar_track_alvar/clean
 
@@ -327,6 +330,24 @@ gtest/googletest/clean: gtest/googletest/CMakeFiles/gtest_main.dir/clean
 gtest/googletest/clean: gtest/googletest/CMakeFiles/gtest.dir/clean
 
 .PHONY : gtest/googletest/clean
+
+#=============================================================================
+# Directory level rules for directory sawyer_full_stack
+
+# Recursive "all" directory target.
+sawyer_full_stack/all:
+
+.PHONY : sawyer_full_stack/all
+
+# Recursive "preinstall" directory target.
+sawyer_full_stack/preinstall:
+
+.PHONY : sawyer_full_stack/preinstall
+
+# Recursive "clean" directory target.
+sawyer_full_stack/clean:
+
+.PHONY : sawyer_full_stack/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/doxygen.dir
