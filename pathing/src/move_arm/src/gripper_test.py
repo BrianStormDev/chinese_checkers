@@ -8,18 +8,23 @@ rospy.init_node('gripper_test')
 # Set up the right gripper
 right_gripper = robot_gripper.Gripper('right_gripper')
 
+# open the right gripper
+print('Opening...')
+right_gripper.open()
+rospy.sleep(1.0)
+
 # Calibrate the gripper (other commands won't work unless you do this first)
 print('Calibrating...')
 right_gripper.calibrate()
 rospy.sleep(2.0)
 
-# Close the right gripper
-print('Closing...')
-right_gripper.close()
-rospy.sleep(1.0)
+# # Close the right gripper
+# print('Closing...')
+# right_gripper.close()
+# rospy.sleep(1.0)
 
-# Open the right gripper
-print('Opening...')
-right_gripper.open()
-rospy.sleep(1.0)
-print('Done!')
+# # Open the right gripper
+# print('Opening...')
+# right_gripper.open()
+# rospy.sleep(1.0)
+# print('Done!')
