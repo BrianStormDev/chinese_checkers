@@ -107,7 +107,7 @@ def get_trajectory(limb, kin, ik_solver, tag_pos, args):
 
     if task == 'line':
         target_pos = tag_pos[0]
-        target_pos[2] += 0.4 # linear path moves to a Z position above AR Tag.
+        target_pos[2] += 0.19 # linear path moves to a Z position above AR Tag.
         print("TARGET POSITION:", target_pos)
         trajectory = LinearTrajectory(start_position=current_position, goal_position=target_pos, total_time=9)
     elif task == 'circle':
@@ -118,6 +118,9 @@ def get_trajectory(limb, kin, ik_solver, tag_pos, args):
 
     else:
         raise ValueError('task {} not recognized'.format(task))
+    
+    # target_pos = [0.761, -0.324, -0.02]
+    # trajectory = LinearTrajectory(start_position=current_position, goal_position=target_pos, total_time=9)
     
     path = MotionPath(limb, kin, ik_solver, trajectory)
     return path.to_robot_trajectory(num_way, True)
@@ -198,6 +201,10 @@ def main():
 
     # Lookup the AR tag position.
     tag_pos = [lookup_tag(marker) for marker in args.ar_marker]
+
+    assert len(tag_pos) == 1, "No or more than 1 ar tag detected"
+
+    print(f'\n\nDetected AR tag Position: {tag_pos[0]}\n\n')
 
     # Get an appropriate RobotTrajectory for the task (circular, linear, or square)
     # If the controller is a workspace controller, this should return a trajectory where the
