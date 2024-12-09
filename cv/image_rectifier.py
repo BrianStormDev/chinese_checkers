@@ -1,6 +1,8 @@
 import cv2
 import numpy as np
 
+# We want this function to output the rectified images for each of the images that we input into it
+
 # List to store points
 points = []
 
@@ -18,11 +20,11 @@ def get_points(event, x, y, flags, param):
             cv2.imshow("Select Points", temp_image)
             
 
-def main():
+def get_top_down_image(image_path, width, height):
     global points, temp_image
 
     # Load the input image
-    image = cv2.imread('image_1.jpg')
+    image = cv2.imread(image_path)
     temp_image = image.copy()
 
     # Display the image and set up mouse callback
@@ -37,7 +39,6 @@ def main():
     cv2.destroyAllWindows()
 
     # Define destination points (desired rectangle for rectification)
-    width, height = 400, 300  # Define desired output dimensions
     dst_points = np.array([
         [0, 0],         # Top-left
         [width-1, 0],   # Top-right
@@ -54,12 +55,15 @@ def main():
     # Warp the image
     rectified_image = cv2.warpPerspective(image, H, (width, height))
 
-    # Display and save the rectified image
-    cv2.imshow("Rectified Image", rectified_image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-    cv2.imwrite('rectified_document.jpg', rectified_image)
-    print("Rectified image saved as 'rectified_document.jpg'.")
+    # # Display and save the rectified image
+    # cv2.imshow("Rectified Image", rectified_image)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+
+    points.clear()
+
+    return rectified_image
 
 if __name__ == "__main__":
-    main()
+    image_path = 'cv\saved_images\image_1.jpg'
+    get_top_down_image(image_path, 400 , 300)
