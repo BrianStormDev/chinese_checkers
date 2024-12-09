@@ -36,12 +36,14 @@ def read_points(filename, dim=(1,1)):
     except Exception as e:
         print(f"An error occurred while reading the file: {e}")
 
+    print(points)
     points = np.array(points)
     points = scale_points(points, dim)
 
     if (dim == (1,1)):
         print("didnt normalize points")
 
+    print(points)
     return points
 
 def write_points(points, filename):
