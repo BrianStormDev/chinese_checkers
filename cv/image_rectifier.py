@@ -55,12 +55,15 @@ def get_top_down_image(image_path, width, height):
     # Warp the image
     rectified_image = cv2.warpPerspective(image, H, (width, height))
 
-    # Display and save the rectified image
-    cv2.imshow("Rectified Image", rectified_image)
-    cv2.imwrite("cv\saved_images\image_6_rectified.jpg", rectified_image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # # Display and save the rectified image
+    # cv2.imshow("Rectified Image", rectified_image)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+
+    points.clear()
+
+    return rectified_image
 
 if __name__ == "__main__":
-    image_path = 'cv\saved_images\image_6.jpg'
+    image_path = 'cv\saved_images\image_1.jpg'
     get_top_down_image(image_path, 400 , 300)
