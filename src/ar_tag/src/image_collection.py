@@ -54,7 +54,7 @@ if __name__ == '__main__':
     finally:
         # # Close any OpenCV windows when the node is shut down
         if node.image is not None: 
-            filename = os.path.join(node.save_directory, f"new_image_{1}.jpg")
+            filename = os.path.join(node.save_directory, f"new_image_{2}.jpg")
             cv2.imwrite(filename, node.image)
             print('File saved')
         else: 
