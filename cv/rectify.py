@@ -19,6 +19,7 @@ def main():
     
     out_name = sys.argv[1]
     img_path = sys.argv[2]
+    print(img_path)
     img_points_path = sys.argv[3]
     width = int(sys.argv[4])
     height = int(sys.argv[5])
