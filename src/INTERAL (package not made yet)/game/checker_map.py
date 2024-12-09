@@ -10,11 +10,11 @@ class ChineseCheckersBoard:
     # Class attributes
     x_dim = 25
     y_dim = 17
-    # num_players
-    # players
-    # current_player
-    # board
-    # winning_players
+    # num_players: int
+    # players: List[Player]
+    # current_player: Player
+    # board: ndarray[Peg]
+    # winning_players: List[Player]
     # fig, ax
     # scatter
 
@@ -796,6 +796,12 @@ class ChineseCheckersBoard:
             return len(self.winning_players) == (len(self.players) - 1)
         elif difference == 0:
             return len(self.winning_players) == len(self.players)
+    
+    def get_current_player(self) -> Player:
+        """
+        Return the current player in the game
+        """
+        return self.current_player
 
 if __name__ == "__main__":
     game = ChineseCheckersBoard()
