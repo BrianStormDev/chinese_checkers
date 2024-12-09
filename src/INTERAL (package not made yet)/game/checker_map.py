@@ -35,17 +35,22 @@ class ChineseCheckersBoard:
     player_5 = Player(5, 'Darkorange', Point(0, 4), orange_directions)
     player_6 = Player(6, "Blue", Point(0, 12), blue_directions)
 
-    # Useful player relations
+    # Useful Player Relations
     number_to_player = {1: player_1, 2: player_2, 3: player_3, 4: player_4, 5: player_5, 6: player_6}
     color_to_player = {'Gold': player_1, "Purple": player_2, "Green": player_3, "Red": player_4, 'Darkorange': player_5, "Blue": player_6}
     player_colors = ['Gold', "Purple", "Green", "Red", 'Darkorange', "Blue"]
     all_players = [player_1, player_2, player_3, player_4, player_5, player_6]
 
-    # Useful move lists
+    # Useful Move Lists
     basic_moves = ["UL", "UR", "R", "DR", "DL", "L"]
     jump_moves = ["JUL", "JUR", "JR", "JDR", "JDL", "JL"]
     swap_moves = ["SUL", "SUR", "SR", "SDR", "SDL", "SL"]
     player_moves = basic_moves + jump_moves + swap_moves
+
+    # Possible Player Color Pairings
+    two_player = [["Yellow", "Red"], ["Purple", "Orange"], ["Blue", "Green"]]
+    four_player = [["Yellow", "Red", "Purple", "Orange"], ["Yellow", "Red", "Blue", "Green"], ["Purple", "Orange", "Blue", "Green"]]
+    six_player = [["Yellow", "Red", "Purple", "Orange", "Blue", "Green"]] 
 
     #####################################################################################################################################################################
     # Board Setup Functions
@@ -802,6 +807,30 @@ class ChineseCheckersBoard:
         Return the current player in the game
         """
         return self.current_player
+    
+    def reset_game(self, number: int) -> None:
+        """
+        Resets the game to the number of players 
+        """
+        # num_players: int
+        # players: List[Player]
+        # current_player: Player
+        # board: ndarray[Peg]
+        # winning_players: List[Player]
+
+        # Sets the number of players
+        self.num_players = number
+
+        # Sets the pegs of the players
+        for player in self.all_players:
+            player.reset_pegs()
+        
+        # Sets the board
+        self.initialize_board()
+
+        # Sets the winning players
+        self.winning_players = []
+
 
 if __name__ == "__main__":
     game = ChineseCheckersBoard()
