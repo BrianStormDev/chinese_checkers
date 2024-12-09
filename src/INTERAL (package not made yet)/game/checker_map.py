@@ -14,6 +14,7 @@ class ChineseCheckersBoard:
     # players: List[Player]
     # current_player: Player
     # board: ndarray[Peg]
+    # RL_board: ndarray[int]
     # winning_players: List[Player]
     # fig, ax
     # scatter
@@ -38,6 +39,7 @@ class ChineseCheckersBoard:
     # Useful Player Relations
     number_to_player = {1: player_1, 2: player_2, 3: player_3, 4: player_4, 5: player_5, 6: player_6}
     color_to_player = {'Gold': player_1, "Purple": player_2, "Green": player_3, "Red": player_4, 'Darkorange': player_5, "Blue": player_6}
+    color_to_value = {'White': -1, 'Black': 0, 'Gold': 1, "Purple": 2, "Green": 3, "Red": 4, 'Darkorange': 5, "Blue": 6}
     player_colors = ['Gold', "Purple", "Green", "Red", 'Darkorange', "Blue"]
     all_players = [player_1, player_2, player_3, player_4, player_5, player_6]
 
@@ -67,6 +69,7 @@ class ChineseCheckersBoard:
             self.winning_players = []
             print("\nInitializing the board.")
             self.board = self.initialize_board()
+            self.RL_board = self.board_to_RL_board(self.board)
 
     def initialize_custom_board(self, input: List) -> None:
         """
@@ -116,6 +119,8 @@ class ChineseCheckersBoard:
             player_of_peg= self.color_to_player[piece_color]
             player_of_peg.current_pegs.append(peg)
             self.board[piece_x, piece_y] = peg
+
+        self.RL_board = self.board_to_RL_board(self.board)
 
     def initialize_empty_board(self) -> np.ndarray:
         """
@@ -387,6 +392,9 @@ class ChineseCheckersBoard:
         final_peg.position = starting_pos
         self.board[final_pos.x, final_pos.y] = initial_peg
         self.board[starting_pos.x, starting_pos.y] = final_peg
+
+        self.RL_board[final_pos.x, final_pos.y] = self.color_to_value[initial_peg.color]
+        self.RL_board[starting_pos.x, starting_pos.y] = self.color_to_value[final_peg.color]
         
     def is_valid_move(self, player: Player, starting_pos: Point, direction: Point, is_jump: bool, is_swap: bool) -> bool:
         """
@@ -808,29 +816,47 @@ class ChineseCheckersBoard:
         """
         return self.current_player
     
-    def reset_game(self, number: int) -> None:
+    def get_number_of_possible_moves_player(self, player: Player):
+        return len(self.format_for_update_func_possible_moves(player))
+    
+    def board_to_RL_board(self, board):
         """
-        Resets the game to the number of players 
+        Converts a board that is more easily interpreted by the AI
+        The pegs are on the board are mapped to values between -1 and 6 to represent if those spots are 
+        unreachable, empty, or belong to a player.
         """
-        # num_players: int
-        # players: List[Player]
-        # current_player: Player
-        # board: ndarray[Peg]
-        # winning_players: List[Player]
+        new_board = np.ndarray((self.x_dim, self.y_dim))
+        for i in range(self.x_dim):
+            for j in range(self.y_dim):
+                peg = board[i, j]
+                new_board[i, j] = self.color_to_value[peg.color]
+        return new_board
+    
+    def get_RL_board(self):
+        return self.RL_board
 
-        # Sets the number of players
-        self.num_players = number
+    # def reset_game(self, number: int) -> None:
+    #     """
+    #     Resets the game to the number of players 
+    #     """
+    #     # num_players: int
+    #     # players: List[Player]
+    #     # current_player: Player
+    #     # board: ndarray[Peg]
+    #     # winning_players: List[Player]
 
-        # Sets the pegs of the players
-        for player in self.all_players:
-            player.reset_pegs()
+    #     # Sets the number of players
+    #     self.num_players = number
+
+    #     # Sets the pegs of the players
+    #     for player in self.all_players:
+    #         player.reset_pegs()
         
-        # Sets the board
-        self.initialize_board()
+    #     # Sets the board
+    #     self.initialize_board()
 
-        # Sets the winning players
-        self.winning_players = []
-
+    #     # Sets the winning players
+    #     self.winning_players = []
 
 if __name__ == "__main__":
     game = ChineseCheckersBoard()
