@@ -7,7 +7,7 @@ import numpy as np
 
 def main():
     if (len(sys.argv) != 5):
-        print("Usage: python <script_name.py> <out_name> <img1_path> <width> <height>")
+        print("Usage: python <script_name.py> <out_name> <img_path> <width> <height>")
         return 
 
     out_name = sys.argv[1]
@@ -22,6 +22,8 @@ def main():
     rectified_dim = (width, height)
     rectified_img = rectify_image(img, img_pts, rectified_dim)
     cv2.imwrite("results/" + out_name + ".png", rectified_img)
+    cv2.imshow("window", rectified_img)
+    cv2.waitKey()
 
 if __name__ == "__main__":
     main()
