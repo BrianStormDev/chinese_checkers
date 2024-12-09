@@ -21,7 +21,7 @@ def main():
     img_pts = scale_points(points, img_dim)
     rectified_dim = (width, height)
     rectified_img = rectify_image(img, img_pts, rectified_dim)
-    cv2.imwrite("results/" + out_name + ".png", rectified_img)
+    cv2.imwrite("rectified_images/" + out_name + ".png", rectified_img)
     cv2.imshow("window", rectified_img)
     cv2.waitKey()
 
