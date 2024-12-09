@@ -251,7 +251,7 @@ class ChineseCheckersBoard:
         plt.draw()
         plt.pause(0.01)
 
-    def update_board(self) -> None:
+    def update_board_visual(self) -> None:
         """Update the displayed board dynamically"""
         pegArray = self.board.flatten()
         colors = [peg.color for peg in pegArray]
@@ -834,6 +834,9 @@ class ChineseCheckersBoard:
     
     def get_RL_board(self):
         return self.RL_board
+    
+    def get_current_RL_player(self):
+        return self.current_player.number - 1
 
     # def reset_game(self, number: int) -> None:
     #     """

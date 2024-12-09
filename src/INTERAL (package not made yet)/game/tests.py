@@ -80,7 +80,7 @@ def function_game_loop_experiment_2p():
             if (len(moves) != 0):
                 j = np.random.randint(0, len(moves))
                 game.update_game(moves[j])
-                game.update_board()
+                game.update_board_visual()
             else:
                 break
     game.display_until_window_close()
@@ -95,7 +95,7 @@ def function_game_loop_experiment_6p():
                 j = np.random.randint(0, len(moves))
                 game.update_game(moves[j])
                 if _ % 10 == 0:
-                    game.update_board()
+                    game.update_board_visual()
             else:
                 break
     game.display_until_window_close()
