@@ -23,9 +23,10 @@ if __name__ == "__main__":
         # Do the homography
         # Get the list of peg colors
 
+        peg_colors = [] # TO BE REPLACED
+
         current_player = input("Enter the current player as a color: ")
 
-        peg_colors = []
         custom_board = convert_list_to_custom_game(num_players, players, current_player, winners, peg_colors)
         game = ChineseCheckersBoard(custom_board)
 

@@ -1,4 +1,4 @@
-prefix=/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel
+prefix=/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel
 
 Name: ar_tag
 Description: Description of ar_tag
