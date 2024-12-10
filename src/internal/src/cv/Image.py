@@ -54,7 +54,7 @@ class Image:
             center = (int(x), int(y))
             radius = int(radius)
             # We want to get the blue points
-            if radius > 7:
+            if radius > 10:
                 corners.append(center)
 
         # Sort the points by y coordinate
