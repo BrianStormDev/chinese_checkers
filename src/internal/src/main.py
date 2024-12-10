@@ -1,5 +1,6 @@
 import rospy
 from game.checker_map import ChineseCheckersBoard
+from game.game_utilities import convert_list_to_custom_game
 from internal.msg import BoardMove
 
 # Hard coded for 2 players, being Gold and red and the current number of winners is none
@@ -25,7 +26,7 @@ if __name__ == "__main__":
         current_player = input("Enter the current player as a color: ")
 
         peg_colors = []
-        custom_board = ChineseCheckersBoard.convert_list_to_custom_game(num_players, players, current_player, winners, peg_colors)
+        custom_board = convert_list_to_custom_game(num_players, players, current_player, winners, peg_colors)
         game = ChineseCheckersBoard(custom_board)
 
         # Ask if the user wants to make the next move or let the AI come up witha move
