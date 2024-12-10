@@ -45,6 +45,7 @@ if __name__ == "__main__":
             x_start, y_start, x_end, y_end = game.naive_algorithm_initial_and_final_positions()
 
         # Construct the message
+        # The message are the internal board coordinates
         message = BoardMove(x_start, y_start, x_end, y_end)
 
         # Publish our string to the topic
