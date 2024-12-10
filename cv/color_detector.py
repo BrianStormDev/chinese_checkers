@@ -2,36 +2,40 @@ import cv2
 import numpy as np
 
 # Read the image
-image = cv2.imread(r"C:\Users\gameb\Desktop\chinese_checkers\cv\results\image_name.png")
+# image = cv2.imread(r"C:\Users\gameb\Desktop\chinese_checkers\cv\results\image_name.png")
 # image = cv2.imread(r"C:\Users\gameb\Desktop\chinese_checkers\cv\rectified_images\image_5_rectified.jpg")
 # image = cv2.imread(r"C:\Users\gameb\Desktop\chinese_checkers\cv\rectified_images\image_2_rectified.jpg")
+# image = cv2.imread(r"C:\Users\gameb\Desktop\chinese_checkers\cv\rectified_images\new_image_1_rectified.png")
+# image = cv2.imread(r"C:\Users\gameb\Desktop\chinese_checkers\cv\rectified_images\new_image_2_rectified.png")
+# `image = cv2.imread(r"C:\Users\gameb\Desktop\chinese_checkers\cv\rectified_images\new_image_4_rectified.png")
+image = cv2.imread(r"C:\Users\gameb\Desktop\chinese_checkers\cv\rectified_images\new_image_5_rectified.png")
 
 # Convert the image to HSV color space
 hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
 # Define the range of red color in HSV
-lower_red = np.array([160, 120, 50])
-upper_red = np.array([180, 255, 255])
+lower_red = np.array([160, 70, 0])
+upper_red = np.array([175, 255, 255])
 
 # Define the range of orange color in HSV
-lower_orange = np.array([0, 130, 130])
+lower_orange = np.array([0, 90, 200])
 upper_orange = np.array([20, 255, 255])
 
 # Define the range of yellow color in HSV
-lower_yellow = np.array([20, 70, 0])
+lower_yellow = np.array([20, 0, 180])
 upper_yellow = np.array([40, 255, 255])
 
 # Define the range of green color in HSV
-lower_green = np.array([70, 175, 0])
-upper_green = np.array([95, 255, 255])
+lower_green = np.array([75, 100, 0])
+upper_green = np.array([90, 255, 255])
 
 # # Define the range of blue color in HSV
-lower_blue = np.array([100, 180, 0])
-upper_blue = np.array([180, 255, 255])
+lower_blue = np.array([100, 120, 0])
+upper_blue = np.array([110, 255, 255])
 
 # # Define the range of purple color in HSV
-lower_purple = np.array([105, 80, 80])
-upper_purple = np.array([140, 200, 255])
+lower_purple = np.array([110, 80, 0])
+upper_purple = np.array([130, 150, 255])
 
 
 def color_finder(lower_hsv, upper_hsv):
