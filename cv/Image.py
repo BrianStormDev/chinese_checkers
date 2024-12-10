@@ -11,7 +11,7 @@ class Image:
     purple = Color("purple", np.array([110, 80, 0]), np.array([130, 150, 255]), (255, 0, 255))
     colors = [red, orange, yellow, green, blue, purple]
 
-    def __init__(self, img_path, img_matrix=cv2.imread("img_path")):
+    def __init__(self, img_path, img_matrix):
         self.img_path = img_path
         self.img_matrix = img_matrix
         self.height, self.width, _ = self.img_matrix.shape
@@ -28,14 +28,16 @@ class Image:
     
     def find_corners(self):
         """
-        ASSUMPTION: Runs on a regular image
         This is dependent on there being blue tape in the corners of the image!
-        This function is run on the non_homographied image
-        But the function should be run on a cropped image ideally
-        We also need to have the blue pieces of tape in the top of the image, so not a rotated image
-        If we have the blue pieces of tape elsewhere, then we need some way to detect the ar tag...
+        This function is run on the non_homographied image. But ideally it is a cropped image
+        The corner detection works only if the corners are higher than the first blue point on the graph...
         """
         corners = []
+        # Booleans that define the corners of the image
+        in_bottom_left = (x <= (1/8 * self.width) and y >= (7/8 * self.height))
+        in_top_left = (x <= (1/8 * self.width) and y <= (1/8 * self.height))
+        in_top_right = (x >= (7/8 * self.width) and y <= (1/8 * self.height))
+        in_bottom_right = (x >= (7/8 * self.width) and y >= (7/8 * self.height))
 
         # Convert the image to HSV color space
         hsv = cv2.cvtColor(self.img_matrix, cv2.COLOR_BGR2HSV)
@@ -50,8 +52,8 @@ class Image:
             (x, y), radius = cv2.minEnclosingCircle(contour)
             center = (int(x), int(y))
             radius = int(radius)
-            # We want to get the blue points
-            if radius > 7:
+            # We want to specifically get points in the corner
+            if radius > 7 and self.in_corners(x, y):
                 corners.append(center)
                 cv2.circle(self.img_matrix, center, radius, (0, 255, 0))
 
@@ -70,7 +72,6 @@ class Image:
     
     def find_colored_points(self):
         """
-        ASSUMPTION: Runs on a homographied image
         We assume that this function is run on the homographied image
         """
         points = []
@@ -100,32 +101,23 @@ class Image:
         cv2.destroyAllWindows()
         self.points = points
         return points
-
-    def sort_points(self):
-        # Make sure that we have actually identified points
-        assert self.points is not None, f"You need to find points first!"
-
-        row_lengths = [1, 2, 3, 4, 13, 12, 11, 10, 9, 10, 11, 12, 13, 4, 3, 2, 1]
-        assert len(self.points) == sum(row_lengths), f"Not enough points detected! Expected {sum(row_lengths)} but got {len(self.points)}"
-
-        sorted_points = []
-        # Sort the points according to their y coordinate
-        y_sorted = sorted(self.points, key = lambda point: point[0][1])
-        # Note that we sort it based on the idea that the zero coordinate for y is at the top
-        
-        point_index = 0
-        # For each of the rows, sort the points by their x coordinate
-        for row_length in row_lengths:
-            x_sorted = sorted(y_sorted[point_index: point_index + row_length], key = lambda point: point[0][0])
-            sorted_points += x_sorted
-            point_index += row_length
-        return sorted_points
     
-    def point_colors(self):
-        # Make sure that we have actually identified points
-        assert self.points is not None, f"You need to find points first!"
-        # Return the colors in a list
-        return [point[1] for point in self.points]
+    # def sort_points(self):
+    #     row_lengths = [1, 2, 3, 4, 13, 12, 11, 10, 9, 10, 11, 12, 13, 4, 3, 2, 1]
+    #     assert len(self.points) == sum(row_lengths), f"Not enough points detected! Expected {sum(row_lengths)} but got {len(self.points)}"
+
+    #     sorted_points = []
+    #     # Sort the points according to their y coordinate
+    #     y_sorted = sorted(self.points, key = lambda point: point[1])
+    #     # Note that we sort it based on the idea that the zero coordinate for y is at the top
+        
+    #     point_index = 0
+    #     # For each of the rows, sort the points by their x coordinate
+    #     for row_length in row_lengths:
+    #         x_sorted = sorted(y_sorted[point_index: row_lengths + 1], key = lambda point: point[0])
+    #         sorted_points += x_sorted
+    #         point_index += row_length
+    #     return sorted_points
     
     # def top_down_view(self):
     #     # Here we need to find the corners, which is only going to be used by this function
