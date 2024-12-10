@@ -286,8 +286,8 @@ class ChineseCheckersBoard:
             if event.inaxes:
                 # Transform mouse coordinates to data coordinates
                 data_coords = self.ax.transData.inverted().transform((event.x, event.y))
-                x = round(data_coords[0])
-                y = round(data_coords[1])
+                x = int(round(data_coords[0]))
+                y = int(round(data_coords[1]))
                 if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
                     print(f"Graph coordinates: ({x}, {y}) | {self.board[x, y]}")
 
