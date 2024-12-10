@@ -146,6 +146,15 @@ def get_controller(controller_name, limb, kin):
         raise ValueError('Controller {} not recognized'.format(controller_name))
     return controller
 
+def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform):
+    """
+    Takes in internal coordinates of the board and converts them into real world coordinates
+    """
+    # We need to get the coordinates of the point closest to the ar tag
+    # get the rest of the pegs with respect to that point
+
+    # Do some transform math to get it in respect to the actual robot
+    # The yaw should be the thing we are looking at
 
 def main():
     """

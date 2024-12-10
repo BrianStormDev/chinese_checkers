@@ -54,8 +54,3 @@ def convert_list_to_custom_game(num_players: int, players: List[str], curr_playe
             sliceStart = helper(height, sliceStart)
 
         return [num_players, players, curr_player, winners, converted_points]
-
-def convert_internal_coordinates_to_real_coordinates(x: int, y: int):
-    """
-    Takes in internal coordinates of the board and converts them into real world coordinates
-    """
