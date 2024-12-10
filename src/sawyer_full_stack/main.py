@@ -233,6 +233,7 @@ def main():
     # Calibrates the gripper and initializes the right gripper object through which the gripper can be controlled
     right_gripper = calibrate_gripper()
 
+    # Tests the closing and the opening of the gripper
     control_gripper(right_gripper, True)
     rospy.sleep(2)
     control_gripper(right_gripper, False)

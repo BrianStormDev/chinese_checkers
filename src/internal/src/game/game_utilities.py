@@ -57,5 +57,5 @@ def convert_list_to_custom_game(num_players: int, players: List[str], curr_playe
 
 def convert_internal_coordinates_to_real_coordinates(x: int, y: int):
     """
-    Takes in internal coordinates of the board and converts them into real world coordinates
+    `Takes in internal coordinates of the board and converts them into real world coordinates
     """
