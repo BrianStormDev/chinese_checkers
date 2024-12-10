@@ -6,21 +6,22 @@ from point_reader import read_points
 from warp_img import compute_homography, warp_image
 
 class Image:
-    red = Color("red", np.array([140, 70, 0]), np.array([180, 255, 255]), (0, 0, 255))
+    red = Color("red", np.array([150, 90, 120]), np.array([179, 255, 255]), (0, 0, 255))
     orange = Color("orange", np.array([0, 100, 0]), np.array([25, 255, 255]), (0, 165, 255))
     yellow = Color("yellow", np.array([20, 70, 0]), np.array([75, 255, 255]), (0, 255, 255))
     green = Color("green", np.array([75, 100, 0]), np.array([95, 255, 255]), (0, 255, 0))
     blue = Color("blue", np.array([95, 150, 0]), np.array([110, 255, 255]), (255, 0, 0))
     purple = Color("purple", np.array([115, 50, 0]), np.array([130, 255, 255]), (255, 0, 255))
+    white = Color("white", np.array([0, 0, 230]), np.array([179, 60, 255]), (0, 0, 0))
     # We also want to include some kind of white threshold
-    colors = [red, orange, yellow, green, blue, purple]
+    colors = [red, orange, yellow, green, blue, purple, white]
 
-    def __init__(self, origin_img_path, img_matrix):
+    def __init__(self, origin_img_path, img_matrix, is_cropped=False, is_rectified=False):
         self.origin_img_path = origin_img_path
         self.img_matrix = img_matrix
         self.height, self.width, _ = self.img_matrix.shape
-        self.is_rectified = False
-        self.is_flattened = False
+        self.is_cropped = is_cropped
+        self.is_rectified = is_rectified
         self.corners = None
         self.points = None
     
@@ -80,7 +81,7 @@ class Image:
         self.corners = [top_left, top_right, bottom_right, bottom_left]
         return self.corners
     
-    def find_colored_points(self):
+    def find_colored_points(self, tolerance):
         """
         ASSUMPTION: Runs on a homographied image
         """
@@ -104,7 +105,7 @@ class Image:
                 center = (int(x), int(y))
                 radius = int(radius)
                 # We want to filter out the noisy points as well as the corners
-                if radius > 7 and not self.in_corners(x, y):
+                if radius > tolerance and not self.in_corners(x, y):
                     points.append([center, color.name])
                     cv2.circle(self.img_matrix, center, radius, plot_color)
         cv2.imshow("Identified Points", self.img_matrix)
@@ -145,6 +146,7 @@ class Image:
         top_down_image = rectify_image(self.img_matrix, self.corners, (width, height))
         self.height, self.width, _ = top_down_image.shape
         self.img_matrix = top_down_image
+        self.is_rectified = True
         return top_down_image
 
     def in_corners(self, x, y):
