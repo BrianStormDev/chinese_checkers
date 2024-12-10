@@ -1,0 +1,8 @@
+prefix=/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel
+
+Name: internal
+Description: Description of internal
+Version: 0.0.0
+Cflags: -I/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/include
+Libs: -L${prefix}/lib 
+Requires: rospy std_msgs message_runtime

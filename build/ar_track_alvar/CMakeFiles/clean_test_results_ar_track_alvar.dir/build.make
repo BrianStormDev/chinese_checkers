@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src
+CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build
+CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build
 
 # Utility rule file for clean_test_results_ar_track_alvar.
 
@@ -54,7 +54,7 @@ CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_
 include ar_track_alvar/CMakeFiles/clean_test_results_ar_track_alvar.dir/progress.make
 
 ar_track_alvar/CMakeFiles/clean_test_results_ar_track_alvar:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/ar_track_alvar && /usr/bin/python3 /opt/ros/noetic/share/catkin/cmake/test/remove_test_results.py /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/test_results/ar_track_alvar
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_track_alvar && /usr/bin/python3 /opt/ros/noetic/share/catkin/cmake/test/remove_test_results.py /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/test_results/ar_track_alvar
 
 clean_test_results_ar_track_alvar: ar_track_alvar/CMakeFiles/clean_test_results_ar_track_alvar
 clean_test_results_ar_track_alvar: ar_track_alvar/CMakeFiles/clean_test_results_ar_track_alvar.dir/build.make
@@ -67,10 +67,10 @@ ar_track_alvar/CMakeFiles/clean_test_results_ar_track_alvar.dir/build: clean_tes
 .PHONY : ar_track_alvar/CMakeFiles/clean_test_results_ar_track_alvar.dir/build
 
 ar_track_alvar/CMakeFiles/clean_test_results_ar_track_alvar.dir/clean:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/ar_track_alvar && $(CMAKE_COMMAND) -P CMakeFiles/clean_test_results_ar_track_alvar.dir/cmake_clean.cmake
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_track_alvar && $(CMAKE_COMMAND) -P CMakeFiles/clean_test_results_ar_track_alvar.dir/cmake_clean.cmake
 .PHONY : ar_track_alvar/CMakeFiles/clean_test_results_ar_track_alvar.dir/clean
 
 ar_track_alvar/CMakeFiles/clean_test_results_ar_track_alvar.dir/depend:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/ar_track_alvar /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/ar_track_alvar /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/ar_track_alvar/CMakeFiles/clean_test_results_ar_track_alvar.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/ar_track_alvar /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_track_alvar /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_track_alvar/CMakeFiles/clean_test_results_ar_track_alvar.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : ar_track_alvar/CMakeFiles/clean_test_results_ar_track_alvar.dir/depend
 
