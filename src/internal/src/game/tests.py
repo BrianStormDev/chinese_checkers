@@ -140,7 +140,7 @@ def naive_vs_random_2p():
     game.display_board()
     for _ in range(20000):
             if _ % 6 == 0 and game.get_current_player().color == 'Gold':
-                move = game.naive_algorithm_move()
+                move = game.naive_algorithm_update_move()
                 game.update_game(move)
             else:
                 moves = game.format_for_update_func_possible_moves(game.current_player)
@@ -159,7 +159,7 @@ def naive_vs_random_6p():
     game.display_board()
     for _ in range(20000):
             if _ % 6 == 0 and game.get_current_player().color == 'Red':
-                move = game.naive_algorithm_move()
+                move = game.naive_algorithm_update_move()
                 game.update_game(move)
             else:
                 moves = game.format_for_update_func_possible_moves(game.current_player)
@@ -178,7 +178,7 @@ def naive_vs_random_6p_3_NAIVE():
     game.display_board()
     for _ in range(20000):
             if game.get_current_player().color == 'Gold' or game.get_current_player().color == 'Purple' or game.get_current_player().color == 'Green':
-                move = game.naive_algorithm_move()
+                move = game.naive_algorithm_update_move()
                 game.update_game(move)
             else:
                 moves = game.format_for_update_func_possible_moves(game.current_player)

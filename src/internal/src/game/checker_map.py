@@ -886,7 +886,11 @@ class ChineseCheckersBoard:
                 downMoves += 1
         return upMoves - downMoves 
     
-    def naive_algorithm_move(self):
+    def naive_algorithm_move_index(self) -> int:
+        """
+        Naive algorithm that gets the current player and goes through all of their possible moves, looking
+        for the best move which is defined as the move that moves one of their pieces the furthest
+        """
         current_player = self.current_player
         moves = self.format_for_update_func_possible_moves(current_player)
         bestMoveIndex = set()
@@ -902,7 +906,21 @@ class ChineseCheckersBoard:
         bestMoveList = list(bestMoveIndex)
         randomMoveIndex = np.random.randint(len(bestMoveList))
         index = bestMoveList[randomMoveIndex]
-        return moves[index]
+        return index
+    
+    def naive_algorithm_update_move(self):
+        """
+        Returns the optimal move outputted by the naive algorithm
+        """
+        index = self.naive_algorithm_move_index()
+        return self.format_for_update_func_possible_moves(self.current_player)[index]
+    
+    def naive_algorithm_initial_and_final_positions(self):
+        index = self.naive_algorithm_move_index()
+        move = self.valid_player_moves(self.current_player)[index]
+        start = move[0]
+        end = move[2]
+        return start.x, start.y, end.x, end.y
 
 if __name__ == "__main__":
     game = ChineseCheckersBoard()
