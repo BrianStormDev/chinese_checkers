@@ -1,3 +1,64 @@
+# import cv2, cvzone
+# from ultralytics import YOLO
+
+# # Load the pre-trained YOLO model
+# model = YOLO('detect_board.pt')  # Replace with the path to your .pt model
+
+# # Load an image (replace 'your_image.jpg' with your actual image path)
+# image = cv2.imread('find_board_data/test/images/image_11.jpg')
+
+# print('Done importing')
+
+# # Perform object detection on the image
+# results = model(image)
+
+# print('Done detecting')
+
+# for result in results:
+#     boxes = result.boxes
+#     for box in boxes:
+
+#         # bounding box
+#         x1, y1, x2, y2 = [int(i) for i in box.xyxy[0]]
+#         # cv2.rectangle(image, (x1, y1), (x2, y2), (30, 200, 80), thickness=4)
+#         cvzone.cornerRect(image, bbox=(x1, y1, x2 - x1, y2 - y1))
+
+#         # confidence
+#         confidence = int(box.conf[0] * 100) / 100
+#         cvzone.putTextRect(image, str(confidence), (max(0, x1), max(20, y1 - 20)))
+
+#         # class name
+#         # class_id = box.cls[0]
+#         # cvzone.putTextRect(image, f"{classNames[int(class_id)]}: {confidence}", (max(0, x1), max(20, y1 - 20)))
+
+# # # results.pandas().xywh   # Uncomment to see detected object details
+
+# # # Draw bounding boxes around detected objects
+# # for result in results.xywh[0]:  # Iterate over the detections
+# #     x_center, y_center, width, height, confidence, class_id = result
+
+# #     # Convert xywh to xyxy (top-left and bottom-right corners)
+# #     x1 = int((x_center - width / 2) * image.shape[1])
+# #     y1 = int((y_center - height / 2) * image.shape[0])
+# #     x2 = int((x_center + width / 2) * image.shape[1])
+# #     y2 = int((y_center + height / 2) * image.shape[0])
+
+# #     # Draw rectangle around the object
+# #     cv2.rectangle(image, (x1, y1), (x2, y2), (0, 255, 0), 2)  # Green rectangle
+
+# #     # Optionally, add the label (class name and confidence)
+# #     label = f"Class {int(class_id)}: {confidence:.2f}"  # Modify according to your class names
+# #     cv2.putText(image, label, (x1, y1 - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+
+# # # Display the image with detections
+# cv2.imshow('Detected Objects', image)
+
+# # # Wait for a key press and close the window
+# cv2.waitKey(0)
+# cv2.destroyAllWindows()
+
+
+
 from ultralytics import YOLO
 import cv2, cvzone
 import os, sys
@@ -9,13 +70,13 @@ import matplotlib.pyplot as plt
 nice = Peg(Point(1, 2), True, True, 'black')
 
 TOTAL_PEGS = 61 + 60
-CONFIDENCE_THRESHOLD = 0.825
+CONFIDENCE_THRESHOLD = 0.2
 EMPTY = 'empty'
 class_names = ['yellow', 'blue', EMPTY, 'purple', 'green', 'red', 'orange']
 
 model = YOLO("best.pt")
 
-image_path = "data/unused/IMG_2789.jpg" 
+image_path = "warped.jpg" 
 image = cv2.imread(image_path)
 
 print('Loading done')
@@ -48,15 +109,6 @@ assert not low_confidence_boxes, f'Exists detections with confidence <= {CONFIDE
 
 
 
-
-
-# internal_map = [ # 17 x 25
-#     #                                                 c
-#     [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], 
-#     [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  0, -1,  0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], 
-#     [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1,  0, -1,  0, -1,  0, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1], 
-#     [-1, -1, -1, -1, -1, -1, -1, -1, -1,  0, -1,  0, -1,  0, -1,  0, -1, -1, -1, -1, -1, -1, -1, -1, -1], 
-# ]
 
 NUM_ROWS = 17
 MAX_PEGS_PER_ROW = 25

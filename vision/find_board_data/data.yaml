@@ -1,0 +1,7 @@
+path: ../drive/MyDrive/EECS106A/data
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 5
+names: ['board', 'upper_left', 'upper_right', 'lower_right', 'lower_left']

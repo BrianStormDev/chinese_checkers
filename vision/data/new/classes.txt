@@ -1,0 +1,7 @@
+yellow
+blue
+empty_peg
+purple
+green
+red
+orange
