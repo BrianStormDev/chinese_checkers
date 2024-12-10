@@ -1,17 +1,20 @@
 from Color import Color
 import numpy as np
 import cv2
+from rectify import rectify_image
+from point_reader import read_points
+from warp_img import compute_homography, warp_image
 
 class Image:
-    red = Color("red", np.array([160, 70, 0]), np.array([175, 255, 255]), (0, 0, 255))
-    orange = Color("orange", np.array([0, 90, 200]), np.array([20, 255, 255]), (0, 165, 255))
-    yellow = Color("yellow", np.array([20, 0, 180]), np.array([40, 255, 255]), (0, 255, 255))
-    green = Color("green", np.array([75, 100, 0]), np.array([90, 255, 255]), (0, 255, 0))
-    blue = Color("blue", np.array([100, 120, 0]), np.array([110, 255, 255]), (255, 0, 0))
-    purple = Color("purple", np.array([110, 80, 0]), np.array([130, 150, 255]), (255, 0, 255))
+    red = Color("red", np.array([140, 70, 0]), np.array([180, 255, 255]), (0, 0, 255))
+    orange = Color("orange", np.array([0, 100, 0]), np.array([25, 255, 255]), (0, 165, 255))
+    yellow = Color("yellow", np.array([20, 70, 0]), np.array([75, 255, 255]), (0, 255, 255))
+    green = Color("green", np.array([75, 100, 0]), np.array([95, 255, 255]), (0, 255, 0))
+    blue = Color("blue", np.array([95, 150, 0]), np.array([110, 255, 255]), (255, 0, 0))
+    purple = Color("purple", np.array([115, 50, 0]), np.array([130, 255, 255]), (255, 0, 255))
     colors = [red, orange, yellow, green, blue, purple]
 
-    def __init__(self, img_path, img_matrix=cv2.imread("img_path")):
+    def __init__(self, img_path, img_matrix):
         self.img_path = img_path
         self.img_matrix = img_matrix
         self.height, self.width, _ = self.img_matrix.shape
@@ -53,25 +56,30 @@ class Image:
             # We want to get the blue points
             if radius > 7:
                 corners.append(center)
-                cv2.circle(self.img_matrix, center, radius, (0, 255, 0))
 
-        assert len(corners) == 4, f"Incorrect number of corners, expected 4 but got {len(corners)}"
+        # Sort the points by y coordinate
+        y_sorted = sorted(corners, key = lambda corner: corner[1])
+        # The top two corners must be sorted by x and so must the bottom two corners
+        corners = sorted(y_sorted[:2], key = lambda corner: corner[0]) + sorted(y_sorted[-2:], key = lambda corner: corner[0])
+
+        # Show the corners
+        for corner in corners:
+            cv2.circle(self.img_matrix, corner, 5, (0, 255, 0))
 
         cv2.imshow("Identified Corners", self.img_matrix)
         cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        cv2.destroyAllWindows()    
 
-        # Sort the points by y coordinate
-        y_sorted = sorted(self.points, key = lambda point: point[0][1])
-        # The top two corners must be sorted by x and so must the bottom rwo corners
-        corners = sorted(y_sorted[:2], key = lambda point: point[0][0]) + sorted(y_sorted[2:], key = lambda point: point[0][0])
+        top_left = corners[0]
+        top_right = corners[1]
+        bottom_right = corners[3]
+        bottom_left = corners[2]
         # Return the corners (top_left, top_right, bottom_left, bottom_right)
-        return corners
+        return [top_left, top_right, bottom_right, bottom_left]
     
     def find_colored_points(self):
         """
         ASSUMPTION: Runs on a homographied image
-        We assume that this function is run on the homographied image
         """
         points = []
         for color in Image.colors:
@@ -95,11 +103,12 @@ class Image:
                 if radius > 7 and not self.in_corners(x, y):
                     points.append([center, color.name])
                     cv2.circle(self.img_matrix, center, radius, plot_color)
+        self.points = points
         cv2.imshow("Identified Points", self.img_matrix)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-        self.points = points
         return points
+    
 
     def sort_points(self):
         # Make sure that we have actually identified points
@@ -119,6 +128,7 @@ class Image:
             x_sorted = sorted(y_sorted[point_index: point_index + row_length], key = lambda point: point[0][0])
             sorted_points += x_sorted
             point_index += row_length
+        self.points = sorted_points
         return sorted_points
     
     def point_colors(self):
@@ -127,14 +137,16 @@ class Image:
         # Return the colors in a list
         return [point[1] for point in self.points]
     
-    # def top_down_view(self):
-    #     # Here we need to find the corners, which is only going to be used by this function
-    #     def corner_finder():
-    #         hsv = cv2.cvtColor(self.img_matrix, cv2.COLOR_BGR2HSV)
-    #         lower_hsv = Image.blue.lower_range
-    #         upper_hsv = Image.blue.upper_range
-        
-    #     corners = corner_finder()
+    def top_down_view(self, width, height):
+        corners = self.find_corners()
+        top_down_image = rectify_image(self.img_matrix, corners, (500, 500))
+
+        cv2.imshow("Rectified Image", top_down_image)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+        return top_down_image
+
     
     def in_corners(self, x, y):
         """

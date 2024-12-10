@@ -2,11 +2,12 @@ import os
 from os import listdir
 import cv2
 import numpy as np
+from rectify import rectify_image
 
 IMAGE_WIDTH = 1200
 IMAGE_HEIGHT = 700
-image_directory = r"C:\Users\gameb\Desktop\chinese_checkers\cv\original_images"
-target_directory = r"C:\Users\gameb\Desktop\chinese_checkers\cv\rectified_images"
+image_directory = r"original_images"
+target_directory = r"rectified_images"
 
 points_1 = [[(575, 178), (907, 208), (919, 508), (501, 452)]]
 points_2 = [[(490, 205), (828, 208), (877, 508), (447, 501)]]
@@ -38,16 +39,19 @@ def rectify_images(origin_directory, target_directory):
 
     full_image_names = get_directory_image_names(origin_directory)
     for i in range(6):
-        src_points = np.array(points[i])
-        H, _ = cv2.findHomography(src_points, dst_points)
+        # Generate the image
         full_image_name = full_image_names[i]
         image_path = image_directory + "\\" + full_image_name
         image = cv2.imread(image_path)
-        top_down_image = cv2.warpPerspective(image, H, (IMAGE_WIDTH, IMAGE_HEIGHT))
+
+        # Generate the rectified image
+        
+        src_points = np.array(points[i])
+        top_down_image = rectify_image(image, src_points, (500, 500))
+
         # We slice away the last four elements because those are the .png and .jpg elements
-        image_ending = full_image_name[-4:]
         image_name = full_image_name[:-4]
-        new_image_name = image_name + "_rectified" + image_ending
+        new_image_name = image_name + "_rectified.png"
         new_image_path = target_directory + "\\" + new_image_name
         cv2.imwrite(new_image_path, top_down_image)
 
