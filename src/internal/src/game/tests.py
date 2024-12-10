@@ -80,7 +80,7 @@ def function_game_loop_experiment_2p():
             if (len(moves) != 0):
                 j = np.random.randint(0, len(moves))
                 game.update_game(moves[j])
-                game.update_board()
+                game.update_board_visual()
             else:
                 break
     game.display_until_window_close()
@@ -190,7 +190,19 @@ def naive_vs_random_6p_3_NAIVE():
                 else:
                     break
     game.display_until_window_close()
-    
+
+def convert_list_to_custom_game_test():
+    testList = ['Blue', 'Green', 'Purple', 'Gold', 'Darkorange', 'Red', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black', 'Black']
+    num_players = 6
+    players = ['Red', 'Gold', 'Green', 'Blue', 'Purple', 'Darkorange']
+    curr_player = 'Red'
+    winners = []
+    custom = ChineseCheckersBoard.convert_list_to_custom_game(num_players, players, curr_player, winners, testList)
+    game = ChineseCheckersBoard(custom)
+    game.display_board()
+    game.display_until_window_close()
+
+
 if __name__ == "__main__":
     # jump_loop_test()
     # swapping_test_2p()
@@ -203,5 +215,6 @@ if __name__ == "__main__":
     # calculateRewardTest()
     # naive_vs_random_2p()
     # naive_vs_random_6p()
-    naive_vs_random_6p_3_NAIVE()
+    # naive_vs_random_6p_3_NAIVE()
+    convert_list_to_custom_game_test()
     
