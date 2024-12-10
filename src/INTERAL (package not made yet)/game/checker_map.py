@@ -69,7 +69,6 @@ class ChineseCheckersBoard:
             self.winning_players = []
             print("\nInitializing the board.")
             self.board = self.initialize_board()
-            self.RL_board = self.board_to_RL_board(self.board)
 
     def initialize_custom_board(self, input: List) -> None:
         """
@@ -119,8 +118,6 @@ class ChineseCheckersBoard:
             player_of_peg= self.color_to_player[piece_color]
             player_of_peg.current_pegs.append(peg)
             self.board[piece_x, piece_y] = peg
-
-        self.RL_board = self.board_to_RL_board(self.board)
 
     def initialize_empty_board(self) -> np.ndarray:
         """
@@ -392,9 +389,6 @@ class ChineseCheckersBoard:
         final_peg.position = starting_pos
         self.board[final_pos.x, final_pos.y] = initial_peg
         self.board[starting_pos.x, starting_pos.y] = final_peg
-
-        self.RL_board[final_pos.x, final_pos.y] = self.color_to_value[initial_peg.color]
-        self.RL_board[starting_pos.x, starting_pos.y] = self.color_to_value[final_peg.color]
         
     def is_valid_move(self, player: Player, starting_pos: Point, direction: Point, is_jump: bool, is_swap: bool) -> bool:
         """
@@ -819,47 +813,41 @@ class ChineseCheckersBoard:
     def get_number_of_possible_moves_player(self, player: Player):
         return len(self.format_for_update_func_possible_moves(player))
     
-    def board_to_RL_board(self, board):
+    def calculate_height_change(self, player: Player, moveIndex: int):
         """
-        Converts a board that is more easily interpreted by the AI
-        The pegs are on the board are mapped to values between -1 and 6 to represent if those spots are 
-        unreachable, empty, or belong to a player.
+        Calculates the height change of a specific move
         """
-        new_board = np.ndarray((self.x_dim, self.y_dim))
-        for i in range(self.x_dim):
-            for j in range(self.y_dim):
-                peg = board[i, j]
-                new_board[i, j] = self.color_to_value[peg.color]
-        return new_board
+        # Get the move
+        movesList = self.valid_player_moves(player)
+        move = movesList[moveIndex]
+        moveCode = move[1]
+        individualMoves = moveCode.split(" ")
+        upMoves = 0
+        downMoves = 0
+        for code in individualMoves:
+            if "U" in code:
+                upMoves += 1
+            elif "D" in code:
+                downMoves += 1
+        return upMoves - downMoves 
     
-    def get_RL_board(self):
-        return self.RL_board
-    
-    def get_current_RL_player(self):
-        return self.current_player.number - 1
-
-    # def reset_game(self, number: int) -> None:
-    #     """
-    #     Resets the game to the number of players 
-    #     """
-    #     # num_players: int
-    #     # players: List[Player]
-    #     # current_player: Player
-    #     # board: ndarray[Peg]
-    #     # winning_players: List[Player]
-
-    #     # Sets the number of players
-    #     self.num_players = number
-
-    #     # Sets the pegs of the players
-    #     for player in self.all_players:
-    #         player.reset_pegs()
-        
-    #     # Sets the board
-    #     self.initialize_board()
-
-    #     # Sets the winning players
-    #     self.winning_players = []
+    def naive_algorithm_move(self):
+        current_player = self.current_player
+        moves = self.format_for_update_func_possible_moves(current_player)
+        bestMoveIndex = set()
+        bestMoveHeight = 0
+        for i in range(len(moves)):
+            moveHeight = self.calculate_height_change(current_player, i)
+            if moveHeight > bestMoveHeight:
+                bestMoveIndex.clear()
+                bestMoveIndex.add(i)
+                bestMoveHeight = moveHeight
+            elif moveHeight == bestMoveHeight:
+                bestMoveIndex.add(i)
+        bestMoveList = list(bestMoveIndex)
+        randomMoveIndex = np.random.randint(len(bestMoveList))
+        index = bestMoveList[randomMoveIndex]
+        return moves[index]
 
 if __name__ == "__main__":
     game = ChineseCheckersBoard()
