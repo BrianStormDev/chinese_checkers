@@ -12,32 +12,34 @@ class Image:
     green = Color("green", np.array([75, 100, 0]), np.array([95, 255, 255]), (0, 255, 0))
     blue = Color("blue", np.array([95, 150, 0]), np.array([110, 255, 255]), (255, 0, 0))
     purple = Color("purple", np.array([115, 50, 0]), np.array([130, 255, 255]), (255, 0, 255))
+    # We also want to include some kind of white threshold
     colors = [red, orange, yellow, green, blue, purple]
 
-    def __init__(self, img_path, img_matrix):
-        self.img_path = img_path
+    def __init__(self, origin_img_path, img_matrix):
+        self.origin_img_path = origin_img_path
         self.img_matrix = img_matrix
         self.height, self.width, _ = self.img_matrix.shape
+        self.is_rectified = False
+        self.is_flattened = False
+        self.corners = None
         self.points = None
     
-    def crop_image(self):
-        height, width, _ = self.img_matrix.shape
-        origin_y = int((1/3) * height)
-        height = int((1/2) * height)
-        origin_x = int((1/3) * width)
-        width = int((1/3) * width)
+    def crop_image(self, origin_x, origin_y, width, height):
         cropped_image = self.img_matrix[origin_y: origin_y + height, origin_x: origin_x + width]
+        self.img_matrix = cropped_image
+        self.height, self.width, _ = cropped_image.shape
         return cropped_image
     
-    def find_corners(self):
+    def find_corners(self, tolerance):
         """
-        ASSUMPTION: Runs on a regular image
+        ASSUMPTION: Runs on a cropped image
         This is dependent on there being blue tape in the corners of the image!
         This function is run on the non_homographied image
         But the function should be run on a cropped image ideally
         We also need to have the blue pieces of tape in the top of the image, so not a rotated image
         If we have the blue pieces of tape elsewhere, then we need some way to detect the ar tag...
         """
+        assert self.is_rectified == False, "This should run on an unprocessed image"
         corners = []
 
         # Convert the image to HSV color space
@@ -54,7 +56,7 @@ class Image:
             center = (int(x), int(y))
             radius = int(radius)
             # We want to get the blue points
-            if radius > 10:
+            if radius > tolerance:
                 corners.append(center)
 
         # Sort the points by y coordinate
@@ -75,12 +77,14 @@ class Image:
         bottom_right = corners[3]
         bottom_left = corners[2]
         # Return the corners (top_left, top_right, bottom_left, bottom_right)
-        return [top_left, top_right, bottom_right, bottom_left]
+        self.corners = [top_left, top_right, bottom_right, bottom_left]
+        return self.corners
     
     def find_colored_points(self):
         """
         ASSUMPTION: Runs on a homographied image
         """
+        assert self.is_rectified == True, "You need to get the top down image first!"
         points = []
         for color in Image.colors:
             # Convert the image to HSV color space
@@ -103,13 +107,12 @@ class Image:
                 if radius > 7 and not self.in_corners(x, y):
                     points.append([center, color.name])
                     cv2.circle(self.img_matrix, center, radius, plot_color)
-        self.points = points
         cv2.imshow("Identified Points", self.img_matrix)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+        self.points = points
         return points
     
-
     def sort_points(self):
         # Make sure that we have actually identified points
         assert self.points is not None, f"You need to find points first!"
@@ -137,17 +140,13 @@ class Image:
         # Return the colors in a list
         return [point[1] for point in self.points]
     
-    def top_down_view(self, width, height):
-        corners = self.find_corners()
-        top_down_image = rectify_image(self.img_matrix, corners, (500, 500))
-
-        cv2.imshow("Rectified Image", top_down_image)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-
+    def rectify(self, width, height):
+        assert self.corners != None, "You need to find corners first!"
+        top_down_image = rectify_image(self.img_matrix, self.corners, (width, height))
+        self.height, self.width, _ = top_down_image.shape
+        self.img_matrix = top_down_image
         return top_down_image
 
-    
     def in_corners(self, x, y):
         """
         Returns whether or not the image coordinate is in one of the corners
@@ -157,5 +156,12 @@ class Image:
         in_top_right = (x >= (7/8 * self.width) and y <= (1/8 * self.height))
         in_bottom_right = (x >= (7/8 * self.width) and y >= (7/8 * self.height))
         return in_bottom_left or in_top_left or in_top_right or in_bottom_right
+    
+    def reset_image(self):
+        self.img_matrix = cv2.imread(self.origin_img_path)
+        self.is_rectified = False
+        self.is_flattened = False
+        self.points = None
+        self.corners = None
 
 
