@@ -1,2 +1,0 @@
-color_detection
--DCATKIN_DEVEL_PREFIX=/home/cc/ee106a/fa24/class/ee106a-adh/color_sorter/color/devel -DCMAKE_INSTALL_PREFIX=/home/cc/ee106a/fa24/class/ee106a-adh/color_sorter/color/install -G Unix Makefiles
