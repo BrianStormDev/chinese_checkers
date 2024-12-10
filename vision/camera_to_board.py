@@ -70,13 +70,13 @@ import matplotlib.pyplot as plt
 nice = Peg(Point(1, 2), True, True, 'black')
 
 TOTAL_PEGS = 61 + 60
-CONFIDENCE_THRESHOLD = 0.2
+CONFIDENCE_THRESHOLD = 0.8
 EMPTY = 'empty'
 class_names = ['yellow', 'blue', EMPTY, 'purple', 'green', 'red', 'orange']
 
-model = YOLO("best.pt")
+model = YOLO("newest.pt")
 
-image_path = "warped.jpg" 
+image_path = "new_data/valid/images/image_7.jpg" 
 image = cv2.imread(image_path)
 
 print('Loading done')
