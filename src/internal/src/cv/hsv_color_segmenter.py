@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # Load an image
-image = cv2.imread(r"rectified_images\new_image_7_rectified.png")  # Replace with your image path
+image = cv2.imread(r"src\internal\src\cv\rectified_images\new_image_7_rectified.png")  # Replace with your image path
 cv2.namedWindow('image')
 
 # Create trackbars

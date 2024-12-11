@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src
+CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build
+CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build
 
 # Utility rule file for intera_motion_msgs_generate_messages_eus.
 
@@ -63,10 +63,10 @@ baxter_pykdl/CMakeFiles/intera_motion_msgs_generate_messages_eus.dir/build: inte
 .PHONY : baxter_pykdl/CMakeFiles/intera_motion_msgs_generate_messages_eus.dir/build
 
 baxter_pykdl/CMakeFiles/intera_motion_msgs_generate_messages_eus.dir/clean:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/baxter_pykdl && $(CMAKE_COMMAND) -P CMakeFiles/intera_motion_msgs_generate_messages_eus.dir/cmake_clean.cmake
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/baxter_pykdl && $(CMAKE_COMMAND) -P CMakeFiles/intera_motion_msgs_generate_messages_eus.dir/cmake_clean.cmake
 .PHONY : baxter_pykdl/CMakeFiles/intera_motion_msgs_generate_messages_eus.dir/clean
 
 baxter_pykdl/CMakeFiles/intera_motion_msgs_generate_messages_eus.dir/depend:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/baxter_pykdl /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/baxter_pykdl /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/baxter_pykdl/CMakeFiles/intera_motion_msgs_generate_messages_eus.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/baxter_pykdl /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/baxter_pykdl /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/baxter_pykdl/CMakeFiles/intera_motion_msgs_generate_messages_eus.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : baxter_pykdl/CMakeFiles/intera_motion_msgs_generate_messages_eus.dir/depend
 
