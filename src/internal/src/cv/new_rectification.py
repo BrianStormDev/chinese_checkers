@@ -7,9 +7,9 @@ import numpy as np
 
 def main():
 
-    i = 11
+    i = 16
 
-    img_path = f'../../../ar_tag/src/saved_images/new_image_{i + 6}.jpg'
+    img_path = f'../../../ar_tag/src/saved_images/new_image_{i + 9}.jpg'
     width = 500
     height = 500
     points = np.array(pick_points(img_path))
@@ -19,7 +19,7 @@ def main():
     img_pts = scale_points(points, img_dim)
     rectified_dim = (width, height)
     rectified_img = rectify_image(img, img_pts, rectified_dim)
-    cv2.imwrite(f"new_rectified_images/image_{i}.jpg", rectified_img)
+    cv2.imwrite(f"new_rectified_images/new_data/image_{i}.jpg", rectified_img)
     cv2.imshow("window", rectified_img)
     cv2.waitKey()
 
