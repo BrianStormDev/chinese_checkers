@@ -86,7 +86,7 @@ def image_to_board(raw_image):
         'purple': 'Purple', 
         'red': 'Red', 
         'orange': 'Darkorange', 
-        'green': 'gGreen'
+        'green': 'Green'
     }
 
     result = OK(rectified_image)
