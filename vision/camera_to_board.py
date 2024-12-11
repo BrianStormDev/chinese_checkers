@@ -76,7 +76,7 @@ class_names = ['yellow', 'blue', EMPTY, 'purple', 'green', 'red', 'orange']
 
 model = YOLO("newest.pt")
 
-image_path = "new_data/valid/images/image_7.jpg" 
+image_path = "new_data/test/images/image_10.jpg" 
 image = cv2.imread(image_path)
 
 print('Loading done')
