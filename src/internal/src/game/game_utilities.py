@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from typing import List
 
 def convert_list_to_custom_game(num_players: int, players: List[str], curr_player: str, winners: List[str], list_of_positions: List[str]):

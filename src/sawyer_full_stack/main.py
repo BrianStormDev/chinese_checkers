@@ -8,7 +8,7 @@ Author: Chris Correa
 # 0 -1 0 1.5 0 -0.5 1.7
 
 # New tuck angles
-# -0.25 -0.25 0 1.5 0 -1.25 1.7
+# -0.25 -0.5 0 1.5 0 -1.0 1.7
 
 import sys
 import numpy as np
@@ -22,6 +22,7 @@ from controllers.controllers import (
     PIDJointVelocityController, 
     FeedforwardJointVelocityController
 )
+import rospy.logger_level_service_caller
 from utils.utils import *
 
 from trac_ik_python.trac_ik import IK
@@ -34,23 +35,92 @@ from sawyer_pykdl import sawyer_kinematics
 
 # Added dependencies for project
 from intera_interface import gripper as robot_gripper
-from internal.msg import MoveBoard
+from internal.msg import BoardMove
 from tf2_geometry_msgs import do_transform_point
 from geometry_msgs.msg import PointStamped
 
+from intera_core_msgs.msg import HeadPanCommand
+from intera_interface import Limb
 
-def tuck():
+def regular_tuck():
     """
     Tuck the robot arm to the start position. Use with caution
     """
-    if input('Would you like to tuck the arm? (y/n): ') == 'y':
-        rospack = rospkg.RosPack()
-        path = rospack.get_path('sawyer_full_stack')
-        launch_path = path + '/launch/custom_sawyer_tuck.launch'
-        uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-        roslaunch.configure_logging(uuid)
-        launch = roslaunch.parent.ROSLaunchParent(uuid, [launch_path])
-        launch.start()
+    if input('Would you like to regular_tuck the arm? (y/n): ') == 'y':
+        # Set the head pan
+        target_pan = 0
+        speed_ratio = 1
+        pan_mode = 1
+
+        # Tuck the arm
+        tuck_positions = {
+            'right_j0': 0.0,
+            'right_j1': -1.0,
+            'right_j2': 0.0,
+            'right_j3': 1.5,
+            'right_j4': 0.0,
+            'right_j5': -0.5,
+            'right_j6': 1.7
+        }
+        """
+        Publishes a command to control the Sawyer robot's head pan.
+        """
+        pub = rospy.Publisher('/robot/head/command_head_pan', HeadPanCommand, queue_size=10)
+        rospy.loginfo("Waiting for publisher to register...")
+        rospy.sleep(1)  # Give some time for the publisher to register
+
+        command = HeadPanCommand(target=target_pan, speed_ratio=speed_ratio, pan_mode=pan_mode)
+        rospy.loginfo(f"Publishing head pan command: {command}")
+        pub.publish(command)
+        rospy.sleep(1)  # Allow some time for the message to be processed
+
+        """
+        Commands the Sawyer robot's arm to a tucked position using joint positions.
+        """
+        limb = Limb("right")  # Use "right" since Sawyer has only one arm
+        rospy.loginfo(f"Moving arm to tuck position: {tuck_positions}")
+        limb.move_to_joint_positions(tuck_positions)
+    else:
+        print('Canceled. Not tucking the arm.')
+
+def ar_tuck():
+    """
+    Tuck the robot arm to the start position. Use with caution
+    """
+    if input('Would you like to ar_tuck the arm? (y/n): ') == 'y':
+        # Set the head pan
+        target_pan = 0
+        speed_ratio = 1
+        pan_mode = 1
+
+        # Tuck the arm
+        tuck_positions = {
+            'right_j0': -0.25,
+            'right_j1': 0.0,
+            'right_j2': 0,
+            'right_j3': 0.5,
+            'right_j4': 0,
+            'right_j5': -0.5,
+            'right_j6': 1.7
+        }
+        """
+        Publishes a command to control the Sawyer robot's head pan.
+        """
+        pub = rospy.Publisher('/robot/head/command_head_pan', HeadPanCommand, queue_size=10)
+        rospy.loginfo("Waiting for publisher to register...")
+        rospy.sleep(1)  # Give some time for the publisher to register
+
+        command = HeadPanCommand(target=target_pan, speed_ratio=speed_ratio, pan_mode=pan_mode)
+        rospy.loginfo(f"Publishing head pan command: {command}")
+        pub.publish(command)
+        rospy.sleep(1)  # Allow some time for the message to be processed
+
+        """
+        Commands the Sawyer robot's arm to a tucked position using joint positions.
+        """
+        limb = Limb("right")  # Use "right" since Sawyer has only one arm
+        rospy.loginfo(f"Moving arm to tuck position: {tuck_positions}")
+        limb.move_to_joint_positions(tuck_positions)
     else:
         print('Canceled. Not tucking the arm.')
 
@@ -160,8 +230,28 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform, 
     # We need to get the coordinates of the point closest to the ar tag
     # get the rest of the pegs with respect to that point
     # TODO MEASURE THE DISTANCE OF PEGS WITH WRT to the AR TAG
-    new_x = x
-    new_y = y
+
+    # X measurements
+    # Full dist 8.0 mm
+    # Center length 3.5 mm
+
+    # Y measurements
+    # Full length 48.5mm
+    # Center length 44.5 mm
+    # Min Length 39.5 mm
+
+    BOTTOM_LEFT_REAL_X = -0.0035
+    BOTTOM_LEFT_REAL_Y = 0.0445
+
+    # Difference of centers is 20.5 cm -> 0.205
+    SPACE_DIFF = 0.205
+    
+    # Bottom left peg is 0, 4
+    BOTTOM_LEFT_INTERNAL_X = 0
+    BOTTOM_LEFT_INTERNAL_Y = 4
+
+    new_x = (x - BOTTOM_LEFT_REAL_X) * SPACE_DIFF
+    new_y = (y - BOTTOM_LEFT_REAL_Y) * SPACE_DIFF
 
     # Do some transform math to get it in respect to the actual robot
     # The yaw should be the thing we are looking at
@@ -237,8 +327,8 @@ def callback(message):
     controller_name = 'pid'
     rate = 200
     timeout = None
-    num_way = 50
-    log=True
+    num_way = 300
+    log = True
 
     # Unpack the message    
     start_x = message.start_x
@@ -246,8 +336,10 @@ def callback(message):
     end_x = message.end_x
     end_y = message.end_y
 
-    # Tucks the robot
-    tuck()
+    rospy.logerr(f"Message recieved: {start_x}, {start_y}, {end_x}, {end_y}.")
+
+    # Tucks the robot into a position where it can see the ar_tag
+    ar_tuck()
 
     # Calibrates the gripper and initializes the right gripper object through which the gripper can be controlled
     right_gripper = calibrate_gripper()
@@ -259,12 +351,18 @@ def callback(message):
 
     # Convert the internal points to real world points
     transform = lookup_tag(ar_marker)
-    start_PointStamped = convert_internal_coordinates_to_real_coordinates(start_x, start_y, transform)
-    start_position = np.array([getattr(start_PointStamped.Point, dim) for dim in ('x', 'y', 'z')])
+    start_PointStamped = convert_internal_coordinates_to_real_coordinates(start_x, start_y, transform, ar_marker)
+    start_position = [np.array([getattr(start_PointStamped.point, dim) for dim in ('x', 'y', 'z')])]
 
-    end_PointStamped = convert_internal_coordinates_to_real_coordinates(end_x, end_y, transform)
-    end_position = np.array([getattr(end_PointStamped.Point, dim) for dim in ('x', 'y', 'z')])
+    end_PointStamped = convert_internal_coordinates_to_real_coordinates(end_x, end_y, transform, ar_marker)
+    end_position = [np.array([getattr(end_PointStamped.point, dim) for dim in ('x', 'y', 'z')])]
     
+    rospy.logerr(f"{start_position},{end_position}")
+    
+    # Move the robot to a good picking position
+    regular_tuck()
+    rospy.sleep(1.0)
+
     # Move the robot to the specified position
     move_robot(task, controller_name, rate, timeout, num_way, log, ik_solver, limb, kin, start_position)
     rospy.sleep(1.0)
@@ -273,8 +371,8 @@ def callback(message):
     control_gripper(right_gripper, False)
     rospy.sleep(1.0)
 
-    # Figure out how to raise the arm
-    tuck()
+    # Move the robot to a good picking position
+    regular_tuck()
     rospy.sleep(1.0)
 
     # Move the arm to the designated position
@@ -284,9 +382,6 @@ def callback(message):
     # Open the gripper
     control_gripper(right_gripper, True)
     rospy.sleep(1.0)
-
-    # Figure out how to move the arm higher then into the tucked position
-    tuck()
 
 def move_robot(task, controller_name, rate, timeout, num_way, log, ik_solver, limb, kin, position):
     """
@@ -344,5 +439,5 @@ def move_robot(task, controller_name, rate, timeout, num_way, log, ik_solver, li
 
 if __name__ == "__main__":
     rospy.init_node('move_board_subscriber')
-    rospy.Subscriber('move_board_topic', MoveBoard, callback)
+    rospy.Subscriber('game_move', BoardMove, callback)
     rospy.spin()
