@@ -36,7 +36,7 @@ def detect_boxes(image):
 def add_row(boxes, board): 
     boxes.sort(key=lambda b: get_center(b)[0])
     row = [class_names[int(boxes[i].cls[0])] for i in range(len(boxes))]
-    board.extend(row)
+    board.append(row)
 
 
 def create_board(boxes): 
@@ -46,7 +46,6 @@ def create_board(boxes):
     PEGS_PER_ROW = [1, 2, 3, 4, 13, 12, 11, 10, 9, 10, 11, 12, 13, 4, 3, 2, 1]
 
     boxes.sort(key=lambda b: get_center(b)[1])
-    boxes.reverse()
     board = []
 
     for i in range(NUM_ROWS): 
@@ -54,7 +53,7 @@ def create_board(boxes):
         boxes_that_row = boxes[num_boxes_before : num_boxes_before + PEGS_PER_ROW[i]]
         add_row(boxes_that_row, board)
 
-    return board
+    return sum(reversed(board))
 
 
 def image_to_board(raw_image): 
@@ -73,9 +72,27 @@ def image_to_board(raw_image):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-    boxes = detect_boxes(rectified_image)
-    return create_board(boxes)
+    cv2.imwrite('special.jpg', rectified_image)
+
+    # boxes = detect_boxes(rectified_image)
+    # return create_board(boxes)
+
+    from camera_to_board import OK
+
+    m = {
+        'blue': "Blue", 
+        'yellow': 'Gold', 
+        'black': 'Black', 
+        'purple': 'Purple', 
+        'red': 'Red', 
+        'orange': 'Darkorange', 
+        'green': 'gGreen'
+    }
+
+    result = OK(rectified_image)
+    assert all([i in m for i in result])
+    return [m[c] for c in OK(rectified_image)]
 
 if __name__ == '__main__': 
-    colors = image_to_board(cv2.imread('original_images/new_image_21.jpg'))
+    colors = image_to_board(cv2.imread('original_images/new_image_25.jpg'))
     print(colors)
