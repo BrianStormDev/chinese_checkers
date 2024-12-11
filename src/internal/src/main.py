@@ -83,7 +83,7 @@ if __name__ == "__main__":
 
 
         # Dummy test
-        message = BoardMove(1, 1, 2, 2)
+        message = BoardMove(5, 5, 2, 2)
 
         rospy.logerr("Test Worked")
 
