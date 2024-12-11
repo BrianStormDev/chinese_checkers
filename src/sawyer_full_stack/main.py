@@ -239,7 +239,8 @@ def callback(message):
     timeout = None
     num_way = 50
     log=True
-    
+
+    # Unpack the message    
     start_x = message.start_x
     start_y = message.start_y
     end_x = message.end_x
