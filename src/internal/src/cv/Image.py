@@ -12,7 +12,7 @@ class Image:
     yellow = Color("Gold", np.array([20, 70, 0]), np.array([75, 255, 255]), (0, 255, 255))
     green = Color("Green", np.array([75, 100, 0]), np.array([95, 255, 255]), (0, 255, 0))
     blue = Color("Blue", np.array([95, 150, 0]), np.array([110, 255, 255]), (255, 255, 0))
-    purple = Color("Purple", np.array([115, 50, 0]), np.array([130, 255, 255]), (255, 0, 255))
+    purple = Color("Purple", np.array([115, 70, 0]), np.array([135, 110, 255]), (255, 0, 255))
     white = Color("Black", np.array([0, 0, 230]), np.array([179, 60, 255]), (0, 0, 0))
     # We also want to include some kind of white threshold
     colors = [red, orange, yellow, green, blue, purple, white]
@@ -110,8 +110,13 @@ class Image:
                 radius = int(radius)
                 # We want to filter out the noisy points as well as the corners
                 if cv2.contourArea(contour) > tolerance and (not self.in_corners(x, y)):
-                    points.append([center, color.name, radius])
-                    cv2.circle(image_copy, center, radius, plot_color)
+                    if color is not Image.white:
+                        if radius > 4:
+                            points.append([center, color.name, radius])
+                            cv2.circle(image_copy, center, radius, plot_color)
+                    else:
+                        points.append([center, color.name, radius])
+                        cv2.circle(image_copy, center, radius, plot_color)
         
         # Display the image
         cv2.imshow('Located Points', image_copy)

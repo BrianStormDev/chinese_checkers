@@ -94,7 +94,7 @@ def process_image(origin_image_path, origin_x_frac, origin_y_frac, width_frac, h
     test_image.find_colored_points(area_threshold)
 
 if __name__ == "__main__":
-    test_image_path = r"original_images\new_image_22.jpg"
+    test_image_path = r"original_images\new_image_20.jpg"
     # corner_detection_test(test_image_path, 0.4, 0.3, 0.4, 0.4, 5)
     # color_detection_test(test_image_path, 50)
     process_image(test_image_path, 0.3, 0.1, 0.4, 0.5, 10, 10)
