@@ -137,7 +137,6 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("/home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal/cmake_install.cmake")
   include("/home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_track_alvar/cmake_install.cmake")
   include("/home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/baxter_pykdl/cmake_install.cmake")
-  include("/home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/pathing/src/move_arm/cmake_install.cmake")
 
 endif()
 
