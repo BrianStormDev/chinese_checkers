@@ -36,9 +36,6 @@ from sawyer_pykdl import sawyer_kinematics
 # Added dependencies for project
 from intera_interface import gripper as robot_gripper
 from internal.msg import BoardMove
-from tf2_geometry_msgs import do_transform_point
-from geometry_msgs.msg import PointStamped
-
 from intera_core_msgs.msg import HeadPanCommand
 from intera_interface import Limb
 
@@ -279,51 +276,40 @@ def get_controller(controller_name, limb, kin):
         raise ValueError('Controller {} not recognized'.format(controller_name))
     return controller
 
-def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform, tag_number) -> PointStamped:
+def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform):
     """
     Takes in internal coordinates of the board and converts them into real world coordinates
     """
     # We need to get the coordinates of the point closest to the ar tag
     # get the rest of the pegs with respect to that point
 
-    # X measurements
-    # Full dist 8.0 mm
-    # Center length 3.5 mm
-
-    # Y measurements
-    # Full length 48.5mm
-    # Center length 44.5 mm
-    # Min Length 39.5 mm
-
+    # TODO FIX THIS WRT THE AXIS
+    # Keep in mind, these values are with respect to the base axes 
     BOTTOM_LEFT_REAL_X = 0.0035
     BOTTOM_LEFT_REAL_Y = - 0.0445
 
     # Difference of centers is 20.5 cm -> 0.205
     SPACE_DIFF = 0.205
+
+    # The balls are 6.875 mm in radius, maybe we should shift the z height up?
+    BALL_SHIFT = 0
     
     # Bottom left peg is 0, 4
     BOTTOM_LEFT_INTERNAL_X = 0
     BOTTOM_LEFT_INTERNAL_Y = 4
 
-    new_x = -(x - BOTTOM_LEFT_INTERNAL_X) * SPACE_DIFF + BOTTOM_LEFT_REAL_X
-    new_y = -(y - BOTTOM_LEFT_INTERNAL_Y) * SPACE_DIFF + BOTTOM_LEFT_REAL_Y
+    # Getting the position of the AR tag wrt the base frame
+    ar_tag_x = transform.transform.translation.x
+    ar_tag_y = transform.transform.translation.y
+    ar_tag_z = transform.transform.translation.z
 
-    # Do some transform math to get it in respect to the actual robot
-    # The yaw should be the thing we are looking at
-    # Create a PointStamped in frame y
-    point_in_ar = PointStamped()
-    point_in_ar.header.frame_id = f"ar_marker_{tag_number}"
-    point_in_ar.point.x = new_x
-    point_in_ar.point.y = new_y
-    point_in_ar.point.z = 0
+    # TODO FIX THIS WRT THE AXIS
+    # Keep in mind, these values are with respect to the base axes
+    new_x = -(x - BOTTOM_LEFT_INTERNAL_X) * SPACE_DIFF + BOTTOM_LEFT_REAL_X + ar_tag_x
+    new_y = -(y - BOTTOM_LEFT_INTERNAL_Y) * SPACE_DIFF + BOTTOM_LEFT_REAL_Y + ar_tag_y
+    new_z = ar_tag_z + BALL_SHIFT
 
-    # We might have to do the manual calculation if the ar_tag is stuck pointing sideways
-
-    # The balls are 6.875 mm in radius, maybe we should shift the z height up?
-
-    # Transform to frame x
-    point_in_base = do_transform_point(point_in_ar, transform)
-    return point_in_base
+    return [np.array([new_x, new_y, new_z])]
 
 def calibrate_gripper():
     """
@@ -410,11 +396,9 @@ def callback(message):
     # Test by moving to the AR_TAG
     start_position = [np.array([getattr(transform.transform.translation, dim) for dim in ('x', 'y', 'z')])]
 
-    # start_PointStamped = convert_internal_coordinates_to_real_coordinates(start_x, start_y, transform, ar_marker)
-    # start_position = [np.array([getattr(start_PointStamped.point, dim) for dim in ('x', 'y', 'z')])]
+    # start_position = convert_internal_coordinates_to_real_coordinates(start_x, start_y, transform)
 
-    end_PointStamped = convert_internal_coordinates_to_real_coordinates(end_x, end_y, transform, ar_marker)
-    end_position = [np.array([getattr(end_PointStamped.point, dim) for dim in ('x', 'y', 'z')])]
+    end_position = convert_internal_coordinates_to_real_coordinates(end_x, end_y, transform)
     
     rospy.logerr(f"{start_position[0]}, {end_position[0]}")
 
