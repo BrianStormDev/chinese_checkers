@@ -1,4 +1,5 @@
 from .Image import Image
+import cv2
 from ultralytics import YOLO
 
 TOTAL_PEGS = 61 + 60
@@ -12,7 +13,7 @@ def get_center(box):
 
 
 def detect_boxes(image): 
-    model = YOLO("newest.pt")
+    model = YOLO("model.pt")
     result = model(image)[0] # TODO: Check if arg should be image path
     boxes = list(result.boxes)
     detected_count = len(boxes)
@@ -44,7 +45,8 @@ def create_board(boxes):
     # val at ith = # pegs on ith row
     PEGS_PER_ROW = [1, 2, 3, 4, 13, 12, 11, 10, 9, 10, 11, 12, 13, 4, 3, 2, 1]
 
-    boxes.sort(key=lambda b: get_center(b)[1], reversed=True)
+    boxes.sort(key=lambda b: get_center(b)[1])
+    boxes.reverse()
     board = []
 
     for i in range(NUM_ROWS): 
@@ -62,10 +64,18 @@ def image_to_board(raw_image):
     """
 
     image = Image(None, raw_image)
-    image.crop_image() # TODO: fill in parameters
+    h, w, _ = raw_image.shape
+    image.crop_image(int(0.3 * w), int(0.15 * h), int(0.3 * w), int(0.45 * h)) # TODO: fill in parameters
     image.find_corners(50) # TODO: adjust in param
     rectified_image = image.rectify(500, 500)
+
+    cv2.imshow('nice', rectified_image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
     boxes = detect_boxes(rectified_image)
     return create_board(boxes)
 
+if __name__ == '__main__': 
+    colors = image_to_board(cv2.imread('original_images/new_image_21.jpg'))
+    print(colors)

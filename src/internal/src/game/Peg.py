@@ -31,3 +31,6 @@ class Peg:
         in_board = f'In Board: {self.in_board} | '
         is_empty = f'Is Empty: {self.is_empty} '
         return position_str + color_str + in_board + is_empty
+    
+    def change_y(self, new_y): 
+        self.position.y = new_y
