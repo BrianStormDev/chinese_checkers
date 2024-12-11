@@ -280,19 +280,43 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform):
     """
     Takes in internal coordinates of the board and converts them into real world coordinates
     """
+    # Keep in mind the ar_tag will be in the bottom left of the board
     # We need to get the coordinates of the point closest to the ar tag
     # get the rest of the pegs with respect to that point
 
-    # TODO FIX THIS WRT THE AXIS
     # Keep in mind, these values are with respect to the base axes 
-    BOTTOM_LEFT_REAL_X = 0.0035
-    BOTTOM_LEFT_REAL_Y = - 0.0445
+    # Real x should be negative and real y should be negative
+    
+    # Full x length: 58 mm
+    # ar_tag_square length: 5.5 mm, half length: 2.75 mm
+    # Hole radius: 4.5 mm
+    # real x shift: - (58 - 2.75 - 4.5) = -50.75
 
-    # Difference of centers is 20.5 cm -> 0.205
-    SPACE_DIFF = 0.205
+    # Full y length: 27 mm
+    # ar_tag_square length: 5.5 mm, half length: 2.75 mm
+    # Hole radius: 4.5 mm
+    # real x shift: - (27 - 2.75 - 4.5) = -19.75
+    BOTTOM_LEFT_REAL_X = - 0.05075
+    BOTTOM_LEFT_REAL_Y = - 0.01975
+
+    # X - direction
+    # Difference of outer edges: 27.0 mm
+    # Difference of inner edges: 11.5 mm
+    # Radii of holes: 4.5 mm
+    # Difference of centers: 27.0 - 4.5 - 4.5 = 18.0 -> 0.180
+
+    # Y - direction
+    # Since every x peg is 2 pegs along we divid the gap by 2
+    # Difference of outer edges: 29.5 mm
+    # Difference of inner edges: 11.5 mm
+    # Radii of holes: 4.5 mm
+    # Difference of centers: 4.5 + 11.5 +4.5 = 20.5 -> 0.205 -> 0.1025
+
+    REAL_SPACING_X = 0.180
+    REAL_SPACING_Y = 0.1025
 
     # The balls are 6.875 mm in radius, maybe we should shift the z height up?
-    BALL_SHIFT = 0
+    HEIGHT_SHIFT = 0
     
     # Bottom left peg is 0, 4
     BOTTOM_LEFT_INTERNAL_X = 0
@@ -303,11 +327,18 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform):
     ar_tag_y = transform.transform.translation.y
     ar_tag_z = transform.transform.translation.z
 
-    # TODO FIX THIS WRT THE AXIS
     # Keep in mind, these values are with respect to the base axes
-    new_x = -(x - BOTTOM_LEFT_INTERNAL_X) * SPACE_DIFF + BOTTOM_LEFT_REAL_X + ar_tag_x
-    new_y = -(y - BOTTOM_LEFT_INTERNAL_Y) * SPACE_DIFF + BOTTOM_LEFT_REAL_Y + ar_tag_y
-    new_z = ar_tag_z + BALL_SHIFT
+    # We first convert the internal x and y values to a real offset before added the tag offset and the offset to the (0,4) Peg
+    # Keep in mind that the x and y in the board different from the x and y in the base frame
+    new_x = -(y - BOTTOM_LEFT_INTERNAL_Y) * REAL_SPACING_X + BOTTOM_LEFT_REAL_X + ar_tag_x
+    new_y = (x - BOTTOM_LEFT_INTERNAL_X) * REAL_SPACING_Y + BOTTOM_LEFT_REAL_Y + ar_tag_y
+    new_z = ar_tag_z + HEIGHT_SHIFT
+
+    # # Incase the precision is the issue
+    # precision = 2
+    # new_x = round(new_x, precision)
+    # new_y = round(new_y, precision)
+    # new_z = round(new_z, precision)
 
     return [np.array([new_x, new_y, new_z])]
 
