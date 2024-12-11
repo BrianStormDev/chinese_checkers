@@ -133,16 +133,16 @@ def ar_tuck():
         speed_ratio = 1
         pan_mode = 1
 
-        # # Tuck the arm, Alice
-        # tuck_positions = {
-        #     'right_j0': -0.25,
-        #     'right_j1': 0.0,
-        #     'right_j2': 0,
-        #     'right_j3': 0.5,
-        #     'right_j4': 0,
-        #     'right_j5': -0.5,
-        #     'right_j6': 1.7
-        # }
+        # Tuck the arm, Alice
+        tuck_positions = {
+            'right_j0': -0.25,
+            'right_j1': 0.0,
+            'right_j2': 0,
+            'right_j3': 0.5,
+            'right_j4': 0,
+            'right_j5': -0.5,
+            'right_j6': 1.7
+        }
 
         # # Tuck the arm, Azula
         # tuck_positions = {
@@ -155,16 +155,16 @@ def ar_tuck():
         #     'right_j6': 1.7
         # }
 
-        # Tuck the arm, Alan
-        tuck_positions = {
-            'right_j0': 0,
-            'right_j1': -0.5,
-            'right_j2': 0,
-            'right_j3': 1.5,
-            'right_j4': 0,
-            'right_j5': -0.85,
-            'right_j6': 1.7
-        }
+        # # Tuck the arm, Alan
+        # tuck_positions = {
+        #     'right_j0': 0,
+        #     'right_j1': -0.5,
+        #     'right_j2': 0,
+        #     'right_j3': 1.5,
+        #     'right_j4': 0,
+        #     'right_j5': -0.85,
+        #     'right_j6': 1.7
+        # }
 
         """
         Publishes a command to control the Sawyer robot's head pan.
@@ -246,7 +246,8 @@ def get_trajectory(limb, kin, ik_solver, tag_pos, num_way, task):
         target_pos = tag_pos[0]
         # linear path moves to a Z position above target_pos.
         # target_pos[2] += 0.205 # Azula
-        target_pos[2] += 0.15 # Alan
+        target_pos[2] += 0.205 # Alice
+        # target_pos[2] += 0.15 # Alan
         print("TARGET POSITION:", target_pos)
         trajectory = LinearTrajectory(start_position=current_position, goal_position=target_pos, total_time=30)
     
@@ -297,8 +298,8 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform):
     # ar_tag_square length: 5.5 mm, half length: 2.75 mm
     # Hole radius: 4.5 mm
     # real x shift: - (27 - 2.75 - 4.5) = -19.75
-    BOTTOM_LEFT_REAL_X = - 0.05075
-    BOTTOM_LEFT_REAL_Y = - 0.01975
+    BOTTOM_LEFT_REAL_X = - 0.045
+    BOTTOM_LEFT_REAL_Y = - 0.0275
 
     # X - direction
     # Difference of outer edges: 27.0 mm
@@ -336,10 +337,10 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform):
     new_z = ar_tag_z + HEIGHT_SHIFT
 
     # # Incase the precision is the issue
-    # precision = 2
-    # new_x = round(new_x, precision)
-    # new_y = round(new_y, precision)
-    # new_z = round(new_z, precision)
+    precision = 2
+    new_x = round(new_x, precision)
+    new_y = round(new_y, precision)
+    new_z = round(new_z, precision)
 
     return [np.array([new_x, new_y, new_z])]
 
@@ -425,14 +426,17 @@ def callback(message):
     # Convert the internal points to real world points
     transform = lookup_tag(ar_marker)
 
-    # Test by moving to the AR_TAG
-    start_position = [np.array([getattr(transform.transform.translation, dim) for dim in ('x', 'y', 'z')])]
+    # # Test by moving to the AR_TAG
+    # start_position = [np.array([getattr(transform.transform.translation, dim) for dim in ('x', 'y', 'z')])]
 
-    # start_position = convert_internal_coordinates_to_real_coordinates(start_x, start_y, transform)
+    start_position = convert_internal_coordinates_to_real_coordinates(start_x, start_y, transform)
 
     end_position = convert_internal_coordinates_to_real_coordinates(end_x, end_y, transform)
     
     rospy.logerr(f"{start_position[0]}, {end_position[0]}")
+
+    regular_tuck()
+    rospy.sleep(2.0)
 
     # Move the robot to the specified position
     move_robot(task, controller_name, rate, timeout, num_way, log, ik_solver, limb, kin, start_position)
