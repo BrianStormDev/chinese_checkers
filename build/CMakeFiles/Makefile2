@@ -60,7 +60,6 @@ all: ar_track_alvar_msgs/all
 all: internal/all
 all: ar_track_alvar/all
 all: baxter_pykdl/all
-all: pathing/src/move_arm/all
 
 .PHONY : all
 
@@ -72,7 +71,6 @@ preinstall: ar_track_alvar_msgs/preinstall
 preinstall: internal/preinstall
 preinstall: ar_track_alvar/preinstall
 preinstall: baxter_pykdl/preinstall
-preinstall: pathing/src/move_arm/preinstall
 
 .PHONY : preinstall
 
@@ -89,7 +87,6 @@ clean: ar_track_alvar_msgs/clean
 clean: internal/clean
 clean: ar_track_alvar/clean
 clean: baxter_pykdl/clean
-clean: pathing/src/move_arm/clean
 
 .PHONY : clean
 
@@ -412,24 +409,6 @@ internal/clean: internal/CMakeFiles/internal_geneus.dir/clean
 internal/clean: internal/CMakeFiles/internal_generate_messages_py.dir/clean
 
 .PHONY : internal/clean
-
-#=============================================================================
-# Directory level rules for directory pathing/src/move_arm
-
-# Recursive "all" directory target.
-pathing/src/move_arm/all:
-
-.PHONY : pathing/src/move_arm/all
-
-# Recursive "preinstall" directory target.
-pathing/src/move_arm/preinstall:
-
-.PHONY : pathing/src/move_arm/preinstall
-
-# Recursive "clean" directory target.
-pathing/src/move_arm/clean:
-
-.PHONY : pathing/src/move_arm/clean
 
 #=============================================================================
 # Directory level rules for directory sawyer_full_stack

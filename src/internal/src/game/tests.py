@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from checker_map import ChineseCheckersBoard
 import numpy as np
 

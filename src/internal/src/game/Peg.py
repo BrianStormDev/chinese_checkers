@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from Point import Point
 
 class Peg:

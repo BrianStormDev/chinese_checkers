@@ -237,6 +237,8 @@ def main():
     # Intitializes the rosnode
     rospy.init_node('moveit_node')
     
+    rospy.logerr(f"{args.task}, {args.ar_marker}, {args.controller_name}, {args.rate}, {args.timeout}, {args.num_way}, {args.log}")
+
     # Tucks the robot
     tuck()
 
