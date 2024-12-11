@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from Point import Point
+from .Point import Point
 
 class Peg:
     def __init__(self, position: Point, color: str, in_board: bool, is_empty: bool) -> None:
