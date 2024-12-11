@@ -6,7 +6,7 @@ from point_reader import read_points
 from warp_img import compute_homography, warp_image
 
 def rectify_image(img, points, dim):
-    rect_points = read_points("points/grid.points", dim)
+    rect_points = read_points("points\grid.points", dim)
     H = compute_homography(points, rect_points)
     warped_img = warp_image(img, H, crop=False)
     warped_img = warped_img[0:dim[1], 0:dim[0]]

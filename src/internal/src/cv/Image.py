@@ -3,6 +3,7 @@ import numpy as np
 import cv2
 from rectify import rectify_image
 from point_reader import read_points
+from point_reader import scale_points
 from warp_img import compute_homography, warp_image
 
 class Image:
@@ -11,7 +12,7 @@ class Image:
     yellow = Color("Gold", np.array([20, 70, 0]), np.array([75, 255, 255]), (0, 255, 255))
     green = Color("Green", np.array([75, 100, 0]), np.array([95, 255, 255]), (0, 255, 0))
     blue = Color("Blue", np.array([95, 150, 0]), np.array([110, 255, 255]), (255, 255, 0))
-    purple = Color("purple", np.array([115, 50, 0]), np.array([130, 255, 255]), (255, 0, 255))
+    purple = Color("Purple", np.array([115, 50, 0]), np.array([130, 255, 255]), (255, 0, 255))
     white = Color("Black", np.array([0, 0, 230]), np.array([179, 60, 255]), (0, 0, 0))
     # We also want to include some kind of white threshold
     colors = [red, orange, yellow, green, blue, purple, white]
@@ -57,7 +58,7 @@ class Image:
             center = (int(x), int(y))
             radius = int(radius)
             # We want to get the blue points
-            if radius > tolerance:
+            if cv2.contourArea(contour) > tolerance:
                 corners.append(center)
 
         # Sort the points by y coordinate
@@ -71,7 +72,7 @@ class Image:
 
         cv2.imshow("Identified Corners", self.img_matrix)
         cv2.waitKey(0)
-        cv2.destroyAllWindows()    
+        cv2.destroyAllWindows()   
 
         top_left = corners[0]
         top_right = corners[1]
@@ -108,7 +109,7 @@ class Image:
                 center = (int(x), int(y))
                 radius = int(radius)
                 # We want to filter out the noisy points as well as the corners
-                if cv2.contourArea(contour) > tolerance and not self.in_corners(x, y):
+                if cv2.contourArea(contour) > tolerance and (not self.in_corners(x, y)):
                     points.append([center, color.name, radius])
                     cv2.circle(image_copy, center, radius, plot_color)
         
@@ -149,20 +150,24 @@ class Image:
     
     def rectify(self, width, height):
         assert self.corners != None, "You need to find corners first!"
-        top_down_image = rectify_image(self.img_matrix, self.corners, (width, height))
-        self.height, self.width, _ = top_down_image.shape
-        self.img_matrix = top_down_image
+        src_points = np.array(self.corners)
+        dst_points = np.array([(0, 0), (width - 1, 0), (width - 1, height - 1), (0, height - 1)])
+        homography_matrix, _ = cv2.findHomography(src_points, dst_points)
+        rectified_img = cv2.warpPerspective(self.img_matrix, homography_matrix, (width, height))
+        self.height, self.width, _ = rectified_img.shape
+        print(self.height, self.width)
+        self.img_matrix = rectified_img
         self.is_rectified = True
-        return top_down_image
+        return rectified_img
 
     def in_corners(self, x, y):
         """
         Returns whether or not the image coordinate is in one of the corners
         """
-        in_bottom_left = (x <= (1/8 * self.width) and y >= (7/8 * self.height))
-        in_top_left = (x <= (1/8 * self.width) and y <= (1/8 * self.height))
-        in_top_right = (x >= (7/8 * self.width) and y <= (1/8 * self.height))
-        in_bottom_right = (x >= (7/8 * self.width) and y >= (7/8 * self.height))
+        in_bottom_left = (x <= (1/5 * self.width) and y >= (4/5 * self.height))
+        in_top_left = (x <= (1/5 * self.width) and y <= (1/5 * self.height))
+        in_top_right = (x >= (4/5 * self.width) and y <= (1/5 * self.height))
+        in_bottom_right = (x >= (4/5 * self.width) and y >= (4/5 * self.height))
         return in_bottom_left or in_top_left or in_top_right or in_bottom_right
     
     def reset_image(self):
