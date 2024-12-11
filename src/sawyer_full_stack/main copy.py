@@ -33,7 +33,6 @@ import intera_interface
 from moveit_msgs.msg import DisplayTrajectory, RobotState
 from sawyer_pykdl import sawyer_kinematics
 from intera_interface import gripper as robot_gripper
-from internal.msg import MoveBoard
 
 
 def tuck():
@@ -82,7 +81,7 @@ def lookup_tag(tag_number):
     tag_pos = [getattr(trans.transform.translation, dim) for dim in ('x', 'y', 'z')]
     return np.array(tag_pos)
 
-def get_trajectory(limb, kin, ik_solver, tag_pos, num_way, task):
+def get_trajectory(limb, kin, ik_solver, tag_pos, args):
     """
     Returns an appropriate robot trajectory for the specified task.  You should 
     be implementing the path functions in paths.py and call them here
@@ -97,6 +96,8 @@ def get_trajectory(limb, kin, ik_solver, tag_pos, num_way, task):
     -------
     :obj:`moveit_msgs.msg.RobotTrajectory`
     """
+    num_way = args.num_way
+    task = args.task
 
     tfBuffer = tf2_ros.Buffer()
     listener = tf2_ros.TransformListener(tfBuffer)
@@ -195,7 +196,7 @@ def control_gripper(right_gripper, open):
         right_gripper.open(0.034)
 
 
-def callback(message):
+def main():
     """
     Examples of how to run me:
     python scripts/main.py --help <------This prints out all the help messages
@@ -204,31 +205,38 @@ def callback(message):
  
     You can also change the rate, timeout if you want
     """
+    # import pdb; pdb.set_trace()
 
-    # task: line, circle.  Default: line
-    # ar_marker: Which AR marker to use.  Default: 1
-    # controller_name: moveit, open_loop, pid.  Default: moveit
-    # rate: This specifies how many ms between loops.  It is important to use a rate
-    # and not a regular while loop because you want the loop to refresh at a
-    # constant rate, otherwise you would have to tune your PD parameters if 
-    # the loop runs slower / faster.  Default: 200
-    # timeout: after how many seconds should the controller terminate if it hasn't already. Default: None
-    # num_way: How many waypoints for the :obj:`moveit_msgs.msg.RobotTrajectory`.  Default: 300
-    # log: plots controller performance.  Default: False
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-task', '-t', type=str, default='line', help=
+        'Options: line, circle.  Default: line'
+    )
+    parser.add_argument('-ar_marker', '-ar', nargs='+', help=
+        'Which AR marker to use.  Default: 1'
+    )
+    parser.add_argument('-controller_name', '-c', type=str, default='moveit', 
+        help='Options: moveit, open_loop, pid.  Default: moveit'
+    )
+    parser.add_argument('-rate', type=int, default=200, help="""
+        This specifies how many ms between loops.  It is important to use a rate
+        and not a regular while loop because you want the loop to refresh at a
+        constant rate, otherwise you would have to tune your PD parameters if 
+        the loop runs slower / faster.  Default: 200"""
+    )
 
-    task = 'line'
-    ar_marker = 0
-    controller_name = 'pid'
-    rate = 200
-    timeout = None
-    num_way = 50
-    log=True
+    parser.add_argument('-timeout', type=int, default=None, help=
+        """after how many seconds should the controller terminate if it hasn\'t already.  
+        Default: None"""
+    )
+    parser.add_argument('-num_way', type=int, default=50, help=
+        'How many waypoints for the :obj:`moveit_msgs.msg.RobotTrajectory`.  Default: 300'
+    )
+    parser.add_argument('--log', action='store_true', help='plots controller performance')
+    args = parser.parse_args()
+
+    # Intitializes the rosnode
+    rospy.init_node('moveit_node')
     
-    start_x = message.start_x
-    start_y = message.start_y
-    end_x = message.end_x
-    end_y = message.end_y
-
     # Tucks the robot
     tuck()
 
@@ -247,7 +255,7 @@ def callback(message):
     kin = sawyer_kinematics("right")
 
     # Lookup the AR tag position.
-    tag_pos = [lookup_tag(marker) for marker in ar_marker]
+    tag_pos = [lookup_tag(marker) for marker in args.ar_marker]
 
     assert len(tag_pos) == 1, "No or more than 1 ar tag detected"
 
@@ -258,7 +266,7 @@ def callback(message):
     # positions and velocities are workspace positions and velocities.  If the controller
     # is a jointspace or torque controller, it should return a trajectory where the positions
     # and velocities are the positions and velocities of each joint.
-    robot_trajectory = get_trajectory(limb, kin, ik_solver, tag_pos, num_way, task)
+    robot_trajectory = get_trajectory(limb, kin, ik_solver, tag_pos, args)
 
     # This is a wrapper around MoveIt! for you to use.  We use MoveIt! to go to the start position
     # of the trajectory
@@ -275,11 +283,11 @@ def callback(message):
 
     # Move to the trajectory start position
     plan = planner.plan_to_joint_pos(robot_trajectory.joint_trajectory.points[0].positions)
-    if controller_name != "moveit":
+    if args.controller_name != "moveit":
         plan = planner.retime_trajectory(plan, 0.3)
     planner.execute_plan(plan[1])
 
-    if controller_name == "moveit":
+    if args.controller_name == "moveit":
         try:
             input('Press <Enter> to execute the trajectory using MOVEIT')
         except KeyboardInterrupt:
@@ -287,7 +295,7 @@ def callback(message):
         # Uses MoveIt! to execute the trajectory.
         planner.execute_plan(robot_trajectory)
     else:
-        controller = get_controller(controller_name, limb, kin)
+        controller = get_controller(args.controller_name, limb, kin)
         try:
             input('Press <Enter> to execute the trajectory using YOUR OWN controller')
         except KeyboardInterrupt:
@@ -295,15 +303,13 @@ def callback(message):
         # execute the path using your own controller.
         done = controller.execute_path(
             robot_trajectory, 
-            rate=rate, 
-            timeout=timeout, 
-            log=log
+            rate=args.rate, 
+            timeout=args.timeout, 
+            log=args.log
         )
         if not done:
             print('Failed to move to position')
             sys.exit(0)
 
 if __name__ == "__main__":
-    rospy.init_node('move_board_subscriber')
-    rospy.Subscriber('move_board_topic', MoveBoard, callback)
-    rospy.spin()
+    main()
