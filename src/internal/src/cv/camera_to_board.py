@@ -1,27 +1,21 @@
-import sys
-sys.path.append("../game") # Adds higher directory to python modules path.
-
 from ultralytics import YOLO
-import cv2, cvzone
+import cv2
 import os, sys
+from pathlib import Path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from Peg import Peg
-from Point import Point
-import matplotlib.pyplot as plt
-
-nice = Peg(Point(1, 2), True, True, 'black')
 
 TOTAL_PEGS = 61 + 60
 CONFIDENCE_THRESHOLD = 0.8
 EMPTY = 'empty'
 class_names = ['yellow', 'blue', EMPTY, 'purple', 'green', 'red', 'orange']
 
-model = YOLO("model.pt")
+cur_dir = Path(__file__).parent
+
+model = YOLO(str(cur_dir / "model.pt"), verbose=False)
 
 # image_path = "new_rectified_images/new_data/image_12.jpg" 
 image_path = "special.jpg"
 image = cv2.imread(image_path)
-
 
 def OK(image):
     print('Loading done')
@@ -65,7 +59,7 @@ def OK(image):
     board = []
 
     def add_row(boxes, row_num, board): 
-        row = [Peg(Point(i, row_num), 'white', False, None) for i in range(MAX_PEGS_PER_ROW)]
+        row = ['white' for i in range(MAX_PEGS_PER_ROW)]
         boxes.sort(key=lambda b: get_center(b)[0])
 
         start_ind = CENTER_COL - len(boxes)
@@ -74,19 +68,16 @@ def OK(image):
             x = start_ind + (i * 2)
             is_empty = class_names[int(boxes[i].cls[0])] == EMPTY
             color = 'black' if is_empty else class_names[int(boxes[i].cls[0])]
-            row[x] = Peg(Point(x, row_num), color, True, is_empty)
+            row[x] = color
 
         board.append(row)
 
     def invert_board(board): 
         board = reversed(board)
-        for row in board: 
-            for peg in row: 
-                peg.change_y(abs(NUM_ROWS - 1 - peg.position.y))
 
     for i in range(NUM_ROWS): 
         num_boxes_before = sum(PEGS_PER_ROW[:i])
-        boxes_that_row = boxes[num_boxes_before : num_boxes_before + PEGS_PER_ROW[i]]
+        Falseboxes_that_row = boxes[num_boxes_before : num_boxes_before + PEGS_PER_ROW[i]]
         add_row(boxes_that_row, i, board)
 
     invert_board(board)
@@ -113,7 +104,7 @@ def OK(image):
 
     # display_board(board)
 
-    return [peg.color for row in board for peg in row if peg.color != 'white']
+    return [color for row in board for color in row if color != 'white']
 
 if __name__ == '__main__': 
     OK(image)

@@ -37,16 +37,14 @@ def convert_list_to_custom_game(num_players: int, players: List[str], curr_playe
                 index = 0
                 for x in range(center_col - 2 * halfLength, center_col + 2 * halfLength + 1, 2):
                     color = slice[index]
-                    if color != "Black":
-                        converted_points.append([x, height, color])
+                    converted_points.append([x, height, color])
                     index += 1
             elif heightDiff % 2 == 1:
                 index = 0
                 halfLength -= 1
                 for x in range(center_col - 2 * halfLength - 1, center_col + 2 * halfLength + 2, 2):
                     color = slice[index]
-                    if color != "Black":
-                        converted_points.append([x, height, color])
+                    converted_points.append([x, height, color])
                     index += 1
                         
             return sliceStart + rowLength
