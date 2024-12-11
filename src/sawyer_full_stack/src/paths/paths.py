@@ -114,11 +114,12 @@ class MotionPath:
 
         # Check if result valid, and type of seed ultimately used to get solution
         if (response.result_type[0] > 0):
-            # rospy.loginfo("SUCCESS!")
             # Format solution into Limb API-compatible dictionary
             return np.array(response.joints[0].position)
-            
-        return None
+        else:
+            rospy.logerr("INVALID POSE - No Valid Joint Solution Found.")
+            rospy.logerr("Result Error %d", response.result_type[0])
+            return None
 
     def trajectory_point(self, t, jointspace):
         """
