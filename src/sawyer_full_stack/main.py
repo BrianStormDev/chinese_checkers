@@ -147,14 +147,25 @@ def ar_tuck():
         #     'right_j6': 1.7
         # }
 
-        # Tuck the arm, Azula
+        # # Tuck the arm, Azula
+        # tuck_positions = {
+        #     'right_j0': 0,
+        #     'right_j1': -1,
+        #     'right_j2': 0,
+        #     'right_j3': 1.5,
+        #     'right_j4': 0,
+        #     'right_j5': -0.45,
+        #     'right_j6': 1.7
+        # }
+
+        # Tuck the arm, Alan
         tuck_positions = {
             'right_j0': 0,
             'right_j1': -1,
             'right_j2': 0,
             'right_j3': 1.5,
             'right_j4': 0,
-            'right_j5': -0.45,
+            'right_j5': -0.5,
             'right_j6': 1.7
         }
 

@@ -1,4 +1,4 @@
-import Image
+from .Image import Image
 from ultralytics import YOLO
 
 TOTAL_PEGS = 61 + 60
