@@ -10,7 +10,7 @@ class Image:
     orange = Color("orange", np.array([0, 100, 0]), np.array([25, 255, 255]), (0, 165, 255))
     yellow = Color("yellow", np.array([20, 70, 0]), np.array([75, 255, 255]), (0, 255, 255))
     green = Color("green", np.array([75, 100, 0]), np.array([95, 255, 255]), (0, 255, 0))
-    blue = Color("blue", np.array([95, 150, 0]), np.array([110, 255, 255]), (255, 0, 0))
+    blue = Color("blue", np.array([95, 150, 0]), np.array([110, 255, 255]), (255, 255, 0))
     purple = Color("purple", np.array([115, 50, 0]), np.array([130, 255, 255]), (255, 0, 255))
     white = Color("white", np.array([0, 0, 230]), np.array([179, 60, 255]), (0, 0, 0))
     # We also want to include some kind of white threshold
@@ -87,9 +87,12 @@ class Image:
         """
         assert self.is_rectified == True, "You need to get the top down image first!"
         points = []
+        # All point image
+        image_copy = self.img_matrix.copy()
         for color in Image.colors:
+            temp_copy = self.img_matrix.copy()
             # Convert the image to HSV color space
-            hsv = cv2.cvtColor(self.img_matrix, cv2.COLOR_BGR2HSV)
+            hsv = cv2.cvtColor(temp_copy, cv2.COLOR_BGR2HSV)
             lower_hsv = color.lower_range
             upper_hsv = color.upper_range
             plot_color = color.bgr_tuple
@@ -105,12 +108,15 @@ class Image:
                 center = (int(x), int(y))
                 radius = int(radius)
                 # We want to filter out the noisy points as well as the corners
-                if radius > tolerance and not self.in_corners(x, y):
-                    points.append([center, color.name])
-                    cv2.circle(self.img_matrix, center, radius, plot_color)
-        cv2.imshow("Identified Points", self.img_matrix)
+                if cv2.contourArea(contour) > tolerance and not self.in_corners(x, y):
+                    points.append([center, color.name, radius])
+                    cv2.circle(image_copy, center, radius, plot_color)
+        
+        # Display the image
+        cv2.imshow('Located Points', image_copy)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
+
         self.points = points
         return points
     
@@ -165,5 +171,3 @@ class Image:
         self.is_flattened = False
         self.points = None
         self.corners = None
-
-
