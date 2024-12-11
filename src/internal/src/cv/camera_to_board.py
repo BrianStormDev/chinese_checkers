@@ -24,7 +24,7 @@ image = cv2.imread(image_path)
 print('Loading done')
 
 # Perform object detection
-result = model(image_path)[0]
+result = model(image)[0]
 
 print('Object detection done')
 
@@ -41,7 +41,6 @@ if detected_count > TOTAL_PEGS:
     print(f'{detected_count - TOTAL_PEGS} extra detections removed')
 
 low_confidence_boxes = list(filter(lambda box: box.conf[0] <= CONFIDENCE_THRESHOLD, boxes))
-
 
 assert not low_confidence_boxes, f'Exists detections with confidence <= {CONFIDENCE_THRESHOLD}'
 
@@ -68,7 +67,7 @@ boxes.sort(key=lambda b: get_center(b)[1])
 board = []
 
 def add_row(boxes, row_num, board): 
-    row = [Peg(Point(i, row_num), False, None, 'white') for i in range(MAX_PEGS_PER_ROW)]
+    row = [Peg(Point(i, row_num), 'white', False, None) for i in range(MAX_PEGS_PER_ROW)]
     boxes.sort(key=lambda b: get_center(b)[0])
 
     start_ind = CENTER_COL - len(boxes)
@@ -77,7 +76,7 @@ def add_row(boxes, row_num, board):
         x = start_ind + (i * 2)
         is_empty = class_names[int(boxes[i].cls[0])] == EMPTY
         color = 'black' if is_empty else class_names[int(boxes[i].cls[0])]
-        row[x] = Peg(Point(x, row_num), True, is_empty, color)
+        row[x] = Peg(Point(x, row_num), color, True, is_empty)
 
     board.append(row)
 

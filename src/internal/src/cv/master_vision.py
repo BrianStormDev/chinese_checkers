@@ -73,8 +73,6 @@ def image_to_board(raw_image):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-    
-
     boxes = detect_boxes(rectified_image)
     return create_board(boxes)
 
