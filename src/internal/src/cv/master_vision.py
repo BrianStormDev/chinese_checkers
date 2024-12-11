@@ -65,17 +65,23 @@ def image_to_board(raw_image):
 
     image = Image(None, raw_image)
     h, w, _ = raw_image.shape
-    image.crop_image(int(0.4 * w), int(0.3 * h), int(0.25 * w), int(0.4 * h)) # TODO: fill in parameters
+    cropped = image.crop_image(int(0.32 * w), int(0.2 * h), int(0.25 * w), int(0.4 * h)) # TODO: fill in parameters
+
+    cv2.imwrite('special.jpg', cropped)
+
+    cv2.imshow('Cropped', cropped)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
     image.find_corners(50) # TODO: adjust in param
     rectified_image = image.rectify(500, 500)
 
-    # cv2.imshow('nice', rectified_image)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+    cv2.imshow('Corrected', rectified_image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
     print('Processing...')
 
-    cv2.imwrite('special.jpg', rectified_image)
 
     # boxes = detect_boxes(rectified_image)
     # return create_board(boxes)
