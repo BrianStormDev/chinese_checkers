@@ -1,8 +1,8 @@
-# Install script for directory: /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/sawyer_full_stack
+# Install script for directory: /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/sawyer_full_stack
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/install")
+  set(CMAKE_INSTALL_PREFIX "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,25 +38,25 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  include("/home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/sawyer_full_stack/catkin_generated/safe_execute_install.cmake")
+  include("/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/sawyer_full_stack/catkin_generated/safe_execute_install.cmake")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/sawyer_full_stack/catkin_generated/installspace/sawyer_full_stack.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/sawyer_full_stack/catkin_generated/installspace/sawyer_full_stack.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/sawyer_full_stack/cmake" TYPE FILE FILES
-    "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/sawyer_full_stack/catkin_generated/installspace/sawyer_full_stackConfig.cmake"
-    "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/sawyer_full_stack/catkin_generated/installspace/sawyer_full_stackConfig-version.cmake"
+    "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/sawyer_full_stack/catkin_generated/installspace/sawyer_full_stackConfig.cmake"
+    "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/sawyer_full_stack/catkin_generated/installspace/sawyer_full_stackConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/sawyer_full_stack" TYPE FILE FILES "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/sawyer_full_stack/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/sawyer_full_stack" TYPE FILE FILES "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/sawyer_full_stack/package.xml")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/sawyer_full_stack" TYPE PROGRAM FILES "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/sawyer_full_stack/src/starter.py")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/sawyer_full_stack" TYPE PROGRAM FILES "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/sawyer_full_stack/src/starter.py")
 endif()
 

@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/lib/libmedianFilter.pdb"
-  "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/lib/libmedianFilter.so"
+  "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/lib/libmedianFilter.pdb"
+  "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/lib/libmedianFilter.so"
   "CMakeFiles/medianFilter.dir/src/medianFilter.cpp.o"
 )
 

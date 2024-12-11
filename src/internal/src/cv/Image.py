@@ -66,9 +66,9 @@ class Image:
         # for corner in corners:
         #     cv2.circle(self.img_matrix, corner, 5, (0, 255, 0))
 
-        cv2.imshow("Identified Corners", self.img_matrix)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()   
+        # cv2.imshow("Identified Corners", self.img_matrix)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()   
 
         top_left = corners[0]
         top_right = corners[1]
@@ -115,9 +115,9 @@ class Image:
                         cv2.circle(image_copy, center, radius, plot_color)
         
         # Display the image
-        cv2.imshow('Located Points', image_copy)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        # cv2.imshow('Located Points', image_copy)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()
 
         self.points = points
         return points
@@ -156,7 +156,6 @@ class Image:
         homography_matrix, _ = cv2.findHomography(src_points, dst_points)
         rectified_img = cv2.warpPerspective(self.img_matrix, homography_matrix, (width, height))
         self.height, self.width, _ = rectified_img.shape
-        print(self.height, self.width)
         self.img_matrix = rectified_img
         self.is_rectified = True
         return rectified_img

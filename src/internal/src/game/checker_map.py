@@ -115,8 +115,9 @@ class ChineseCheckersBoard:
             piece_y = piece[1]
             piece_color = piece[2]
             peg = Peg(Point(piece_x, piece_y), piece_color, True, False)
-            player_of_peg= self.color_to_player[piece_color]
-            player_of_peg.current_pegs.append(peg)
+            if piece_color != "Black":
+                player_of_peg= self.color_to_player[piece_color]
+                player_of_peg.current_pegs.append(peg)
             self.board[piece_x, piece_y] = peg
 
     def initialize_empty_board(self) -> np.ndarray:

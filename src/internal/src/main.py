@@ -1,7 +1,7 @@
 import rospy
-from game import *
-from game.checker_map import ChineseCheckersBoard
-from game.game_utilities import convert_list_to_custom_game
+# from game import *
+# from game.checker_map import ChineseCheckersBoard
+# from game.game_utilities import convert_list_to_custom_game
 
 # from sensor_msgs.msg import Image
 # from cv_bridge import CvBridge
@@ -17,7 +17,7 @@ from internal.msg import BoardMove
 # IMAGE_COLLECTION_INTERVAL = 2
 
 # def image_collection_callback(msg): 
-#     global last_image_taken_time, image, board_changed
+#     global last_image_taken_time, image, board_changed, peg_colors
 #     try:
 #         if time.time() - last_image_taken_time >= IMAGE_COLLECTION_INTERVAL: 
 #             # Convert the ROS Image message to a OpenCV2 image
@@ -26,6 +26,9 @@ from internal.msg import BoardMove
 #             if new_board != peg_colors: 
 #                 board_changed = True
 #                 peg_colors = new_board
+#                 custom_board = convert_list_to_custom_game(num_players, players, current_player, winners, peg_colors)
+#                 game = ChineseCheckersBoard(custom_board)
+#                 game.display_board()
 #             else: 
 #                 board_changed = False
 #             last_image_taken_time = time.time()
@@ -58,6 +61,7 @@ if __name__ == "__main__":
 
         # custom_board = convert_list_to_custom_game(num_players, players, current_player, winners, peg_colors)
         # game = ChineseCheckersBoard(custom_board)
+        # game.display_board()
 
         # # Ask if the user wants to make the next move or let the AI come up witha move
         # choice = input("Enter 1 if you want to make the next move and 2 if you want the AI to make the next move: ")
@@ -77,7 +81,7 @@ if __name__ == "__main__":
 
         # # Construct the message
         # # The message are the internal board coordinates
-        # # message = BoardMove(x_start, y_start, x_end, y_end)
+        # message = BoardMove(x_start, y_start, x_end, y_end)
 
         # Dummy test
         message = BoardMove(5, 5, 2, 2)

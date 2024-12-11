@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src
+CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build
+CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build
 
 # Utility rule file for internal_gennodejs.
 
@@ -63,10 +63,10 @@ internal/CMakeFiles/internal_gennodejs.dir/build: internal_gennodejs
 .PHONY : internal/CMakeFiles/internal_gennodejs.dir/build
 
 internal/CMakeFiles/internal_gennodejs.dir/clean:
-	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal && $(CMAKE_COMMAND) -P CMakeFiles/internal_gennodejs.dir/cmake_clean.cmake
+	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/internal && $(CMAKE_COMMAND) -P CMakeFiles/internal_gennodejs.dir/cmake_clean.cmake
 .PHONY : internal/CMakeFiles/internal_gennodejs.dir/clean
 
 internal/CMakeFiles/internal_gennodejs.dir/depend:
-	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/internal /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal/CMakeFiles/internal_gennodejs.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/internal /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/internal /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/internal/CMakeFiles/internal_gennodejs.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : internal/CMakeFiles/internal_gennodejs.dir/depend
 

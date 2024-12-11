@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/lib/python3/dist-packages/internal/msg/_BoardMove.py"
-  "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/lib/python3/dist-packages/internal/msg/__init__.py"
+  "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/lib/python3/dist-packages/internal/msg/_BoardMove.py"
+  "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/lib/python3/dist-packages/internal/msg/__init__.py"
   "CMakeFiles/internal_generate_messages_py"
 )
 

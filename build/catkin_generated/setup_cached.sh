@@ -7,4 +7,5 @@
 # new environment variables
 
 # modified environment variables
-export PWD='/home/cc/ee106a/fa24/class/ee106a-adc/final_project/build'
+export PWD='/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build'
+export ROS_PACKAGE_PATH='/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src:/opt/ros/eecsbot_ws/src:/opt/ros/noetic/share'
