@@ -230,8 +230,28 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform, 
     # We need to get the coordinates of the point closest to the ar tag
     # get the rest of the pegs with respect to that point
     # TODO MEASURE THE DISTANCE OF PEGS WITH WRT to the AR TAG
-    new_x = x
-    new_y = y
+
+    # X measurements
+    # Full dist 8.0 mm
+    # Center length 3.5 mm
+
+    # Y measurements
+    # Full length 48.5mm
+    # Center length 44.5 mm
+    # Min Length 39.5 mm
+
+    BOTTOM_LEFT_REAL_X = -0.0035
+    BOTTOM_LEFT_REAL_Y = 0.0445
+
+    # Difference of centers is 20.5 cm -> 0.205
+    SPACE_DIFF = 0.205
+    
+    # Bottom left peg is 0, 4
+    BOTTOM_LEFT_INTERNAL_X = 0
+    BOTTOM_LEFT_INTERNAL_Y = 4
+
+    new_x = (x - BOTTOM_LEFT_REAL_X) * SPACE_DIFF
+    new_y = (y - BOTTOM_LEFT_REAL_Y) * SPACE_DIFF
 
     # Do some transform math to get it in respect to the actual robot
     # The yaw should be the thing we are looking at
