@@ -147,14 +147,25 @@ def ar_tuck():
         #     'right_j6': 1.7
         # }
 
-        # Tuck the arm, Azula
+        # # Tuck the arm, Azula
+        # tuck_positions = {
+        #     'right_j0': 0,
+        #     'right_j1': -1,
+        #     'right_j2': 0,
+        #     'right_j3': 1.5,
+        #     'right_j4': 0,
+        #     'right_j5': -0.45,
+        #     'right_j6': 1.7
+        # }
+
+        # Tuck the arm, Alan
         tuck_positions = {
             'right_j0': 0,
-            'right_j1': -1,
+            'right_j1': -0.5,
             'right_j2': 0,
             'right_j3': 1.5,
             'right_j4': 0,
-            'right_j5': -0.45,
+            'right_j5': -0.85,
             'right_j6': 1.7
         }
 
@@ -236,20 +247,10 @@ def get_trajectory(limb, kin, ik_solver, tag_pos, num_way, task):
 
     if task == 'line':
         target_pos = tag_pos[0]
-        target_pos[2] += 0.205 # linear path moves to a Z position above target_pos.
+        # linear path moves to a Z position above target_pos.
+        target_pos[2] += 0.205 
         print("TARGET POSITION:", target_pos)
-        trajectory = LinearTrajectory(start_position=current_position, goal_position=target_pos, total_time=9)
-    elif task == 'circle':
-        target_pos = tag_pos[0]
-        target_pos[2] += 0.5
-        print("TARGET POSITION:", target_pos)
-        trajectory = CircularTrajectory(center_position=target_pos, radius=0.1, total_time=15)
-
-    else:
-        raise ValueError('task {} not recognized'.format(task))
-    
-    # target_pos = [0.761, -0.324, -0.02]
-    # trajectory = LinearTrajectory(start_position=current_position, goal_position=target_pos, total_time=9)
+        trajectory = LinearTrajectory(start_position=current_position, goal_position=target_pos, total_time=30)
     
     path = MotionPath(limb, kin, ik_solver, trajectory)
     return path.to_robot_trajectory(num_way, True)
@@ -322,10 +323,6 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform, 
 
     # Transform to frame x
     point_in_base = do_transform_point(point_in_ar, transform)
-    # decimals = 2
-    # point_in_base.point.x = round(point_in_base.point.x, decimals)
-    # point_in_base.point.y = round(point_in_base.point.y, decimals)
-    # point_in_base.point.z = round(point_in_base.point.z, decimals)
     return point_in_base
 
 def calibrate_gripper():
@@ -362,32 +359,25 @@ def control_gripper(right_gripper, open):
 
 def callback(message):
     """
-    Examples of how to run me:
-    python scripts/main.py --help <------This prints out all the help messages
-    and describes what each parameter is
-    python scripts/main.py -t line -ar_marker 3 -c torque --log
- 
-    You can also change the rate, timeout if you want
+    task: line, circle.  Default: line
+    ar_marker: Which AR marker to use.  Default: 1
+    controller_name: moveit, open_loop, pid.  Default: moveit
+    rate: This specifies how many ms between loops.  It is important to use a rate
+    and not a regular while loop because you want the loop to refresh at a
+    constant rate, otherwise you would have to tune your PD parameters if 
+    the loop runs slower / faster.  Default: 200
+    timeout: after how many seconds should the controller terminate if it hasn't already. Default: None
+    num_way: How many waypoints for the :obj:`moveit_msgs.msg.RobotTrajectory`.  Default: 300
+    log: plots controller performance.  Default: False
     """
-
-    # task: line, circle.  Default: line
-    # ar_marker: Which AR marker to use.  Default: 1
-    # controller_name: moveit, open_loop, pid.  Default: moveit
-    # rate: This specifies how many ms between loops.  It is important to use a rate
-    # and not a regular while loop because you want the loop to refresh at a
-    # constant rate, otherwise you would have to tune your PD parameters if 
-    # the loop runs slower / faster.  Default: 200
-    # timeout: after how many seconds should the controller terminate if it hasn't already. Default: None
-    # num_way: How many waypoints for the :obj:`moveit_msgs.msg.RobotTrajectory`.  Default: 300
-    # log: plots controller performance.  Default: False
 
     # Default parameters
     task = 'line'
     ar_marker = 0
     controller_name = 'pid'
-    rate = 900
+    rate = 200
     timeout = None
-    num_way = 900
+    num_way = 1000
     log = False
 
     # Unpack the message    
@@ -404,7 +394,8 @@ def callback(message):
     # Calibrates the gripper and initializes the right gripper object through which the gripper can be controlled
     right_gripper = calibrate_gripper()
     rospy.sleep(3.0)
-
+    
+    # Ensure that the gripper is initially open
     control_gripper(right_gripper, True)
     rospy.sleep(1.0)
     
@@ -415,6 +406,8 @@ def callback(message):
 
     # Convert the internal points to real world points
     transform = lookup_tag(ar_marker)
+
+    # Test by moving to the AR_TAG
     start_position = [np.array([getattr(transform.transform.translation, dim) for dim in ('x', 'y', 'z')])]
 
     # start_PointStamped = convert_internal_coordinates_to_real_coordinates(start_x, start_y, transform, ar_marker)
@@ -427,7 +420,7 @@ def callback(message):
 
     # Move the robot to the specified position
     move_robot(task, controller_name, rate, timeout, num_way, log, ik_solver, limb, kin, start_position)
-    rospy.sleep(5.0)
+    rospy.sleep(1.0)
 
     # Close the gripper
     control_gripper(right_gripper, False)
@@ -475,33 +468,24 @@ def move_robot(task, controller_name, rate, timeout, num_way, log, ik_solver, li
 
     # Move to the trajectory start position
     plan = planner.plan_to_joint_pos(robot_trajectory.joint_trajectory.points[0].positions)
-    if controller_name != "moveit":
-        plan = planner.retime_trajectory(plan, 0.3)
+    plan = planner.retime_trajectory(plan, 0.3)
     planner.execute_plan(plan[1])
 
-    if controller_name == "moveit":
-        try:
-            input('Press <Enter> to execute the trajectory using MOVEIT')
-        except KeyboardInterrupt:
-            sys.exit()
-        # Uses MoveIt! to execute the trajectory.
-        planner.execute_plan(robot_trajectory)
-    else:
-        controller = get_controller(controller_name, limb, kin)
-        try:
-            input('Press <Enter> to execute the trajectory using YOUR OWN controller')
-        except KeyboardInterrupt:
-            sys.exit()
-        # execute the path using your own controller.
-        done = controller.execute_path(
-            robot_trajectory, 
-            rate=rate, 
-            timeout=timeout, 
-            log=log
-        )
-        if not done:
-            print('Failed to move to position')
-            sys.exit(0)
+    controller = get_controller(controller_name, limb, kin)
+    try:
+        input('Press <Enter> to execute the trajectory using YOUR OWN controller')
+    except KeyboardInterrupt:
+        sys.exit()
+    # execute the path using your own controller.
+    done = controller.execute_path(
+        robot_trajectory, 
+        rate=rate, 
+        timeout=timeout, 
+        log=log
+    )
+    if not done:
+        print('Failed to move to position')
+        sys.exit(0)
 
 if __name__ == "__main__":
     rospy.init_node('move_board_subscriber')

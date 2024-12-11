@@ -1,10 +1,6 @@
-from Color import Color
+from .Color import Color
 import numpy as np
 import cv2
-from rectify import rectify_image
-from point_reader import read_points
-from point_reader import scale_points
-from warp_img import compute_homography, warp_image
 
 class Image:
     red = Color("Red", np.array([150, 90, 120]), np.array([179, 255, 255]), (0, 0, 255))
