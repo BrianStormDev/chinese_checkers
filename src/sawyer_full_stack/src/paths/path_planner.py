@@ -175,8 +175,3 @@ class PathPlanner(object):
         co.id = name
 
         self._planning_scene_publisher.publish(co)
-
-
-
-        
-        
