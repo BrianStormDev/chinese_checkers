@@ -79,10 +79,10 @@ model = YOLO("newest.pt")
 image_path = "image_12.jpg" 
 image = cv2.imread(image_path)
 
-print('Loading done')
+print('Loading done!')
 
 # Perform object detection
-result = model(image_path)[0]
+result = model(image)[0]
 
 print('Object detection done')
 
