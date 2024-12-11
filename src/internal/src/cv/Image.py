@@ -6,13 +6,13 @@ from point_reader import read_points
 from warp_img import compute_homography, warp_image
 
 class Image:
-    red = Color("red", np.array([150, 90, 120]), np.array([179, 255, 255]), (0, 0, 255))
-    orange = Color("orange", np.array([0, 100, 0]), np.array([25, 255, 255]), (0, 165, 255))
-    yellow = Color("yellow", np.array([20, 70, 0]), np.array([75, 255, 255]), (0, 255, 255))
-    green = Color("green", np.array([75, 100, 0]), np.array([95, 255, 255]), (0, 255, 0))
-    blue = Color("blue", np.array([95, 150, 0]), np.array([110, 255, 255]), (255, 255, 0))
+    red = Color("Red", np.array([150, 90, 120]), np.array([179, 255, 255]), (0, 0, 255))
+    orange = Color("Darkorange", np.array([0, 100, 0]), np.array([25, 255, 255]), (0, 165, 255))
+    yellow = Color("Gold", np.array([20, 70, 0]), np.array([75, 255, 255]), (0, 255, 255))
+    green = Color("Green", np.array([75, 100, 0]), np.array([95, 255, 255]), (0, 255, 0))
+    blue = Color("Blue", np.array([95, 150, 0]), np.array([110, 255, 255]), (255, 255, 0))
     purple = Color("purple", np.array([115, 50, 0]), np.array([130, 255, 255]), (255, 0, 255))
-    white = Color("white", np.array([0, 0, 230]), np.array([179, 60, 255]), (0, 0, 0))
+    white = Color("Black", np.array([0, 0, 230]), np.array([179, 60, 255]), (0, 0, 0))
     # We also want to include some kind of white threshold
     colors = [red, orange, yellow, green, blue, purple, white]
 
