@@ -110,16 +110,16 @@ def ar_tuck():
         speed_ratio = 1
         pan_mode = 1
 
-        # # Tuck the arm, Alice
-        # tuck_positions = {
-        #     'right_j0': 0.0,
-        #     'right_j1': 0.0,
-        #     'right_j2': 0,
-        #     'right_j3': 0.5,
-        #     'right_j4': 0,
-        #     'right_j5': -0.5,
-        #     'right_j6': 1.7
-        # }
+        # Tuck the arm, Alice
+        tuck_positions = {
+            'right_j0': 0.0,
+            'right_j1': 0.0,
+            'right_j2': 0,
+            'right_j3': 0.5,
+            'right_j4': 0,
+            'right_j5': -0.5,
+            'right_j6': 1.7
+        }
 
         # # Tuck the arm, Azula
         # tuck_positions = {
@@ -142,17 +142,6 @@ def ar_tuck():
         #     'right_j5': -0.85,
         #     'right_j6': 1.7
         # }
-
-        # Tuck the arm, Alan
-        tuck_positions = {
-            'right_j0': 0.0,
-            'right_j1': -1.25,
-            'right_j2': 0.0,
-            'right_j3': 1.5,
-            'right_j4': 0.0,
-            'right_j5': -0.5,
-            'right_j6': 1.7
-        }
 
         """
         Publishes a command to control the Sawyer robot's head pan.
@@ -199,10 +188,7 @@ def lookup_tag(tag_number):
         trans = tfBuffer.lookup_transform('base', f'ar_marker_{tag_number}', rospy.Time(0), rospy.Duration(10.0))
     except Exception as e:
         print(e)
-        print("Retrying ...")
-
     return trans
-
 
 def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform):
     """
@@ -243,24 +229,6 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform):
     # Difference of centers: 4.5 + 11.5 +4.5 = 20.5 -> 0.0205 -> 0.01025
     REAL_SPACING_X = - 0.02
     REAL_SPACING_Y = 0.00954
-
-    # X_Max: 0.642
-    # Y_Max: 0.151
-
-    # X_Min: 0.806
-    # Y_Min: -0.078
-
-    # X_spacing: 0.01367
-    # Y_spacing: 0.00954
-
-    # X_Max: 0.644
-    # Y_Max: 0.151
-
-    # X_Min: 0.804
-    # Y_Min: -0.078
-
-    # X_spacing: 0.01367
-    # Y_spacing: 0.00954
     
     # Bottom left peg is 0, 4
     BOTTOM_LEFT_INTERNAL_X = 0
@@ -279,10 +247,10 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform):
     new_z = ar_tag_z
 
     # # Incase the precision is the issue
-    precision = 2
-    new_x = round(new_x, precision)
-    new_y = round(new_y, precision)
-    new_z = round(new_z, precision)
+    # precision = 2
+    # new_x = round(new_x, precision)
+    # new_y = round(new_y, precision)
+    # new_z = round(new_z, precision)
 
     return [new_x, new_y, new_z]
 
@@ -292,15 +260,11 @@ def calibrate_gripper():
     """
     # Set up the right gripper
     right_gripper = robot_gripper.Gripper('right_gripper', calibrate=True)
-
-    # # Amir name
-    # right_gripper = robot_gripper.Gripper('stp_022312TP99620_tip_1', calibrate=True)
-
     return right_gripper
 
 def control_gripper(right_gripper, open):
     """
-    
+    Control the gripper
     """
     # MAX_POSITION = 0.041667 
     # MIN_POSITION = 0.0
@@ -308,22 +272,7 @@ def control_gripper(right_gripper, open):
     # Higher values close it up
     # Lower values open it up
 
-    # # Our gripper values
-    # # Open the right gripper
-    # if open:
-    #     while input("Try opening the gripper: ") == "y":
-    #         print('Opening gripper.')
-    #         right_gripper.set_position(0.027)
-    #         rospy.sleep(1)
-
-    # # Close the right gripper
-    # else:
-    #     while input("Try closing the gripper: ") == "y":
-    #         print('Closing gripper.')
-    #         right_gripper.set_position(0.034)
-    #         rospy.sleep(1)
-
-    # Standard gripper values
+    # Our gripper values
     # Open the right gripper
     if open:
         while input("Try opening the gripper: ") == "y":
@@ -335,15 +284,17 @@ def control_gripper(right_gripper, open):
     else:
         while input("Try closing the gripper: ") == "y":
             print('Closing gripper.')
-            right_gripper.set_position(0.0)
-            rospy.sleep(1)    
-
+            right_gripper.set_position(0.034)
+            rospy.sleep(1)
 
 def callback(message):
     """
+    Main loop
     """
     # Default parameters
     ar_marker = 0
+    TOP_HEIGHT = 0.125
+    PICKUP_HEIGHT = 0.1
 
     # Unpack the message    
     start_x = message.start_x
@@ -351,37 +302,38 @@ def callback(message):
     end_x = message.end_x
     end_y = message.end_y
 
-    rospy.logerr(f"Message recieved: {start_x}, {start_y}, {end_x}, {end_y}.")
+    rospy.loginfo(f"Message recieved: {start_x}, {start_y}, {end_x}, {end_y}.")
 
     # Tucks the robot into a position where it can see the ar_tag
     ar_tuck()
 
     # Calibrates the gripper and initializes the right gripper object through which the gripper can be controlled
-    # right_gripper = calibrate_gripper()
-    # control_gripper(right_gripper, True)
-    # control_gripper(right_gripper, False)
+    right_gripper = calibrate_gripper()
 
     # Ensure that the gripper is initially open
-    # control_gripper(right_gripper, True)
+    control_gripper(right_gripper, True)
 
     # Convert the internal points to real world points
     transform = lookup_tag(ar_marker)
-    rospy.loginfo(transform.transform.position)
+    rospy.loginfo(transform.transform.translation)
     start_position = convert_internal_coordinates_to_real_coordinates(start_x, start_y, transform)
     end_position = convert_internal_coordinates_to_real_coordinates(end_x, end_y, transform)
     
-    rospy.logerr(f"{start_position}, {end_position}")
+    # Log the start and end position in the base frame
+    rospy.loginfo(f"{start_position}, {end_position}")
 
+    # Tuck the robot into a position that it can do IK with easily
     regular_tuck()
-    rospy.sleep(2.0)
+    rospy.sleep(1.0)
 
     # Move the robot to the specified position
-    move_robot(start_position, 0.125)
-    move_robot(start_position, 0.1)
+    move_robot(start_position, TOP_HEIGHT)
+    move_robot(start_position, PICKUP_HEIGHT)
     rospy.sleep(1.0)
 
     # Close the gripper
-    # control_gripper(right_gripper, False)
+    control_gripper(right_gripper, False)
+    move_robot(start_position, TOP_HEIGHT)
     rospy.sleep(1.0)
 
     # Move the robot to a good picking position
@@ -389,12 +341,14 @@ def callback(message):
     rospy.sleep(1.0)
 
     # Move the arm to the designated position
-    move_robot(end_position, 0.125)
-    move_robot(end_position, 0.1)
+    move_robot(end_position, TOP_HEIGHT)
+    move_robot(end_position, PICKUP_HEIGHT)
     rospy.sleep(1.0)
 
     # Open the gripper
-    # control_gripper(right_gripper, True)
+    control_gripper(right_gripper, True)
+    move_robot(end_position, TOP_HEIGHT)
+    rospy.sleep(1.0)
 
     # Move the arm to a spot that doesn't block the camera
     camera_tuck()
@@ -437,6 +391,7 @@ def move_robot(position, height_offset):
         # Set the tolerance in the goal final position
         group.set_goal_position_tolerance(0.00001)
 
+        # Things we tried to improve the accuracy of the robot
         group.set_num_planning_attempts(5)  # Try multiple times
         group.set_max_velocity_scaling_factor(0.1)  # Slow down for precision
         group.set_max_acceleration_scaling_factor(0.05)  # Reduce jerks

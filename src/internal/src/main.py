@@ -61,6 +61,7 @@ if __name__ == "__main__":
         num = int(choice)
 
         # Handle how the move is inputted
+        # User specified input
         if num == 1:
             moveInput = input("Enter the start and end position as x y coordinates, spaced separated: ")
             moveList = moveInput.split(" ")
@@ -68,7 +69,8 @@ if __name__ == "__main__":
             y_start = moveList[1]
             x_end = moveList[2]
             y_end = moveList[3]
-        
+
+        # AI input
         elif num == 2:
             x_start, y_start, x_end, y_end = game.naive_algorithm_initial_and_final_positions()
 
@@ -77,18 +79,12 @@ if __name__ == "__main__":
         message = BoardMove(x_start, y_start, x_end, y_end)
 
         # Dummy test
-
-        message = BoardMove(0, 4, 24, 12)
+        # message = BoardMove(0, 4, 24, 12)
         # message = BoardMove(24, 12, 24, 12)
 
-        rospy.logerr("Test Worked")
+        rospy.loginfo(f"Test Worked. Message: [{x_start}, {y_start}, {x_end}, {y_end}]")
 
         # Publish our string to the topic
         pub.publish(message)
 
         can_collect_image = True
-
-
-
-
-
