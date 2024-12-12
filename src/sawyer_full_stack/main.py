@@ -212,8 +212,12 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, trans):
     # real x shift: - (27 - 2.75 - 4.5) = -19.75
 
     # In base coordinates
-    BOTTOM_LEFT_REAL_X = - 0.0479
-    BOTTOM_LEFT_REAL_Y = - 0.018
+    BOTTOM_LEFT_REAL_X = - 0.0476
+    BOTTOM_LEFT_REAL_Y = - 0.0218
+
+    # # In base coordinates
+    # BOTTOM_LEFT_REAL_X = - 0.0479
+    # BOTTOM_LEFT_REAL_Y = - 0.018
 
     # Y - direction
     # Difference of outer edges: 26.5 mm
@@ -227,8 +231,8 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, trans):
     # Difference of inner edges: 11.5 mm
     # Radii of holes: 4.5 mm
     # Difference of centers: 4.5 + 11.5 +4.5 = 20.5 -> 0.0205 -> 0.01025
-    REAL_SPACING_X = - 0.02
-    REAL_SPACING_Y = 0.00954
+    REAL_SPACING_X = -0.01963
+    REAL_SPACING_Y = 0.00937
     
     # Bottom left peg is 0, 4
     BOTTOM_LEFT_INTERNAL_X = 0
@@ -276,14 +280,14 @@ def control_gripper(right_gripper, open):
     if open:
         while input("Try opening the gripper: ") == "y":
             print('Opening gripper.')
-            right_gripper.set_position(0.027)
+            right_gripper.set_position(0.025)
             rospy.sleep(1)
 
     # Close the right gripper
     else:
         while input("Try closing the gripper: ") == "y":
             print('Closing gripper.')
-            right_gripper.set_position(0.034)
+            right_gripper.set_position(0.03325)
             rospy.sleep(1)
 
 # # Callback function for easy gripper calibration
@@ -299,7 +303,7 @@ def callback(message):
     # Default parameters
     ar_marker = 0
     TOP_HEIGHT = 0.125
-    PICKUP_HEIGHT = 0.1
+    PICKUP_HEIGHT = 0.057
 
     # Unpack the message    
     start_x = message.start_x
@@ -342,7 +346,7 @@ def callback(message):
 
     # Drop the ball in the designated position
     move_robot(end_position, TOP_HEIGHT)
-    move_robot(end_position, PICKUP_HEIGHT)
+    # move_robot(end_position, PICKUP_HEIGHT)
     control_gripper(right_gripper, True)
     move_robot(end_position, TOP_HEIGHT)
 
@@ -440,10 +444,10 @@ def move_robot(position, height_offset):
         group.set_planning_time(10)
 
         # Set the bounds of the workspace
-        group.set_workspace([-2, -2, -2, 2, 2, 2])
+        group.set_workspace([-2, -2, -1.5, 2, 2, 2])
 
         # Set the tolerance in the goal final position
-        group.set_goal_position_tolerance(0.00001)
+        group.set_goal_position_tolerance(0.0001)
 
         # Things we tried to improve the accuracy of the robot
         group.set_num_planning_attempts(5)  # Try multiple times

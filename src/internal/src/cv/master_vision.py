@@ -65,18 +65,18 @@ def image_to_board(raw_image):
 
     image = Image(None, raw_image)
     h, w, _ = raw_image.shape
-    cropped = image.crop_image(int(0.33 * w), int(0.25 * h), int(0.7 * w), int(0.8 * h)) # TODO: fill in parameters)
+    cropped = image.crop_image(int(0.4 * w), int(0.5 * h), int(0.25 * w), int(0.5 * h)) # TODO: fill in parameters)
 
-    cv2.imshow('Cropped', cropped)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # cv2.imshow('Cropped', cropped)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
     image.find_corners(50) # TODO: adjust in param
     rectified_image = image.rectify(500, 500)
 
-    cv2.imshow('Corrected', rectified_image)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # cv2.imshow('Corrected', rectified_image)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
 
     # print('Processing...')
 

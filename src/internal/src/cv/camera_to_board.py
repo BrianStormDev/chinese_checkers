@@ -11,7 +11,7 @@ class_names = ['yellow', 'blue', EMPTY, 'purple', 'green', 'red', 'orange']
 
 cur_dir = Path(__file__).parent
 
-model = YOLO(str(cur_dir / "model.pt"), verbose=False)
+model = YOLO(str(cur_dir / "model_2.pt"), verbose=False)
 
 # image_path = "new_rectified_images/new_data/image_12.jpg" 
 image_path = "special.jpg"
