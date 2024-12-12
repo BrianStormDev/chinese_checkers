@@ -20,7 +20,7 @@ class CameraDisplayNode:
         self.image = None
 
         # Create a directory to save images if it doesn't exist
-        self.save_directory = rospy.get_param('~save_directory', 'new_images/')
+        self.save_directory = rospy.get_param('~save_directory', 'ar_tag/src/saved_images')
         if not os.path.exists(self.save_directory):
             os.makedirs(self.save_directory)
         else: 

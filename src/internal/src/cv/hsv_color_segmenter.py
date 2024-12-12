@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 # Load an image
-image = cv2.imread(r"/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/ar_tag/src/saved_images/new_image_21.jpg")  # Replace with your image path
+image = cv2.imread(r"/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/internal/src/cv/original_images/new_image_26.jpg")  # Replace with your image path
 cv2.namedWindow('image')
 
 # Create trackbars

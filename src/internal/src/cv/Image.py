@@ -7,7 +7,7 @@ class Image:
     orange = Color("Darkorange", np.array([0, 100, 0]), np.array([25, 255, 255]), (0, 165, 255))
     yellow = Color("Gold", np.array([20, 70, 0]), np.array([75, 255, 255]), (0, 255, 255))
     green = Color("Green", np.array([75, 100, 0]), np.array([95, 255, 255]), (0, 255, 0))
-    blue = Color("Blue", np.array([95, 150, 0]), np.array([110, 255, 255]), (255, 255, 0))
+    blue = Color("Blue", np.array([90, 150, 0]), np.array([110, 255, 255]), (255, 255, 0))
     purple = Color("Purple", np.array([115, 70, 0]), np.array([135, 110, 255]), (255, 0, 255))
     white = Color("Black", np.array([0, 0, 230]), np.array([179, 60, 255]), (0, 0, 0))
     # We also want to include some kind of white threshold
