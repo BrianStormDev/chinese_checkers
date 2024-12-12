@@ -110,16 +110,16 @@ def ar_tuck():
         speed_ratio = 1
         pan_mode = 1
 
-        # Tuck the arm, Alice
-        tuck_positions = {
-            'right_j0': 0.0,
-            'right_j1': 0.0,
-            'right_j2': 0,
-            'right_j3': 0.5,
-            'right_j4': 0,
-            'right_j5': -0.5,
-            'right_j6': 1.7
-        }
+        # # Tuck the arm, Alice
+        # tuck_positions = {
+        #     'right_j0': 0.0,
+        #     'right_j1': 0.0,
+        #     'right_j2': 0,
+        #     'right_j3': 0.5,
+        #     'right_j4': 0,
+        #     'right_j5': -0.5,
+        #     'right_j6': 1.7
+        # }
 
         # # Tuck the arm, Azula
         # tuck_positions = {
@@ -142,6 +142,17 @@ def ar_tuck():
         #     'right_j5': -0.85,
         #     'right_j6': 1.7
         # }
+
+        # Tuck the arm, Alan
+        tuck_positions = {
+            'right_j0': 0.0,
+            'right_j1': -1.25,
+            'right_j2': 0.0,
+            'right_j3': 1.5,
+            'right_j4': 0.0,
+            'right_j5': -0.5,
+            'right_j6': 1.7
+        }
 
         """
         Publishes a command to control the Sawyer robot's head pan.
@@ -282,6 +293,9 @@ def calibrate_gripper():
     # Set up the right gripper
     right_gripper = robot_gripper.Gripper('right_gripper', calibrate=True)
 
+    # # Amir name
+    # right_gripper = robot_gripper.Gripper('stp_022312TP99620_tip_1', calibrate=True)
+
     return right_gripper
 
 def control_gripper(right_gripper, open):
@@ -294,6 +308,22 @@ def control_gripper(right_gripper, open):
     # Higher values close it up
     # Lower values open it up
 
+    # # Our gripper values
+    # # Open the right gripper
+    # if open:
+    #     while input("Try opening the gripper: ") == "y":
+    #         print('Opening gripper.')
+    #         right_gripper.set_position(0.027)
+    #         rospy.sleep(1)
+
+    # # Close the right gripper
+    # else:
+    #     while input("Try closing the gripper: ") == "y":
+    #         print('Closing gripper.')
+    #         right_gripper.set_position(0.034)
+    #         rospy.sleep(1)
+
+    # Standard gripper values
     # Open the right gripper
     if open:
         while input("Try opening the gripper: ") == "y":
@@ -305,8 +335,8 @@ def control_gripper(right_gripper, open):
     else:
         while input("Try closing the gripper: ") == "y":
             print('Closing gripper.')
-            right_gripper.set_position(0.034)
-            rospy.sleep(1)
+            right_gripper.set_position(0.0)
+            rospy.sleep(1)    
 
 
 def callback(message):
@@ -327,13 +357,16 @@ def callback(message):
     ar_tuck()
 
     # Calibrates the gripper and initializes the right gripper object through which the gripper can be controlled
-    right_gripper = calibrate_gripper()
-    
+    # right_gripper = calibrate_gripper()
+    # control_gripper(right_gripper, True)
+    # control_gripper(right_gripper, False)
+
     # Ensure that the gripper is initially open
-    control_gripper(right_gripper, True)
+    # control_gripper(right_gripper, True)
 
     # Convert the internal points to real world points
     transform = lookup_tag(ar_marker)
+    rospy.loginfo(transform.transform.position)
     start_position = convert_internal_coordinates_to_real_coordinates(start_x, start_y, transform)
     end_position = convert_internal_coordinates_to_real_coordinates(end_x, end_y, transform)
     
@@ -348,7 +381,7 @@ def callback(message):
     rospy.sleep(1.0)
 
     # Close the gripper
-    control_gripper(right_gripper, False)
+    # control_gripper(right_gripper, False)
     rospy.sleep(1.0)
 
     # Move the robot to a good picking position
@@ -361,7 +394,7 @@ def callback(message):
     rospy.sleep(1.0)
 
     # Open the gripper
-    control_gripper(right_gripper, True)
+    # control_gripper(right_gripper, True)
 
     # Move the arm to a spot that doesn't block the camera
     camera_tuck()
