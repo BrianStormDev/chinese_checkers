@@ -1,43 +1,20 @@
 #!/usr/bin/env python
-"""
-Starter script for 106a lab7. 
-Author: Chris Correa
-"""
-
-# Old tuck position angles
-# 0 -1 0 1.5 0 -0.5 1.7
-
-# New tuck angles
-# -0.25 -0.5 0 1.5 0 -1.0 1.7
-
-import sys
-import numpy as np
-import rospkg
-import roslaunch
-
-from paths.trajectories import LinearTrajectory, CircularTrajectory
-from paths.paths import MotionPath
-from paths.path_planner import PathPlanner
-from controllers.controllers import ( 
-    PIDJointVelocityController, 
-    FeedforwardJointVelocityController
-)
 import rospy.logger_level_service_caller
-from utils.utils import *
-
-from trac_ik_python.trac_ik import IK
 
 import rospy
 import tf2_ros
-import intera_interface
-from moveit_msgs.msg import DisplayTrajectory, RobotState
-from sawyer_pykdl import sawyer_kinematics
 
 # Added dependencies for project
 from intera_interface import gripper as robot_gripper
 from internal.msg import BoardMove
+
+# Tuck dependencies
 from intera_core_msgs.msg import HeadPanCommand
 from intera_interface import Limb
+
+# Move dependencies
+from moveit_msgs.srv import GetPositionIKRequest
+from moveit_commander import MoveGroupCommander
 
 def camera_tuck():
     """
@@ -135,7 +112,7 @@ def ar_tuck():
 
         # Tuck the arm, Alice
         tuck_positions = {
-            'right_j0': -0.25,
+            'right_j0': 0.0,
             'right_j1': 0.0,
             'right_j2': 0,
             'right_j3': 0.5,
@@ -215,68 +192,6 @@ def lookup_tag(tag_number):
 
     return trans
 
-def get_trajectory(limb, kin, ik_solver, tag_pos, num_way, task):
-    """
-    Returns an appropriate robot trajectory for the specified task.  You should 
-    be implementing the path functions in paths.py and call them here
-    
-    Parameters
-    ----------
-    task : string
-        name of the task.  Options: line, circle, square
-    tag_pos : 3x' :obj:`numpy.ndarray`
-        
-    Returns
-    -------
-    :obj:`moveit_msgs.msg.RobotTrajectory`
-    """
-
-    tfBuffer = tf2_ros.Buffer()
-    listener = tf2_ros.TransformListener(tfBuffer)
-
-    try:
-        trans = tfBuffer.lookup_transform('base', 'right_hand', rospy.Time(0), rospy.Duration(10.0))
-    except Exception as e:
-        print(e)
-
-    current_position = np.array([getattr(trans.transform.translation, dim) for dim in ('x', 'y', 'z')])
-    print("Current Position:", current_position)
-
-    if task == 'line':
-        target_pos = tag_pos[0]
-        # linear path moves to a Z position above target_pos.
-        # target_pos[2] += 0.205 # Azula
-        target_pos[2] += 0.205 # Alice
-        # target_pos[2] += 0.15 # Alan
-        print("TARGET POSITION:", target_pos)
-        trajectory = LinearTrajectory(start_position=current_position, goal_position=target_pos, total_time=30)
-    
-    path = MotionPath(limb, kin, ik_solver, trajectory)
-    return path.to_robot_trajectory(num_way, True)
-
-def get_controller(controller_name, limb, kin):
-    """
-    Gets the correct controller from controllers.py
-
-    Parameters
-    ----------
-    controller_name : string
-
-    Returns
-    -------
-    :obj:`Controller`
-    """
-    if controller_name == 'open_loop':
-        controller = FeedforwardJointVelocityController(limb, kin)
-    elif controller_name == 'pid':
-        Kp = 0.2 * np.array([0.4, 2, 1.7, 1.5, 2, 2, 3])
-        Kd = 0.01 * np.array([2, 1, 2, 0.5, 0.8, 0.8, 0.8])
-        Ki = 0.01 * np.array([1.4, 1.4, 1.4, 1, 0.6, 0.6, 0.6])
-        Kw = np.array([0.9, 0.9, 0.9, 0.9, 0.9, 0.9, 0.9])
-        controller = PIDJointVelocityController(limb, kin, Kp, Ki, Kd, Kw)
-    else:
-        raise ValueError('Controller {} not recognized'.format(controller_name))
-    return controller
 
 def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform):
     """
@@ -300,23 +215,41 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform):
     # real x shift: - (27 - 2.75 - 4.5) = -19.75
 
     # In base coordinates
-    BOTTOM_LEFT_REAL_X = - 0.045
-    BOTTOM_LEFT_REAL_Y = - 0.0275
-
-    # X - direction
-    # Difference of outer edges: 27.0 mm
-    # Difference of inner edges: 11.5 mm
-    # Radii of holes: 4.5 mm
-    # Difference of centers: 27.0 - 4.5 - 4.5 = 18.0 -> 0.180
+    BOTTOM_LEFT_REAL_X = - 0.0479
+    BOTTOM_LEFT_REAL_Y = - 0.018
 
     # Y - direction
+    # Difference of outer edges: 26.5 mm
+    # Difference of inner edges: 11.5 mm
+    # Radii of holes: 4.5 mm
+    # Difference of centers: 26.5 - 4.5 - 4.5 = 17.5 -> 0.0175
+
+    # X - direction
     # Since every x peg is 2 pegs along we divid the gap by 2
     # Difference of outer edges: 29.5 mm
     # Difference of inner edges: 11.5 mm
     # Radii of holes: 4.5 mm
-    # Difference of centers: 4.5 + 11.5 +4.5 = 20.5 -> 0.205 -> 0.1025
-    REAL_SPACING_X = 0.180
-    REAL_SPACING_Y = 0.1025
+    # Difference of centers: 4.5 + 11.5 +4.5 = 20.5 -> 0.0205 -> 0.01025
+    REAL_SPACING_X = - 0.02
+    REAL_SPACING_Y = 0.00954
+
+    # X_Max: 0.642
+    # Y_Max: 0.151
+
+    # X_Min: 0.806
+    # Y_Min: -0.078
+
+    # X_spacing: 0.01367
+    # Y_spacing: 0.00954
+
+    # X_Max: 0.644
+    # Y_Max: 0.151
+
+    # X_Min: 0.804
+    # Y_Min: -0.078
+
+    # X_spacing: 0.01367
+    # Y_spacing: 0.00954
     
     # Bottom left peg is 0, 4
     BOTTOM_LEFT_INTERNAL_X = 0
@@ -330,7 +263,7 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform):
     # Keep in mind, these values are with respect to the base axes
     # We first convert the internal x and y values to a real offset before added the tag offset and the offset to the (0,4) Peg
     # Keep in mind that the x and y in the board different from the x and y in the base frame
-    new_x = -(y - BOTTOM_LEFT_INTERNAL_Y) * REAL_SPACING_X + BOTTOM_LEFT_REAL_X + ar_tag_x
+    new_x = (y - BOTTOM_LEFT_INTERNAL_Y) * REAL_SPACING_X + BOTTOM_LEFT_REAL_X + ar_tag_x
     new_y = (x - BOTTOM_LEFT_INTERNAL_X) * REAL_SPACING_Y + BOTTOM_LEFT_REAL_Y + ar_tag_y
     new_z = ar_tag_z
 
@@ -340,19 +273,14 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform):
     new_y = round(new_y, precision)
     new_z = round(new_z, precision)
 
-    return [np.array([new_x, new_y, new_z])]
+    return [new_x, new_y, new_z]
 
 def calibrate_gripper():
     """
     calibrates the gripper and returns the right_gripper object through which the gripper can be controlled
     """
     # Set up the right gripper
-    right_gripper = robot_gripper.Gripper('right_gripper')
-
-    # Calibrate the gripper (other commands won't work unless you do this first)
-    print('Calibrating...')
-    right_gripper.calibrate()
-    rospy.sleep(2.0)
+    right_gripper = robot_gripper.Gripper('right_gripper', calibrate=True)
 
     return right_gripper
 
@@ -363,39 +291,29 @@ def control_gripper(right_gripper, open):
     # MAX_POSITION = 0.041667 
     # MIN_POSITION = 0.0
 
+    # Higher values close it up
+    # Lower values open it up
+
     # Open the right gripper
     if open:
-        print('Opening gripper.')
-        right_gripper.open(0.027)
+        while input("Try opening the gripper: ") == "y":
+            print('Opening gripper.')
+            right_gripper.set_position(0.027)
+            rospy.sleep(1)
 
     # Close the right gripper
     else:
-        print('Closing gripper.')
-        right_gripper.open(0.033)
+        while input("Try closing the gripper: ") == "y":
+            print('Closing gripper.')
+            right_gripper.set_position(0.034)
+            rospy.sleep(1)
 
 
 def callback(message):
     """
-    task: line, circle.  Default: line
-    ar_marker: Which AR marker to use.  Default: 1
-    controller_name: moveit, open_loop, pid.  Default: moveit
-    rate: This specifies how many ms between loops.  It is important to use a rate
-    and not a regular while loop because you want the loop to refresh at a
-    constant rate, otherwise you would have to tune your PD parameters if 
-    the loop runs slower / faster.  Default: 200
-    timeout: after how many seconds should the controller terminate if it hasn't already. Default: None
-    num_way: How many waypoints for the :obj:`moveit_msgs.msg.RobotTrajectory`.  Default: 300
-    log: plots controller performance.  Default: False
     """
-
     # Default parameters
-    task = 'line'
     ar_marker = 0
-    controller_name = 'pid'
-    rate = 200
-    timeout = None
-    num_way = 1000
-    log = False
 
     # Unpack the message    
     start_x = message.start_x
@@ -410,34 +328,23 @@ def callback(message):
 
     # Calibrates the gripper and initializes the right gripper object through which the gripper can be controlled
     right_gripper = calibrate_gripper()
-    rospy.sleep(3.0)
     
     # Ensure that the gripper is initially open
     control_gripper(right_gripper, True)
-    rospy.sleep(1.0)
-    
-    # this is used for sending commands (velocity, torque, etc) to the robot
-    ik_solver = IK("base", "right_gripper_tip")
-    limb = intera_interface.Limb("right")
-    kin = sawyer_kinematics("right")
 
     # Convert the internal points to real world points
     transform = lookup_tag(ar_marker)
-
-    # # Test by moving to the AR_TAG
-    # start_position = [np.array([getattr(transform.transform.translation, dim) for dim in ('x', 'y', 'z')])]
-
     start_position = convert_internal_coordinates_to_real_coordinates(start_x, start_y, transform)
-
     end_position = convert_internal_coordinates_to_real_coordinates(end_x, end_y, transform)
     
-    rospy.logerr(f"{start_position[0]}, {end_position[0]}")
+    rospy.logerr(f"{start_position}, {end_position}")
 
     regular_tuck()
     rospy.sleep(2.0)
 
     # Move the robot to the specified position
-    move_robot(task, controller_name, rate, timeout, num_way, log, ik_solver, limb, kin, start_position)
+    move_robot(start_position, 0.125)
+    move_robot(start_position, 0.1)
     rospy.sleep(1.0)
 
     # Close the gripper
@@ -449,61 +356,69 @@ def callback(message):
     rospy.sleep(1.0)
 
     # Move the arm to the designated position
-    move_robot(task, controller_name, rate, timeout, num_way, log, ik_solver, limb, kin, end_position)
+    move_robot(end_position, 0.125)
+    move_robot(end_position, 0.1)
     rospy.sleep(1.0)
 
     # Open the gripper
     control_gripper(right_gripper, True)
-    rospy.sleep(1.0)
 
     # Move the arm to a spot that doesn't block the camera
     camera_tuck()
     rospy.sleep(1.0)
 
-def move_robot(task, controller_name, rate, timeout, num_way, log, ik_solver, limb, kin, position):
+def move_robot(position, height_offset):
     """
-    Moves the robot to a specified location
+    position is a list [x, y, z]
     """
-    # Get an appropriate RobotTrajectory for the task (circular, linear, or square)
-    # If the controller is a workspace controller, this should return a trajectory where the
-    # positions and velocities are workspace positions and velocities.  If the controller
-    # is a jointspace or torque controller, it should return a trajectory where the positions
-    # and velocities are the positions and velocities of each joint.
-    robot_trajectory = get_trajectory(limb, kin, ik_solver, position, num_way, task)
+    # Construct the request
+    request = GetPositionIKRequest()
+    request.ik_request.group_name = "right_arm"
 
-    # This is a wrapper around MoveIt! for you to use.  We use MoveIt! to go to the start position
-    # of the trajectory
-    planner = PathPlanner('right_arm')
-    
-    # By publishing the trajectory to the move_group/display_planned_path topic, you should 
-    # be able to view it in RViz.  You will have to click the "loop animation" setting in 
-    # the planned path section of MoveIt! in the menu on the left side of the screen.
-    pub = rospy.Publisher('move_group/display_planned_path', DisplayTrajectory, queue_size=10)
-    disp_traj = DisplayTrajectory()
-    disp_traj.trajectory.append(robot_trajectory)
-    disp_traj.trajectory_start = RobotState()
-    pub.publish(disp_traj)
-
-    # Move to the trajectory start position
-    plan = planner.plan_to_joint_pos(robot_trajectory.joint_trajectory.points[0].positions)
-    plan = planner.retime_trajectory(plan, 0.3)
-    planner.execute_plan(plan[1])
-
-    controller = get_controller(controller_name, limb, kin)
+    # If a Sawyer does not have a gripper, replace '_gripper_tip' with '_wrist' instead
+    request.ik_request.ik_link_name = "right_gripper_tip"
+    request.ik_request.pose_stamped.header.frame_id = "base"
+        
+    # Set the desired orientation for the end effector HERE
+    request.ik_request.pose_stamped.pose.position.x = position[0]
+    request.ik_request.pose_stamped.pose.position.y = position[1]
+    request.ik_request.pose_stamped.pose.position.z = position[2] + height_offset
+    request.ik_request.pose_stamped.pose.orientation.x = 0
+    request.ik_request.pose_stamped.pose.orientation.y = 1
+    request.ik_request.pose_stamped.pose.orientation.z = 0
+    request.ik_request.pose_stamped.pose.orientation.w = 0
+        
     try:
-        input('Press <Enter> to execute the trajectory using YOUR OWN controller')
-    except KeyboardInterrupt:
-        sys.exit()
-    # execute the path using your own controller.
-    done = controller.execute_path(
-        robot_trajectory, 
-        rate=rate, 
-        timeout=timeout, 
-        log=log
-    )
-    if not done:
-        print('Failed to move to position')
-        sys.exit(0)
+        # Print the response HERE
+        group = MoveGroupCommander("right_arm")
+
+        # Setting position and orientation target
+        group.set_pose_target(request.ik_request.pose_stamped)
+
+        # Set the planning time
+        group.set_planning_time(10)
+
+        # Set the bounds of the workspace
+        group.set_workspace([-2, -2, -2, 2, 2, 2])
+
+        # Set the tolerance in the goal final position
+        group.set_goal_position_tolerance(0.00001)
+
+        group.set_num_planning_attempts(5)  # Try multiple times
+        group.set_max_velocity_scaling_factor(0.1)  # Slow down for precision
+        group.set_max_acceleration_scaling_factor(0.05)  # Reduce jerks
+
+        # Plan IK
+        plan = group.plan()
+        user_input = input("Enter 'y' if the trajectory looks safe on RVIZ: ")
+        
+        # Execute IK if safe
+        if user_input == 'y':
+            group.execute(plan[1])
+            rospy.sleep(1.0)
+            
+    except rospy.ServiceException as e:
+        print("Service call failed: %s"%e)
 
 if __name__ == "__main__":
     rospy.init_node('move_board_subscriber')

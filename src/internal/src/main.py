@@ -76,7 +76,9 @@ if __name__ == "__main__":
         # message = BoardMove(x_start, y_start, x_end, y_end)
 
         # Dummy test
-        message = BoardMove(11, 7, 2, 2)
+
+        message = BoardMove(0, 4, 24, 12)
+        # message = BoardMove(24, 12, 24, 12)
 
         rospy.logerr("Test Worked")
 

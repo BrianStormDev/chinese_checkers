@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src
+CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build
+CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -137,14 +137,14 @@ test/fast: test
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/CMakeFiles /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/ar_track_alvar_msgs/CMakeFiles/progress.marks
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/CMakeFiles 0
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(CMAKE_COMMAND) -E cmake_progress_start /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/CMakeFiles /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_track_alvar_msgs/CMakeFiles/progress.marks
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/clean
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/clean
 .PHONY : clean
 
 # The main clean target
@@ -154,22 +154,22 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/preinstall
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/preinstall
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarker.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarker.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarker.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarker.dir/rule
 
 # Convenience name for target.
@@ -179,12 +179,12 @@ _ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarker: ar_track_alvar_ms
 
 # fast build rule for target.
 _ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarker/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarker.dir/build.make ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarker.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarker.dir/build.make ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarker.dir/build
 .PHONY : _ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarker/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_eus.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_eus.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_eus.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_eus.dir/rule
 
 # Convenience name for target.
@@ -194,12 +194,12 @@ std_msgs_generate_messages_eus: ar_track_alvar_msgs/CMakeFiles/std_msgs_generate
 
 # fast build rule for target.
 std_msgs_generate_messages_eus/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_eus.dir/build.make ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_eus.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_eus.dir/build.make ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_eus.dir/build
 .PHONY : std_msgs_generate_messages_eus/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gencpp.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gencpp.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gencpp.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gencpp.dir/rule
 
 # Convenience name for target.
@@ -209,12 +209,12 @@ ar_track_alvar_msgs_gencpp: ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_g
 
 # fast build rule for target.
 ar_track_alvar_msgs_gencpp/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gencpp.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gencpp.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gencpp.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gencpp.dir/build
 .PHONY : ar_track_alvar_msgs_gencpp/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/rule
 
 # Convenience name for target.
@@ -224,12 +224,12 @@ geometry_msgs_generate_messages_lisp: ar_track_alvar_msgs/CMakeFiles/geometry_ms
 
 # fast build rule for target.
 geometry_msgs_generate_messages_lisp/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/build.make ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/build.make ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_lisp.dir/build
 .PHONY : geometry_msgs_generate_messages_lisp/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_cpp.dir/rule
 
 # Convenience name for target.
@@ -239,12 +239,12 @@ std_msgs_generate_messages_cpp: ar_track_alvar_msgs/CMakeFiles/std_msgs_generate
 
 # fast build rule for target.
 std_msgs_generate_messages_cpp/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_cpp.dir/build.make ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_cpp.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_cpp.dir/build.make ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_cpp.dir/build
 .PHONY : std_msgs_generate_messages_cpp/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/rule
 
 # Convenience name for target.
@@ -254,12 +254,12 @@ _ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers: ar_track_alvar_m
 
 # fast build rule for target.
 _ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/build.make ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/build.make ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/build
 .PHONY : _ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages.dir/rule
 
 # Convenience name for target.
@@ -269,12 +269,12 @@ ar_track_alvar_msgs_generate_messages: ar_track_alvar_msgs/CMakeFiles/ar_track_a
 
 # fast build rule for target.
 ar_track_alvar_msgs_generate_messages/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages.dir/build
 .PHONY : ar_track_alvar_msgs_generate_messages/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_py.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_py.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_py.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_py.dir/rule
 
 # Convenience name for target.
@@ -284,12 +284,12 @@ std_msgs_generate_messages_py: ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_
 
 # fast build rule for target.
 std_msgs_generate_messages_py/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_py.dir/build.make ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_py.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_py.dir/build.make ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_py.dir/build
 .PHONY : std_msgs_generate_messages_py/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_py.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_py.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_py.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_py.dir/rule
 
 # Convenience name for target.
@@ -299,12 +299,12 @@ ar_track_alvar_msgs_generate_messages_py: ar_track_alvar_msgs/CMakeFiles/ar_trac
 
 # fast build rule for target.
 ar_track_alvar_msgs_generate_messages_py/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_py.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_py.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_py.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_py.dir/build
 .PHONY : ar_track_alvar_msgs_generate_messages_py/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/rule
 
 # Convenience name for target.
@@ -314,12 +314,12 @@ geometry_msgs_generate_messages_nodejs: ar_track_alvar_msgs/CMakeFiles/geometry_
 
 # fast build rule for target.
 geometry_msgs_generate_messages_nodejs/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/build.make ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/build.make ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_nodejs.dir/build
 .PHONY : geometry_msgs_generate_messages_nodejs/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_cpp.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_cpp.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_cpp.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_cpp.dir/rule
 
 # Convenience name for target.
@@ -329,12 +329,12 @@ geometry_msgs_generate_messages_cpp: ar_track_alvar_msgs/CMakeFiles/geometry_msg
 
 # fast build rule for target.
 geometry_msgs_generate_messages_cpp/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_cpp.dir/build.make ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_cpp.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_cpp.dir/build.make ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_cpp.dir/build
 .PHONY : geometry_msgs_generate_messages_cpp/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_py.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_py.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_py.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_py.dir/rule
 
 # Convenience name for target.
@@ -344,12 +344,12 @@ geometry_msgs_generate_messages_py: ar_track_alvar_msgs/CMakeFiles/geometry_msgs
 
 # fast build rule for target.
 geometry_msgs_generate_messages_py/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_py.dir/build.make ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_py.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_py.dir/build.make ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_py.dir/build
 .PHONY : geometry_msgs_generate_messages_py/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_nodejs.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_nodejs.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_nodejs.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_nodejs.dir/rule
 
 # Convenience name for target.
@@ -359,12 +359,12 @@ std_msgs_generate_messages_nodejs: ar_track_alvar_msgs/CMakeFiles/std_msgs_gener
 
 # fast build rule for target.
 std_msgs_generate_messages_nodejs/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_nodejs.dir/build.make ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_nodejs.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_nodejs.dir/build.make ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_nodejs.dir/build
 .PHONY : std_msgs_generate_messages_nodejs/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_eus.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_eus.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_eus.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_eus.dir/rule
 
 # Convenience name for target.
@@ -374,12 +374,12 @@ geometry_msgs_generate_messages_eus: ar_track_alvar_msgs/CMakeFiles/geometry_msg
 
 # fast build rule for target.
 geometry_msgs_generate_messages_eus/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_eus.dir/build.make ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_eus.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_eus.dir/build.make ar_track_alvar_msgs/CMakeFiles/geometry_msgs_generate_messages_eus.dir/build
 .PHONY : geometry_msgs_generate_messages_eus/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_cpp.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_cpp.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_cpp.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_cpp.dir/rule
 
 # Convenience name for target.
@@ -389,12 +389,12 @@ ar_track_alvar_msgs_generate_messages_cpp: ar_track_alvar_msgs/CMakeFiles/ar_tra
 
 # fast build rule for target.
 ar_track_alvar_msgs_generate_messages_cpp/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_cpp.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_cpp.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_cpp.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_cpp.dir/build
 .PHONY : ar_track_alvar_msgs_generate_messages_cpp/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_eus.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_eus.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_eus.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_eus.dir/rule
 
 # Convenience name for target.
@@ -404,12 +404,12 @@ ar_track_alvar_msgs_generate_messages_eus: ar_track_alvar_msgs/CMakeFiles/ar_tra
 
 # fast build rule for target.
 ar_track_alvar_msgs_generate_messages_eus/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_eus.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_eus.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_eus.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_eus.dir/build
 .PHONY : ar_track_alvar_msgs_generate_messages_eus/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_geneus.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_geneus.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_geneus.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_geneus.dir/rule
 
 # Convenience name for target.
@@ -419,12 +419,12 @@ ar_track_alvar_msgs_geneus: ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_g
 
 # fast build rule for target.
 ar_track_alvar_msgs_geneus/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_geneus.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_geneus.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_geneus.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_geneus.dir/build
 .PHONY : ar_track_alvar_msgs_geneus/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_lisp.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_lisp.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_lisp.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_lisp.dir/rule
 
 # Convenience name for target.
@@ -434,12 +434,12 @@ ar_track_alvar_msgs_generate_messages_lisp: ar_track_alvar_msgs/CMakeFiles/ar_tr
 
 # fast build rule for target.
 ar_track_alvar_msgs_generate_messages_lisp/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_lisp.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_lisp.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_lisp.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_lisp.dir/build
 .PHONY : ar_track_alvar_msgs_generate_messages_lisp/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_genpy.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_genpy.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_genpy.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_genpy.dir/rule
 
 # Convenience name for target.
@@ -449,12 +449,12 @@ ar_track_alvar_msgs_genpy: ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_ge
 
 # fast build rule for target.
 ar_track_alvar_msgs_genpy/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_genpy.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_genpy.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_genpy.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_genpy.dir/build
 .PHONY : ar_track_alvar_msgs_genpy/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_lisp.dir/rule
 
 # Convenience name for target.
@@ -464,12 +464,12 @@ std_msgs_generate_messages_lisp: ar_track_alvar_msgs/CMakeFiles/std_msgs_generat
 
 # fast build rule for target.
 std_msgs_generate_messages_lisp/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_lisp.dir/build.make ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_lisp.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_lisp.dir/build.make ar_track_alvar_msgs/CMakeFiles/std_msgs_generate_messages_lisp.dir/build
 .PHONY : std_msgs_generate_messages_lisp/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_genlisp.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_genlisp.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_genlisp.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_genlisp.dir/rule
 
 # Convenience name for target.
@@ -479,12 +479,12 @@ ar_track_alvar_msgs_genlisp: ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_
 
 # fast build rule for target.
 ar_track_alvar_msgs_genlisp/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_genlisp.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_genlisp.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_genlisp.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_genlisp.dir/build
 .PHONY : ar_track_alvar_msgs_genlisp/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_nodejs.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_nodejs.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_nodejs.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_nodejs.dir/rule
 
 # Convenience name for target.
@@ -494,12 +494,12 @@ ar_track_alvar_msgs_generate_messages_nodejs: ar_track_alvar_msgs/CMakeFiles/ar_
 
 # fast build rule for target.
 ar_track_alvar_msgs_generate_messages_nodejs/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_nodejs.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_nodejs.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_nodejs.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages_nodejs.dir/build
 .PHONY : ar_track_alvar_msgs_generate_messages_nodejs/fast
 
 # Convenience name for target.
 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/rule:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/rule
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f CMakeFiles/Makefile2 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/rule
 .PHONY : ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/rule
 
 # Convenience name for target.
@@ -509,7 +509,7 @@ ar_track_alvar_msgs_gennodejs: ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msg
 
 # fast build rule for target.
 ar_track_alvar_msgs_gennodejs/fast:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/build
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(MAKE) -f ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/build.make ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_gennodejs.dir/build
 .PHONY : ar_track_alvar_msgs_gennodejs/fast
 
 # Help Target
@@ -559,6 +559,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(CMAKE_COMMAND) -S$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 
