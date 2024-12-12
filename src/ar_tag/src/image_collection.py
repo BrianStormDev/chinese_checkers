@@ -20,7 +20,7 @@ class CameraDisplayNode:
         self.image = None
 
         # Create a directory to save images if it doesn't exist
-        self.save_directory = rospy.get_param('~save_directory', 'saved_images')
+        self.save_directory = rospy.get_param('~save_directory', 'new_images/')
         if not os.path.exists(self.save_directory):
             os.makedirs(self.save_directory)
         else: 
@@ -54,6 +54,7 @@ if __name__ == '__main__':
     finally:
         # # Close any OpenCV windows when the node is shut down
         if node.image is not None: 
+            print(node.save_directory)
             filename = os.path.join(node.save_directory, f"new_image_{27}.jpg")
             cv2.imwrite(filename, node.image)
             print('File saved')
