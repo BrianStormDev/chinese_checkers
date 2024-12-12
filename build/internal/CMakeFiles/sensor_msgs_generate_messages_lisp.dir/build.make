@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src
+CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build
+CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build
 
 # Utility rule file for sensor_msgs_generate_messages_lisp.
 
@@ -63,10 +63,10 @@ internal/CMakeFiles/sensor_msgs_generate_messages_lisp.dir/build: sensor_msgs_ge
 .PHONY : internal/CMakeFiles/sensor_msgs_generate_messages_lisp.dir/build
 
 internal/CMakeFiles/sensor_msgs_generate_messages_lisp.dir/clean:
-	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal && $(CMAKE_COMMAND) -P CMakeFiles/sensor_msgs_generate_messages_lisp.dir/cmake_clean.cmake
+	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/internal && $(CMAKE_COMMAND) -P CMakeFiles/sensor_msgs_generate_messages_lisp.dir/cmake_clean.cmake
 .PHONY : internal/CMakeFiles/sensor_msgs_generate_messages_lisp.dir/clean
 
 internal/CMakeFiles/sensor_msgs_generate_messages_lisp.dir/depend:
-	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/internal /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal/CMakeFiles/sensor_msgs_generate_messages_lisp.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/internal /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/internal /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/internal/CMakeFiles/sensor_msgs_generate_messages_lisp.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : internal/CMakeFiles/sensor_msgs_generate_messages_lisp.dir/depend
 

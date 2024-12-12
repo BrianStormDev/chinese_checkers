@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src
+CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build
+CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build
 
 # Utility rule file for trajectory_msgs_generate_messages_py.
 
@@ -63,10 +63,10 @@ baxter_pykdl/CMakeFiles/trajectory_msgs_generate_messages_py.dir/build: trajecto
 .PHONY : baxter_pykdl/CMakeFiles/trajectory_msgs_generate_messages_py.dir/build
 
 baxter_pykdl/CMakeFiles/trajectory_msgs_generate_messages_py.dir/clean:
-	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/baxter_pykdl && $(CMAKE_COMMAND) -P CMakeFiles/trajectory_msgs_generate_messages_py.dir/cmake_clean.cmake
+	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/baxter_pykdl && $(CMAKE_COMMAND) -P CMakeFiles/trajectory_msgs_generate_messages_py.dir/cmake_clean.cmake
 .PHONY : baxter_pykdl/CMakeFiles/trajectory_msgs_generate_messages_py.dir/clean
 
 baxter_pykdl/CMakeFiles/trajectory_msgs_generate_messages_py.dir/depend:
-	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/baxter_pykdl /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/baxter_pykdl /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/baxter_pykdl/CMakeFiles/trajectory_msgs_generate_messages_py.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/baxter_pykdl /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/baxter_pykdl /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/baxter_pykdl/CMakeFiles/trajectory_msgs_generate_messages_py.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : baxter_pykdl/CMakeFiles/trajectory_msgs_generate_messages_py.dir/depend
 

@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/include/internal/BoardMove.h"
+  "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/include/internal/BoardMove.h"
   "CMakeFiles/internal_generate_messages_cpp"
 )
 
