@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src
+CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build
+CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build
 
 # Utility rule file for _catkin_empty_exported_target.
 
@@ -63,10 +63,10 @@ ar_tag/CMakeFiles/_catkin_empty_exported_target.dir/build: _catkin_empty_exporte
 .PHONY : ar_tag/CMakeFiles/_catkin_empty_exported_target.dir/build
 
 ar_tag/CMakeFiles/_catkin_empty_exported_target.dir/clean:
-	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_tag && $(CMAKE_COMMAND) -P CMakeFiles/_catkin_empty_exported_target.dir/cmake_clean.cmake
+	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/ar_tag && $(CMAKE_COMMAND) -P CMakeFiles/_catkin_empty_exported_target.dir/cmake_clean.cmake
 .PHONY : ar_tag/CMakeFiles/_catkin_empty_exported_target.dir/clean
 
 ar_tag/CMakeFiles/_catkin_empty_exported_target.dir/depend:
-	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/ar_tag /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_tag /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_tag/CMakeFiles/_catkin_empty_exported_target.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/ar_tag /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/ar_tag /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/ar_tag/CMakeFiles/_catkin_empty_exported_target.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : ar_tag/CMakeFiles/_catkin_empty_exported_target.dir/depend
 

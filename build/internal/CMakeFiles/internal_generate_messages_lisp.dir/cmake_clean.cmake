@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/share/common-lisp/ros/internal/msg/BoardMove.lisp"
+  "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/share/common-lisp/ros/internal/msg/BoardMove.lisp"
   "CMakeFiles/internal_generate_messages_lisp"
 )
 

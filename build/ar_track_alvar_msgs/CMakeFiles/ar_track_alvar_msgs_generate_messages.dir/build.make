@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src
+CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build
+CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build
 
 # Utility rule file for ar_track_alvar_msgs_generate_messages.
 
@@ -63,10 +63,10 @@ ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages.dir/build: 
 .PHONY : ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages.dir/build
 
 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages.dir/clean:
-	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_track_alvar_msgs && $(CMAKE_COMMAND) -P CMakeFiles/ar_track_alvar_msgs_generate_messages.dir/cmake_clean.cmake
+	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/ar_track_alvar_msgs && $(CMAKE_COMMAND) -P CMakeFiles/ar_track_alvar_msgs_generate_messages.dir/cmake_clean.cmake
 .PHONY : ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages.dir/clean
 
 ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages.dir/depend:
-	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/ar_track_alvar_msgs /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_track_alvar_msgs /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/ar_track_alvar_msgs /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/ar_track_alvar_msgs /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : ar_track_alvar_msgs/CMakeFiles/ar_track_alvar_msgs_generate_messages.dir/depend
 

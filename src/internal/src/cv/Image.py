@@ -66,9 +66,9 @@ class Image:
         for corner in corners:
             cv2.circle(self.img_matrix, corner, 5, (0, 255, 0))
 
-        cv2.imshow("Identified Corners", self.img_matrix)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()   
+        # cv2.imshow("Identified Corners", self.img_matrix)
+        # cv2.waitKey(0)
+        # cv2.destroyAllWindows()   
 
         top_left = corners[0]
         top_right = corners[1]
