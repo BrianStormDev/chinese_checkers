@@ -76,6 +76,7 @@ if __name__ == "__main__":
 
         # The case when the user makes an irl move and we want to update the board
         elif num == 3:
+            can_collect_image = True
             continue
 
         # Construct the message
