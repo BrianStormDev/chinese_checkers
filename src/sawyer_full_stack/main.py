@@ -96,9 +96,9 @@ def regular_tuck():
             'right_j0': 0.0,
             'right_j1': -1.0,
             'right_j2': 0.0,
-            'right_j3': 1.5,
+            'right_j3': 1.0,
             'right_j4': 0.0,
-            'right_j5': -0.5,
+            'right_j5': 1.6,
             'right_j6': 1.7
         }
 
@@ -298,6 +298,8 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform):
     # ar_tag_square length: 5.5 mm, half length: 2.75 mm
     # Hole radius: 4.5 mm
     # real x shift: - (27 - 2.75 - 4.5) = -19.75
+
+    # In base coordinates
     BOTTOM_LEFT_REAL_X = - 0.045
     BOTTOM_LEFT_REAL_Y = - 0.0275
 
@@ -313,12 +315,8 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform):
     # Difference of inner edges: 11.5 mm
     # Radii of holes: 4.5 mm
     # Difference of centers: 4.5 + 11.5 +4.5 = 20.5 -> 0.205 -> 0.1025
-
     REAL_SPACING_X = 0.180
     REAL_SPACING_Y = 0.1025
-
-    # The balls are 6.875 mm in radius, maybe we should shift the z height up?
-    HEIGHT_SHIFT = 0
     
     # Bottom left peg is 0, 4
     BOTTOM_LEFT_INTERNAL_X = 0
@@ -334,7 +332,7 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform):
     # Keep in mind that the x and y in the board different from the x and y in the base frame
     new_x = -(y - BOTTOM_LEFT_INTERNAL_Y) * REAL_SPACING_X + BOTTOM_LEFT_REAL_X + ar_tag_x
     new_y = (x - BOTTOM_LEFT_INTERNAL_X) * REAL_SPACING_Y + BOTTOM_LEFT_REAL_Y + ar_tag_y
-    new_z = ar_tag_z + HEIGHT_SHIFT
+    new_z = ar_tag_z
 
     # # Incase the precision is the issue
     precision = 2
