@@ -190,7 +190,7 @@ def lookup_tag(tag_number):
         print(e)
     return trans
 
-def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform):
+def convert_internal_coordinates_to_real_coordinates(x: int, y: int, trans):
     """
     Takes in internal coordinates of the board and converts them into real world coordinates
     """
@@ -235,9 +235,9 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, transform):
     BOTTOM_LEFT_INTERNAL_Y = 4
 
     # Getting the position of the AR tag wrt the base frame
-    ar_tag_x = transform.transform.translation.x
-    ar_tag_y = transform.transform.translation.y
-    ar_tag_z = transform.transform.translation.z
+    ar_tag_x = trans.transform.translation.x
+    ar_tag_y = trans.transform.translation.y
+    ar_tag_z = trans.transform.translation.z
 
     # Keep in mind, these values are with respect to the base axes
     # We first convert the internal x and y values to a real offset before added the tag offset and the offset to the (0,4) Peg
@@ -272,7 +272,6 @@ def control_gripper(right_gripper, open):
     # Higher values close it up
     # Lower values open it up
 
-    # Our gripper values
     # Open the right gripper
     if open:
         while input("Try opening the gripper: ") == "y":
@@ -286,6 +285,12 @@ def control_gripper(right_gripper, open):
             print('Closing gripper.')
             right_gripper.set_position(0.034)
             rospy.sleep(1)
+
+# # Callback function for easy gripper calibration
+# def callback(message):
+#     right_gripper = calibrate_gripper()
+#     control_gripper(right_gripper, True)
+#     control_gripper(right_gripper, False)
 
 def callback(message):
     """
@@ -302,6 +307,7 @@ def callback(message):
     end_x = message.end_x
     end_y = message.end_y
 
+    # Log the received message
     rospy.loginfo(f"Message recieved: {start_x}, {start_y}, {end_x}, {end_y}.")
 
     # Tucks the robot into a position where it can see the ar_tag
@@ -314,49 +320,39 @@ def callback(message):
     control_gripper(right_gripper, True)
 
     # Convert the internal points to real world points
-    transform = lookup_tag(ar_marker)
-    rospy.loginfo(transform.transform.translation)
-    start_position = convert_internal_coordinates_to_real_coordinates(start_x, start_y, transform)
-    end_position = convert_internal_coordinates_to_real_coordinates(end_x, end_y, transform)
+    trans = lookup_tag(ar_marker)
+    rospy.loginfo(trans.transform.translation) # Log the position of ar tag for calibration
+    start_position = convert_internal_coordinates_to_real_coordinates(start_x, start_y, trans)
+    end_position = convert_internal_coordinates_to_real_coordinates(end_x, end_y, trans)
     
     # Log the start and end position in the base frame
     rospy.loginfo(f"{start_position}, {end_position}")
 
     # Tuck the robot into a position that it can do IK with easily
     regular_tuck()
-    rospy.sleep(1.0)
 
-    # Move the robot to the specified position
+    # Pick up the ball
     move_robot(start_position, TOP_HEIGHT)
     move_robot(start_position, PICKUP_HEIGHT)
-    rospy.sleep(1.0)
-
-    # Close the gripper
     control_gripper(right_gripper, False)
     move_robot(start_position, TOP_HEIGHT)
-    rospy.sleep(1.0)
 
     # Move the robot to a good picking position
     regular_tuck()
-    rospy.sleep(1.0)
 
-    # Move the arm to the designated position
+    # Drop the ball in the designated position
     move_robot(end_position, TOP_HEIGHT)
     move_robot(end_position, PICKUP_HEIGHT)
-    rospy.sleep(1.0)
-
-    # Open the gripper
     control_gripper(right_gripper, True)
     move_robot(end_position, TOP_HEIGHT)
-    rospy.sleep(1.0)
 
     # Move the arm to a spot that doesn't block the camera
     camera_tuck()
-    rospy.sleep(1.0)
 
 def move_robot(position, height_offset):
     """
-    position is a list [x, y, z]
+    position: where we want the end effector to go to [x, y, z]
+    height_offset: how far above the actual position we want to be
     """
     # Construct the request
     request = GetPositionIKRequest()
