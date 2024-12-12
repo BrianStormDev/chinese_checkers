@@ -349,6 +349,64 @@ def callback(message):
     # Move the arm to a spot that doesn't block the camera
     camera_tuck()
 
+# # Hardcode possibility
+# def callback(message):
+#     """
+#     Main loop
+#     """
+#     # Default parameters
+#     ar_marker = 0
+#     TOP_HEIGHT = 0.125
+#     PICKUP_HEIGHT = 0.1
+
+#     # Unpack the message    
+#     start_x = message.start_x
+#     start_y = message.start_y
+#     end_x = message.end_x
+#     end_y = message.end_y
+
+#     # Log the received message
+#     rospy.loginfo(f"Message recieved: {start_x}, {start_y}, {end_x}, {end_y}.")
+
+#     # Tucks the robot into a position where it can see the ar_tag
+#     ar_tuck()
+
+#     # Calibrates the gripper and initializes the right gripper object through which the gripper can be controlled
+#     right_gripper = calibrate_gripper()
+
+#     # Ensure that the gripper is initially open
+#     control_gripper(right_gripper, True)
+
+#     # Convert the internal points to real world points
+#     trans = lookup_tag(ar_marker)
+#     rospy.loginfo(trans.transform.translation) # Log the position of ar tag for calibration
+#     start_position = convert_internal_coordinates_to_real_coordinates(start_x, start_y, trans)
+#     end_position = convert_internal_coordinates_to_real_coordinates(end_x, end_y, trans)
+    
+#     # Log the start and end position in the base frame
+#     rospy.loginfo(f"{start_position}, {end_position}")
+
+#     # Tuck the robot into a position that it can do IK with easily
+#     regular_tuck()
+
+#     # Pick up the ball
+#     move_robot(start_position, [])
+#     move_robot(start_position, [])
+#     control_gripper(right_gripper, False)
+#     move_robot(start_position, [])
+
+#     # Move the robot to a good picking position
+#     regular_tuck()
+
+#     # Drop the ball in the designated position
+#     move_robot(end_position, [])
+#     move_robot(end_position, [])
+#     control_gripper(right_gripper, True)
+#     move_robot(end_position, [])
+
+#     # Move the arm to a spot that doesn't block the camera
+#     camera_tuck()    
+
 def move_robot(position, height_offset):
     """
     position: where we want the end effector to go to [x, y, z]

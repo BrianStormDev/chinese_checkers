@@ -57,7 +57,7 @@ if __name__ == "__main__":
         game.display_until_window_close()
 
         # Ask if the user wants to make the next move or let the AI come up witha move
-        choice = input("Enter 1 if you want to make the next move and 2 if you want the AI to make the next move: ")
+        choice = input("Enter 1 if you want to make the next move, 2 if you want the AI to make the next move, and 3 if a move has already been made in real life: ")
         num = int(choice)
 
         # Handle how the move is inputted
@@ -73,6 +73,10 @@ if __name__ == "__main__":
         # AI input
         elif num == 2:
             x_start, y_start, x_end, y_end = game.naive_algorithm_initial_and_final_positions()
+
+        # The case when the user makes an irl move and we want to update the board
+        elif num == 3:
+            continue
 
         # Construct the message
         # The message are the internal board coordinates
