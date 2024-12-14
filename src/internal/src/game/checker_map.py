@@ -707,7 +707,7 @@ class ChineseCheckersBoard:
                 move_command = moveslist[1:]
 
             # Display the board after the move has been made
-            self.update_board()
+            self.update_board_visual()
 
             # Keep the loop going until someone has won the game
             if self.check_player_won(self.current_player):
