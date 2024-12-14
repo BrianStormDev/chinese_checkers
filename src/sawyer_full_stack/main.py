@@ -14,7 +14,6 @@ from intera_interface import Limb
 
 # Move dependencies
 from geometry_msgs.msg import PoseStamped
-from moveit_msgs.srv import GetPositionIKRequest
 from moveit_commander import MoveGroupCommander
 
 def camera_tuck():
