@@ -16,6 +16,11 @@ from intera_interface import Limb
 from geometry_msgs.msg import PoseStamped
 from moveit_commander import MoveGroupCommander
 
+CAMERA_TUCK = [0, -1.25, 0, 1.5, 0, -0.5, 1.7]
+ALICE_AR_TUCK = [0, -1, 0, 1, 0, 1.6, 1.7]
+REGULAR_TUCK = [0, -0.5, 0, 1.25, 0, -0.75, 1.7]
+# If the workspace doesn't work then we have to get the actual coordinates and pose and instead do it that way
+
 def camera_tuck():
     """
     Tuck the robot arm to the start position. Use with caution
@@ -111,19 +116,17 @@ def ar_tuck():
         pan_mode = 1
 
         # Joints 1, 3, 5 are the joints to be changed
-        # 1 - 5 = -0.5
-        # 1 + 3 = 0.5
 
-        # # Tuck the arm, Alice
-        # tuck_positions = {
-        #     'right_j0': 0.0,
-        #     'right_j1': 0.0,
-        #     'right_j2': 0,
-        #     'right_j3': 0.5,
-        #     'right_j4': 0,
-        #     'right_j5': -0.5,
-        #     'right_j6': 1.7
-        # }
+        # Tuck the arm, Alice
+        tuck_positions = {
+            'right_j0': 0,
+            'right_j1': -0.5,
+            'right_j2': 0,
+            'right_j3': 1.25,
+            'right_j4': 0,
+            'right_j5': -0.75,
+            'right_j6': 1.7
+        }
 
         # # Tuck the arm, Azula
         # tuck_positions = {
@@ -135,17 +138,6 @@ def ar_tuck():
         #     'right_j5': -0.45,
         #     'right_j6': 1.7
         # }
-
-        # Tuck the arm, Alan
-        tuck_positions = {
-            'right_j0': 0,
-            'right_j1': -0.5,
-            'right_j2': 0,
-            'right_j3': 1.25,
-            'right_j4': 0,
-            'right_j5': -0.75,
-            'right_j6': 1.7
-        }
 
         """
         Publishes a command to control the Sawyer robot's head pan.
@@ -200,23 +192,15 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, trans):
     """
     # Keep in mind the ar_tag will be in the bottom left of the board
     # We need to get the coordinates of the point closest to the ar tag
-    # get the rest of the pegs with respect to that point
+    # and then get the rest of the pegs with respect to that point
 
-    # Keep in mind, these values are with respect to the base axes 
-    # Real x should be negative and real y should be negative
+    # "Real" values are with respect to the base axes 
 
-    # Bottom left peg is 0, 4
+    # Bottom left peg is at internal coodinate (0, 4)
     INTERNAL_BOTTOM_LEFT_X = 0
     INTERNAL_BOTTOM_LEFT_Y = 4
 
-    # The offset of the bottom left piece
-    REAL_BOTTOM_LEFT_X = - 0.0476
-    REAL_BOTTOM_LEFT_Y = - 0.0218
-
-    # The spacing of the pieces
-    REAL_SPACING_X = -0.01963
-    REAL_SPACING_Y = 0.00937
-
+    # The offset of the bottom left piece and the spacing of the pieces
     REAL_BOTTOM_LEFT_X, REAL_BOTTOM_LEFT_Y, REAL_SPACING_X, REAL_SPACING_Y = [0.1449, 0.1824, -0.0244, -0.0081]
 
     # Getting the position of the AR tag wrt the base frame
@@ -224,9 +208,8 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, trans):
     ar_tag_y = trans.transform.translation.y
     ar_tag_z = trans.transform.translation.z
 
-    # Keep in mind, these values are with respect to the base axes
-    # We first convert the internal x and y values to a real offset before added the tag offset and the offset to the (0,4) Peg
-    # Keep in mind that the x and y in the board different from the x and y in the base frame
+    # We first convert the internal x and y values to a real offset before adding the tag offset and the offset of the bottom left peg
+    # The x and y in the board different from the x and y in the base frame
     new_x = (y - INTERNAL_BOTTOM_LEFT_Y) * REAL_SPACING_X + REAL_BOTTOM_LEFT_X + ar_tag_x
     new_y = (x - INTERNAL_BOTTOM_LEFT_X) * REAL_SPACING_Y + REAL_BOTTOM_LEFT_Y + ar_tag_y
     new_z = ar_tag_z
@@ -243,7 +226,9 @@ def calibrate_gripper():
 
 def control_gripper(right_gripper, open):
     """
-    Control the gripper
+    Controls the custom reversed gripppers
+    right_gripper: Gripper object
+    open: boolean determining if we should open the grippers
     """
     # MAX_POSITION = 0.041667 
     # MIN_POSITION = 0.0
@@ -251,7 +236,6 @@ def control_gripper(right_gripper, open):
     # Higher values close it up
     # Lower values open it up
 
-    # Reversed grippers
     # Open the right gripper
     if open:
         while input("Try opening the gripper: ") == "y":
@@ -265,12 +249,6 @@ def control_gripper(right_gripper, open):
             print('Closing gripper.')
             right_gripper.set_position(0.033)
             rospy.sleep(1)
-
-# # Callback function for easy gripper calibration
-# def callback(message):
-#     right_gripper = calibrate_gripper()
-#     control_gripper(right_gripper, True)
-#     control_gripper(right_gripper, False)
 
 def callback(message):
     """
@@ -332,7 +310,7 @@ def callback(message):
     camera_tuck()
 
 def move_robot(position, height_offset):
-   # Initialize move_group for the Sawyer arm
+   # Initialize group for the Sawyer arm
     group = MoveGroupCommander("right_arm")
 
     # Set up planner for precision and shortest path
@@ -343,6 +321,11 @@ def move_robot(position, height_offset):
     group.set_max_velocity_scaling_factor(0.3)  # Slow down for precision
     group.set_max_acceleration_scaling_factor(0.005)  # Reduce jerks
     group.set_workspace([0.4, -0.5, -0.17, 1, 0.6, 2]) # Setting the workspace 
+
+
+    # Trying to get the planner list
+    rospy.loginfo(group.get_interface_description())
+    rospy.loginfo(group.get_planner_id())
 
     # Define goal pose
     goal_pose = PoseStamped()
@@ -365,6 +348,41 @@ def move_robot(position, height_offset):
     if user_input == 'y':
         group.execute(plan[1])
         rospy.sleep(1.0)
+
+
+        # ADDED A STOP HERE, MIGHT BE HELPFUL TO STOP THE MVOEMENT?
+        group.stop()
+
+if __name__ == "__main__":
+    rospy.init_node('move_board_subscriber')
+    rospy.Subscriber('game_move', BoardMove, callback)
+    rospy.spin()
+
+def tuck_robot(joint_goal):
+    """
+    Joint goal is a list of joint angles we want to reach. The list is length 7
+    """
+   # Initialize group for the Sawyer arm
+    group = MoveGroupCommander("right_arm")
+
+    # Set up planner for precision and shortest path
+    group.set_planner_id("PRMstarConfigDefsdfault") # Optimal Smooth Paths
+    group.set_planning_time(10)  # Increase planning time for more complex paths
+    group.set_goal_tolerance(0.0001)  # Set the joint, position and orientation goal tolerances simultaneously 
+    group.set_num_planning_attempts(5)  # Try multiple times
+    group.set_max_velocity_scaling_factor(0.3)  # Slow down for precision
+    group.set_max_acceleration_scaling_factor(0.005)  # Reduce jerks
+    group.set_workspace([0.4, -0.5, -0.17, 1, 0.6, 2]) # Setting the workspace 
+
+    user_input = input("Enter 'y' if the trajectory looks safe on RVIZ: ")
+    
+    # Execute IK if safe
+    if user_input == 'y':
+        # Set the joint target
+        group.go(joint_goal, wait=True)
+
+        # Stop any residual movement
+        group.stop()
 
 if __name__ == "__main__":
     rospy.init_node('move_board_subscriber')

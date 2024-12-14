@@ -87,6 +87,8 @@ def point_picker():
             user = input("Enter y to save, n to stop, p to pass: ")
             if user == "y":
                  points.append(trans.transform.translation)
+                 if len(points) == 3:
+                     break
             elif user == "n":
                  break
             elif user == "p":
