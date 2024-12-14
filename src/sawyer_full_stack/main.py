@@ -13,6 +13,7 @@ from intera_core_msgs.msg import HeadPanCommand
 from intera_interface import Limb
 
 # Move dependencies
+from geometry_msgs.msg import PoseStamped
 from moveit_msgs.srv import GetPositionIKRequest
 from moveit_commander import MoveGroupCommander
 
@@ -110,27 +111,27 @@ def ar_tuck():
         speed_ratio = 1
         pan_mode = 1
 
-        # Tuck the arm, Alice
-        tuck_positions = {
-            'right_j0': 0.0,
-            'right_j1': 0.0,
-            'right_j2': 0,
-            'right_j3': 0.5,
-            'right_j4': 0,
-            'right_j5': -0.5,
-            'right_j6': 1.7
-        }
-
-        # # Tuck the arm, Azula
+        # # Tuck the arm, Alice
         # tuck_positions = {
-        #     'right_j0': 0,
-        #     'right_j1': -1,
+        #     'right_j0': 0.0,
+        #     'right_j1': 0.0,
         #     'right_j2': 0,
-        #     'right_j3': 1.5,
+        #     'right_j3': 0.5,
         #     'right_j4': 0,
-        #     'right_j5': -0.45,
+        #     'right_j5': -0.5,
         #     'right_j6': 1.7
         # }
+
+        # Tuck the arm, Azula
+        tuck_positions = {
+            'right_j0': 0,
+            'right_j1': -1,
+            'right_j2': 0,
+            'right_j3': 1.5,
+            'right_j4': 0,
+            'right_j5': -0.45,
+            'right_j6': 1.7
+        }
 
         # # Tuck the arm, Alan
         # tuck_positions = {
@@ -290,124 +291,164 @@ def control_gripper(right_gripper, open):
             right_gripper.set_position(0.03325)
             rospy.sleep(1)
 
-# # Callback function for easy gripper calibration
-# def callback(message):
-#     right_gripper = calibrate_gripper()
-#     control_gripper(right_gripper, True)
-#     control_gripper(right_gripper, False)
-
+# Callback function for easy gripper calibration
 def callback(message):
-    """
-    Main loop
-    """
-    # Default parameters
-    ar_marker = 0
-    TOP_HEIGHT = 0.125
-    PICKUP_HEIGHT = 0.057
-
-    # Unpack the message    
-    start_x = message.start_x
-    start_y = message.start_y
-    end_x = message.end_x
-    end_y = message.end_y
-
-    # Log the received message
-    rospy.loginfo(f"Message recieved: {start_x}, {start_y}, {end_x}, {end_y}.")
-
-    # Tucks the robot into a position where it can see the ar_tag
-    ar_tuck()
-
-    # Calibrates the gripper and initializes the right gripper object through which the gripper can be controlled
     right_gripper = calibrate_gripper()
-
-    # Ensure that the gripper is initially open
     control_gripper(right_gripper, True)
-
-    # Convert the internal points to real world points
-    trans = lookup_tag(ar_marker)
-    rospy.loginfo(trans.transform.translation) # Log the position of ar tag for calibration
-    start_position = convert_internal_coordinates_to_real_coordinates(start_x, start_y, trans)
-    end_position = convert_internal_coordinates_to_real_coordinates(end_x, end_y, trans)
-    
-    # Log the start and end position in the base frame
-    rospy.loginfo(f"{start_position}, {end_position}")
-
-    # Tuck the robot into a position that it can do IK with easily
-    regular_tuck()
-
-    # Pick up the ball
-    move_robot(start_position, TOP_HEIGHT)
-    move_robot(start_position, PICKUP_HEIGHT)
     control_gripper(right_gripper, False)
-    move_robot(start_position, TOP_HEIGHT)
 
-    # Move the robot to a good picking position
-    regular_tuck()
+# def callback(message):
+#     """
+#     Main loop
+#     """
+#     # Default parameters
+#     ar_marker = 0
+#     TOP_HEIGHT = 0.125
+#     PICKUP_HEIGHT = 0.057
 
-    # Drop the ball in the designated position
-    move_robot(end_position, TOP_HEIGHT)
-    # move_robot(end_position, PICKUP_HEIGHT)
-    control_gripper(right_gripper, True)
-    move_robot(end_position, TOP_HEIGHT)
+#     # Unpack the message    
+#     start_x = message.start_x
+#     start_y = message.start_y
+#     end_x = message.end_x
+#     end_y = message.end_y
 
-    # Move the arm to a spot that doesn't block the camera
-    camera_tuck()
+#     # Log the received message
+#     rospy.loginfo(f"Message recieved: {start_x}, {start_y}, {end_x}, {end_y}.")
+
+#     # Tucks the robot into a position where it can see the ar_tag
+#     ar_tuck()
+
+#     # Calibrates the gripper and initializes the right gripper object through which the gripper can be controlled
+#     right_gripper = calibrate_gripper()
+
+#     # Ensure that the gripper is initially open
+#     control_gripper(right_gripper, True)
+
+#     # Convert the internal points to real world points
+#     trans = lookup_tag(ar_marker)
+#     rospy.loginfo(trans.transform.translation) # Log the position of ar tag for calibration
+#     start_position = convert_internal_coordinates_to_real_coordinates(start_x, start_y, trans)
+#     end_position = convert_internal_coordinates_to_real_coordinates(end_x, end_y, trans)
+    
+#     # Log the start and end position in the base frame
+#     rospy.loginfo(f"{start_position}, {end_position}")
+
+#     # Tuck the robot into a position that it can do IK with easily
+#     regular_tuck()
+
+#     # Pick up the ball
+#     move_robot(start_position, TOP_HEIGHT)
+#     move_robot(start_position, PICKUP_HEIGHT)
+#     control_gripper(right_gripper, False)
+#     move_robot(start_position, TOP_HEIGHT)
+
+#     # Move the robot to a good picking position
+#     regular_tuck()
+
+#     # Drop the ball in the designated position
+#     move_robot(end_position, TOP_HEIGHT)
+#     # move_robot(end_position, PICKUP_HEIGHT)
+#     control_gripper(right_gripper, True)
+#     move_robot(end_position, TOP_HEIGHT)
+
+#     # Move the arm to a spot that doesn't block the camera
+#     camera_tuck()
+
+# def move_robot(position, height_offset):
+#     """
+#     position: where we want the end effector to go to [x, y, z]
+#     height_offset: how far above the actual position we want to be
+#     """
+#     # Construct the request
+#     request = GetPositionIKRequest()
+#     request.ik_request.group_name = "right_arm"
+
+#     # If a Sawyer does not have a gripper, replace '_gripper_tip' with '_wrist' instead
+#     request.ik_request.ik_link_name = "right_gripper_tip"
+#     request.ik_request.pose_stamped.header.frame_id = "base"
+        
+#     # Set the desired orientation for the end effector HERE
+#     request.ik_request.pose_stamped.pose.position.x = position[0]
+#     request.ik_request.pose_stamped.pose.position.x = position[0]
+#     request.ik_request.pose_stamped.pose.position.y = position[1]
+#     request.ik_request.pose_stamped.pose.position.z = position[2] + height_offset
+#     request.ik_request.pose_stamped.pose.orientation.x = 0
+#     request.ik_request.pose_stamped.pose.orientation.y = 1
+#     request.ik_request.pose_stamped.pose.orientation.z = 0
+#     request.ik_request.pose_stamped.pose.orientation.w = 0
+        
+#     try:
+#         # Print the response HERE
+#         group = MoveGroupCommander("right_arm")
+
+#         # Setting position and orientation target
+#         group.set_pose_target(request.ik_request.pose_stamped)
+
+#         # Set the planning time
+#         group.set_planning_time(10)
+
+#         # Set the bounds of the workspace
+#         group.set_workspace([-2, -2, -1.5, 2, 2, 2])
+
+#         # Set the tolerance in the goal final position
+#         group.set_goal_position_tolerance(0.0001)
+
+#         # Things we tried to improve the accuracy of the robot
+#         group.set_num_planning_attempts(5)  # Try multiple times
+#         group.set_max_velocity_scaling_factor(0.1)  # Slow down for precision
+#         group.set_max_acceleration_scaling_factor(0.05)  # Reduce jerks
+
+#         # Plan IK
+#         plan = group.plan()
+#         user_input = input("Enter 'y' if the trajectory looks safe on RVIZ: ")
+        
+#         # Execute IK if safe
+#         if user_input == 'y':
+#             group.execute(plan[1])
+#             rospy.sleep(1.0)
+            
+#     except rospy.ServiceException as e:
+#         print("Service call failed: %s"%e)
 
 def move_robot(position, height_offset):
-    """
-    position: where we want the end effector to go to [x, y, z]
-    height_offset: how far above the actual position we want to be
-    """
-    # Construct the request
-    request = GetPositionIKRequest()
-    request.ik_request.group_name = "right_arm"
+   # Initialize move_group for the Sawyer arm
+    group = MoveGroupCommander("right_arm")
 
-    # If a Sawyer does not have a gripper, replace '_gripper_tip' with '_wrist' instead
-    request.ik_request.ik_link_name = "right_gripper_tip"
-    request.ik_request.pose_stamped.header.frame_id = "base"
-        
-    # Set the desired orientation for the end effector HERE
-    request.ik_request.pose_stamped.pose.position.x = position[0]
-    request.ik_request.pose_stamped.pose.position.x = position[0]
-    request.ik_request.pose_stamped.pose.position.y = position[1]
-    request.ik_request.pose_stamped.pose.position.z = position[2] + height_offset
-    request.ik_request.pose_stamped.pose.orientation.x = 0
-    request.ik_request.pose_stamped.pose.orientation.y = 1
-    request.ik_request.pose_stamped.pose.orientation.z = 0
-    request.ik_request.pose_stamped.pose.orientation.w = 0
-        
-    try:
-        # Print the response HERE
-        group = MoveGroupCommander("right_arm")
+    # Set up planner for precision and shortest path
+    group.set_planner_id("PRMstarConfigDefault ") # Optimal Smooth Paths
+    group.set_planning_time(10)  # Increase planning time for more complex paths
+    group.set_goal_tolerance(0.001)  # Set the joint, position and orientation goal tolerances simultaneously 
+    group.set_num_planning_attempts(5)  # Try multiple times
+    group.set_max_velocity_scaling_factor(0.1)  # Slow down for precision
+    group.set_max_acceleration_scaling_factor(0.05)  # Reduce jerks
 
-        # Setting position and orientation target
-        group.set_pose_target(request.ik_request.pose_stamped)
+    # Define goal pose
+    goal_pose = PoseStamped()
+    goal_pose.header.frame_id = "base"
+    goal_pose.pose.position.x = position[0]
+    goal_pose.pose.position.y = position[1]
+    goal_pose.pose.position.z = position[2] + height_offset
+    goal_pose.pose.orientation.x = 0.0
+    goal_pose.pose.orientation.y = 1.0
+    goal_pose.pose.orientation.z = 0.0
+    goal_pose.pose.orientation.w = 0.0
 
-        # Set the planning time
-        group.set_planning_time(10)
+    # Plan Cartesian path for smooth, straight-line movement
+    waypoints = [goal_pose.pose]
+    (trajectory, fraction) = group.compute_cartesian_path(
+        waypoints,
+        eef_step=0.001,  # Finer step size for higher precision
+        jump_threshold=0.0  # Avoid large, unpredictable jumps
+    )
 
-        # Set the bounds of the workspace
-        group.set_workspace([-2, -2, -1.5, 2, 2, 2])
-
-        # Set the tolerance in the goal final position
-        group.set_goal_position_tolerance(0.0001)
-
-        # Things we tried to improve the accuracy of the robot
-        group.set_num_planning_attempts(5)  # Try multiple times
-        group.set_max_velocity_scaling_factor(0.1)  # Slow down for precision
-        group.set_max_acceleration_scaling_factor(0.05)  # Reduce jerks
-
-        # Plan IK
-        plan = group.plan()
+    # Fraction indicates the success rate of the planned trajectory
+    if fraction == 1.0:
         user_input = input("Enter 'y' if the trajectory looks safe on RVIZ: ")
-        
-        # Execute IK if safe
+
+        # Execute if safe
         if user_input == 'y':
-            group.execute(plan[1])
-            rospy.sleep(1.0)
-            
-    except rospy.ServiceException as e:
-        print("Service call failed: %s"%e)
+            rospy.loginfo("Executing high-precision trajectory...")
+            group.execute(trajectory, wait=True)
 
 if __name__ == "__main__":
     rospy.init_node('move_board_subscriber')

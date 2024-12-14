@@ -67,14 +67,14 @@ set(internal_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("TRUE" STREQUAL "TRUE")
-  set(internal_SOURCE_PREFIX /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/internal)
-  set(internal_DEVEL_PREFIX /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel)
+  set(internal_SOURCE_PREFIX /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/internal)
+  set(internal_DEVEL_PREFIX /home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel)
   set(internal_INSTALL_PREFIX "")
   set(internal_PREFIX ${internal_DEVEL_PREFIX})
 else()
   set(internal_SOURCE_PREFIX "")
   set(internal_DEVEL_PREFIX "")
-  set(internal_INSTALL_PREFIX /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/install)
+  set(internal_INSTALL_PREFIX /home/cc/ee106a/fa24/class/ee106a-adc/final_project/install)
   set(internal_PREFIX ${internal_INSTALL_PREFIX})
 endif()
 
@@ -91,9 +91,9 @@ endif()
 # flag project as catkin-based to distinguish if a find_package()-ed project is a catkin project
 set(internal_FOUND_CATKIN_PROJECT TRUE)
 
-if(NOT "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/include " STREQUAL " ")
+if(NOT "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/include " STREQUAL " ")
   set(internal_INCLUDE_DIRS "")
-  set(_include_dirs "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/include")
+  set(_include_dirs "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/include")
   if(NOT " " STREQUAL " ")
     set(_report "Check the issue tracker '' and consider creating a ticket if the problem has not been reported yet.")
   elseif(NOT " " STREQUAL " ")
@@ -110,7 +110,7 @@ if(NOT "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/de
         message(FATAL_ERROR "Project 'internal' specifies '${idir}' as an include dir, which is not found.  It does not exist in '${include}'.  ${_report}")
       endif()
     else()
-      message(FATAL_ERROR "Project 'internal' specifies '${idir}' as an include dir, which is not found.  It does neither exist as an absolute directory nor in '/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/internal/${idir}'.  ${_report}")
+      message(FATAL_ERROR "Project 'internal' specifies '${idir}' as an include dir, which is not found.  It does neither exist as an absolute directory nor in '/home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/internal/${idir}'.  ${_report}")
     endif()
     _list_append_unique(internal_INCLUDE_DIRS ${include})
   endforeach()
@@ -154,7 +154,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/lib;/opt/ros/eecsbot_ws/devel/lib;/opt/ros/noetic/lib)
+    foreach(path /home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/lib;/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/lib;/opt/ros/eecsbot_ws/devel/lib;/opt/ros/noetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

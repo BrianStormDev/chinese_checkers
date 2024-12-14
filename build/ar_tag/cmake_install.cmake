@@ -1,8 +1,8 @@
-# Install script for directory: /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/ar_tag
+# Install script for directory: /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/ar_tag
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/install")
+  set(CMAKE_INSTALL_PREFIX "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,17 +38,17 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/ar_tag/catkin_generated/installspace/ar_tag.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_tag/catkin_generated/installspace/ar_tag.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ar_tag/cmake" TYPE FILE FILES
-    "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/ar_tag/catkin_generated/installspace/ar_tagConfig.cmake"
-    "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/ar_tag/catkin_generated/installspace/ar_tagConfig-version.cmake"
+    "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_tag/catkin_generated/installspace/ar_tagConfig.cmake"
+    "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_tag/catkin_generated/installspace/ar_tagConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ar_tag" TYPE FILE FILES "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/ar_tag/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ar_tag" TYPE FILE FILES "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/ar_tag/package.xml")
 endif()
 
