@@ -3,6 +3,7 @@ import rospy
 from game import *
 from game.checker_map import ChineseCheckersBoard
 from game.game_utilities import convert_list_to_custom_game
+from game.Point import Point
 
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
@@ -29,6 +30,15 @@ def image_collection_callback(msg):
             last_image_taken_time = time.time()
     except Exception as e:
         rospy.logerr("Error in callback: %s", str(e))
+
+
+def move_is_valid(game_board: ChineseCheckersBoard, x_start: int, y_start: int, x_end: int, y_end: int, player_color: str): 
+    player = game_board.color_to_player[player_color]
+    start_point = Point(x_start, y_start)
+    end_point = Point(x_end, y_end)
+    moves = set(map(lambda x: (x[0], x[2]), game_board.valid_move_string(player)))
+    return (start_point, end_point) in moves
+
 
 if __name__ == "__main__":
     # # THIS IS THE MAIN FILE THROUGH WHICH EVERYTHING IS RUN
@@ -69,6 +79,10 @@ if __name__ == "__main__":
             y_start = moveList[1]
             x_end = moveList[2]
             y_end = moveList[3]
+            if not move_is_valid(game, int(x_start), int(y_start), int(x_end), int(y_end), current_player): 
+                can_collect_image = True
+                print('Not valid move!')
+                continue
 
         # AI input
         elif num == 2:
