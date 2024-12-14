@@ -93,11 +93,23 @@ def point_picker():
                  continue
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             print("error")
-    # Do some path on the points
-    # Print the calibrated values
+
+def process_points():
+    ar_tag = points[0]
+    bottom_left = points[1]
+    top_right = points[2]
+
+    precision = 4
+    x_offset = round(bottom_left.x - ar_tag.x, precision)
+    y_offset = round(bottom_left.y - ar_tag.y, precision)
+    x_spacing = round((top_right.x - bottom_left.x) / 8, precision)
+    y_spacing = round((top_right.y - bottom_left.y) / 24, precision)
+    print(f"x_offset: {x_offset}, y_offset: {y_offset}, x_spacing: {x_spacing}, y_spacing: {y_spacing}")
+    print([x_offset, y_offset, x_spacing, y_spacing])
 
 if __name__ == '__main__':
     rospy.init_node('listener', anonymous=True)
     ar_tuck()
     points.append(lookup_tag(0))
     point_picker()
+    process_points()

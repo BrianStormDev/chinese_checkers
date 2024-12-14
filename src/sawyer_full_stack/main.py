@@ -204,43 +204,20 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, trans):
 
     # Keep in mind, these values are with respect to the base axes 
     # Real x should be negative and real y should be negative
-    
-    # Full x length: 58 mm
-    # ar_tag_square length: 5.5 mm, half length: 2.75 mm
-    # Hole radius: 4.5 mm
-    # real x shift: - (58 - 2.75 - 4.5) = -50.75
 
-    # Full y length: 27 mm
-    # ar_tag_square length: 5.5 mm, half length: 2.75 mm
-    # Hole radius: 4.5 mm
-    # real x shift: - (27 - 2.75 - 4.5) = -19.75
+    # Bottom left peg is 0, 4
+    INTERNAL_BOTTOM_LEFT_X = 0
+    INTERNAL_BOTTOM_LEFT_Y = 4
 
-    # In base coordinates
-    BOTTOM_LEFT_REAL_X = - 0.0476
-    BOTTOM_LEFT_REAL_Y = - 0.0218
+    # The offset of the bottom left piece
+    REAL_BOTTOM_LEFT_X = - 0.0476
+    REAL_BOTTOM_LEFT_Y = - 0.0218
 
-    # # In base coordinates
-    # BOTTOM_LEFT_REAL_X = - 0.0479
-    # BOTTOM_LEFT_REAL_Y = - 0.018
-
-    # Y - direction
-    # Difference of outer edges: 26.5 mm
-    # Difference of inner edges: 11.5 mm
-    # Radii of holes: 4.5 mm
-    # Difference of centers: 26.5 - 4.5 - 4.5 = 17.5 -> 0.0175
-
-    # X - direction
-    # Since every x peg is 2 pegs along we divid the gap by 2
-    # Difference of outer edges: 29.5 mm
-    # Difference of inner edges: 11.5 mm
-    # Radii of holes: 4.5 mm
-    # Difference of centers: 4.5 + 11.5 +4.5 = 20.5 -> 0.0205 -> 0.01025
+    # The spacing of the pieces
     REAL_SPACING_X = -0.01963
     REAL_SPACING_Y = 0.00937
-    
-    # Bottom left peg is 0, 4
-    BOTTOM_LEFT_INTERNAL_X = 0
-    BOTTOM_LEFT_INTERNAL_Y = 4
+
+    REAL_BOTTOM_LEFT_X, REAL_BOTTOM_LEFT_Y, REAL_SPACING_X, REAL_SPACING_Y = [0.1449, 0.1824, -0.0244, -0.0081]
 
     # Getting the position of the AR tag wrt the base frame
     ar_tag_x = trans.transform.translation.x
@@ -250,15 +227,9 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, trans):
     # Keep in mind, these values are with respect to the base axes
     # We first convert the internal x and y values to a real offset before added the tag offset and the offset to the (0,4) Peg
     # Keep in mind that the x and y in the board different from the x and y in the base frame
-    new_x = (y - BOTTOM_LEFT_INTERNAL_Y) * REAL_SPACING_X + BOTTOM_LEFT_REAL_X + ar_tag_x
-    new_y = (x - BOTTOM_LEFT_INTERNAL_X) * REAL_SPACING_Y + BOTTOM_LEFT_REAL_Y + ar_tag_y
+    new_x = (y - INTERNAL_BOTTOM_LEFT_Y) * REAL_SPACING_X + REAL_BOTTOM_LEFT_X + ar_tag_x
+    new_y = (x - INTERNAL_BOTTOM_LEFT_X) * REAL_SPACING_Y + REAL_BOTTOM_LEFT_Y + ar_tag_y
     new_z = ar_tag_z
-
-    # # Incase the precision is the issue
-    # precision = 2
-    # new_x = round(new_x, precision)
-    # new_y = round(new_y, precision)
-    # new_z = round(new_z, precision)
 
     return [new_x, new_y, new_z]
 
