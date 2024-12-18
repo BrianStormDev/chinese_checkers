@@ -34,3 +34,4 @@ class Peg:
     
     def change_y(self, new_y): 
         self.position.y = new_y
+    
