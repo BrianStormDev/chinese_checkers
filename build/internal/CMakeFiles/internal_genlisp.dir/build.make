@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src
+CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build
+CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build
 
 # Utility rule file for internal_genlisp.
 
@@ -63,10 +63,10 @@ internal/CMakeFiles/internal_genlisp.dir/build: internal_genlisp
 .PHONY : internal/CMakeFiles/internal_genlisp.dir/build
 
 internal/CMakeFiles/internal_genlisp.dir/clean:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/internal && $(CMAKE_COMMAND) -P CMakeFiles/internal_genlisp.dir/cmake_clean.cmake
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal && $(CMAKE_COMMAND) -P CMakeFiles/internal_genlisp.dir/cmake_clean.cmake
 .PHONY : internal/CMakeFiles/internal_genlisp.dir/clean
 
 internal/CMakeFiles/internal_genlisp.dir/depend:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/internal /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/internal /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/internal/CMakeFiles/internal_genlisp.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/internal /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal/CMakeFiles/internal_genlisp.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : internal/CMakeFiles/internal_genlisp.dir/depend
 

@@ -5,25 +5,25 @@ from pathlib import Path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 TOTAL_PEGS = 61 + 60
-CONFIDENCE_THRESHOLD = 0.8
+CONFIDENCE_THRESHOLD = 0.7
 EMPTY = 'empty'
 class_names = ['yellow', 'blue', EMPTY, 'purple', 'green', 'red', 'orange']
 
 cur_dir = Path(__file__).parent
 
-model = YOLO(str(cur_dir / "model.pt"), verbose=False)
+model = YOLO(str(cur_dir / "model_2.pt"), verbose=False)
 
 # image_path = "new_rectified_images/new_data/image_12.jpg" 
 image_path = "special.jpg"
 image = cv2.imread(image_path)
 
 def OK(image):
-    print('Loading done')
+    # print('Loading done')
 
     # Perform object detection
-    result = model(image)[0]
+    result = model(image, verbose=False)[0]
 
-    print('Object detection done')
+    # print('Object detection done')
 
     boxes = list(result.boxes)
     detected_count = len(boxes)
@@ -35,7 +35,7 @@ def OK(image):
     if detected_count > TOTAL_PEGS: 
         for _ in range(detected_count - TOTAL_PEGS): 
             boxes.pop(0)
-        print(f'{detected_count - TOTAL_PEGS} extra detections removed')
+        # print(f'{detected_count - TOTAL_PEGS} extra detections removed')
 
     low_confidence_boxes = list(filter(lambda box: box.conf[0] <= CONFIDENCE_THRESHOLD, boxes))
 
@@ -77,7 +77,7 @@ def OK(image):
 
     for i in range(NUM_ROWS): 
         num_boxes_before = sum(PEGS_PER_ROW[:i])
-        Falseboxes_that_row = boxes[num_boxes_before : num_boxes_before + PEGS_PER_ROW[i]]
+        boxes_that_row = boxes[num_boxes_before : num_boxes_before + PEGS_PER_ROW[i]]
         add_row(boxes_that_row, i, board)
 
     invert_board(board)

@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src
+CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build
+CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build
 
 # Utility rule file for _ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.
 
@@ -54,7 +54,7 @@ CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_
 include ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/progress.make
 
 ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/ar_track_alvar_msgs && ../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py ar_track_alvar_msgs /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/ar_track_alvar_msgs/msg/AlvarMarkers.msg geometry_msgs/PoseStamped:geometry_msgs/Point:geometry_msgs/Quaternion:geometry_msgs/Pose:std_msgs/Header:ar_track_alvar_msgs/AlvarMarker
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_track_alvar_msgs && ../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py ar_track_alvar_msgs /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/ar_track_alvar_msgs/msg/AlvarMarkers.msg geometry_msgs/Quaternion:std_msgs/Header:geometry_msgs/Pose:geometry_msgs/Point:geometry_msgs/PoseStamped:ar_track_alvar_msgs/AlvarMarker
 
 _ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers: ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers
 _ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers: ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/build.make
@@ -67,10 +67,10 @@ ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps
 .PHONY : ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/build
 
 ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/clean:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/ar_track_alvar_msgs && $(CMAKE_COMMAND) -P CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/cmake_clean.cmake
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_track_alvar_msgs && $(CMAKE_COMMAND) -P CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/cmake_clean.cmake
 .PHONY : ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/clean
 
 ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/depend:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/ar_track_alvar_msgs /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/ar_track_alvar_msgs /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/ar_track_alvar_msgs /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_track_alvar_msgs /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : ar_track_alvar_msgs/CMakeFiles/_ar_track_alvar_msgs_generate_messages_check_deps_AlvarMarkers.dir/depend
 

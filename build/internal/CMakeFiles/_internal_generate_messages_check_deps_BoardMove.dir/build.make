@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src
+CMAKE_SOURCE_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build
+CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build
 
 # Utility rule file for _internal_generate_messages_check_deps_BoardMove.
 
@@ -54,7 +54,7 @@ CMAKE_BINARY_DIR = /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_
 include internal/CMakeFiles/_internal_generate_messages_check_deps_BoardMove.dir/progress.make
 
 internal/CMakeFiles/_internal_generate_messages_check_deps_BoardMove:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/internal && ../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py internal /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/internal/msg/BoardMove.msg 
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal && ../catkin_generated/env_cached.sh /usr/bin/python3 /opt/ros/noetic/share/genmsg/cmake/../../../lib/genmsg/genmsg_check_deps.py internal /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/internal/msg/BoardMove.msg 
 
 _internal_generate_messages_check_deps_BoardMove: internal/CMakeFiles/_internal_generate_messages_check_deps_BoardMove
 _internal_generate_messages_check_deps_BoardMove: internal/CMakeFiles/_internal_generate_messages_check_deps_BoardMove.dir/build.make
@@ -67,10 +67,10 @@ internal/CMakeFiles/_internal_generate_messages_check_deps_BoardMove.dir/build: 
 .PHONY : internal/CMakeFiles/_internal_generate_messages_check_deps_BoardMove.dir/build
 
 internal/CMakeFiles/_internal_generate_messages_check_deps_BoardMove.dir/clean:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/internal && $(CMAKE_COMMAND) -P CMakeFiles/_internal_generate_messages_check_deps_BoardMove.dir/cmake_clean.cmake
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal && $(CMAKE_COMMAND) -P CMakeFiles/_internal_generate_messages_check_deps_BoardMove.dir/cmake_clean.cmake
 .PHONY : internal/CMakeFiles/_internal_generate_messages_check_deps_BoardMove.dir/clean
 
 internal/CMakeFiles/_internal_generate_messages_check_deps_BoardMove.dir/depend:
-	cd /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/internal /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/internal /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/internal/CMakeFiles/_internal_generate_messages_check_deps_BoardMove.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/internal /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal /home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal/CMakeFiles/_internal_generate_messages_check_deps_BoardMove.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : internal/CMakeFiles/_internal_generate_messages_check_deps_BoardMove.dir/depend
 

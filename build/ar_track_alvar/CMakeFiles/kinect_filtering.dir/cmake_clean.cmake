@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/lib/libkinect_filtering.pdb"
-  "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/lib/libkinect_filtering.so"
+  "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/lib/libkinect_filtering.pdb"
+  "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/lib/libkinect_filtering.so"
   "CMakeFiles/kinect_filtering.dir/src/kinect_filtering.cpp.o"
 )
 

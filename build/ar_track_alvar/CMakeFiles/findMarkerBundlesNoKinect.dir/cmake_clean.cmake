@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/lib/ar_track_alvar/findMarkerBundlesNoKinect"
-  "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/lib/ar_track_alvar/findMarkerBundlesNoKinect.pdb"
+  "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/lib/ar_track_alvar/findMarkerBundlesNoKinect"
+  "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/lib/ar_track_alvar/findMarkerBundlesNoKinect.pdb"
   "CMakeFiles/findMarkerBundlesNoKinect.dir/nodes/FindMarkerBundlesNoKinect.cpp.o"
 )
 

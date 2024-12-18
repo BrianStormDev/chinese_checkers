@@ -1,8 +1,8 @@
-# Install script for directory: /home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/internal
+# Install script for directory: /home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/internal
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/install")
+  set(CMAKE_INSTALL_PREFIX "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,53 +38,53 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/internal/msg" TYPE FILE FILES "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/internal/msg/BoardMove.msg")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/internal/msg" TYPE FILE FILES "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/internal/msg/BoardMove.msg")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/internal/cmake" TYPE FILE FILES "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/internal/catkin_generated/installspace/internal-msg-paths.cmake")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/internal/cmake" TYPE FILE FILES "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal/catkin_generated/installspace/internal-msg-paths.cmake")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include" TYPE DIRECTORY FILES "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/include/internal")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include" TYPE DIRECTORY FILES "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/include/internal")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/roseus/ros" TYPE DIRECTORY FILES "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/share/roseus/ros/internal")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/roseus/ros" TYPE DIRECTORY FILES "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/share/roseus/ros/internal")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/common-lisp/ros" TYPE DIRECTORY FILES "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/share/common-lisp/ros/internal")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/common-lisp/ros" TYPE DIRECTORY FILES "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/share/common-lisp/ros/internal")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/gennodejs/ros" TYPE DIRECTORY FILES "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/share/gennodejs/ros/internal")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/gennodejs/ros" TYPE DIRECTORY FILES "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/share/gennodejs/ros/internal")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  execute_process(COMMAND "/usr/bin/python3" -m compileall "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/lib/python3/dist-packages/internal")
+  execute_process(COMMAND "/usr/bin/python3" -m compileall "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/lib/python3/dist-packages/internal")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python3/dist-packages" TYPE DIRECTORY FILES "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/devel/lib/python3/dist-packages/internal")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/python3/dist-packages" TYPE DIRECTORY FILES "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/devel/lib/python3/dist-packages/internal")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/internal/catkin_generated/installspace/internal.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal/catkin_generated/installspace/internal.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/internal/cmake" TYPE FILE FILES "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/internal/catkin_generated/installspace/internal-msg-extras.cmake")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/internal/cmake" TYPE FILE FILES "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal/catkin_generated/installspace/internal-msg-extras.cmake")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/internal/cmake" TYPE FILE FILES
-    "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/internal/catkin_generated/installspace/internalConfig.cmake"
-    "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/build/internal/catkin_generated/installspace/internalConfig-version.cmake"
+    "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal/catkin_generated/installspace/internalConfig.cmake"
+    "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/build/internal/catkin_generated/installspace/internalConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/internal" TYPE FILE FILES "/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/internal/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/internal" TYPE FILE FILES "/home/cc/ee106a/fa24/class/ee106a-adc/final_project/src/internal/package.xml")
 endif()
 
