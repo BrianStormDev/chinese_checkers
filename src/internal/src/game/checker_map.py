@@ -6,24 +6,22 @@ from Point import Point
 from Peg import Peg
 import time
 from Player import Player
-from typing import List, Tuple, Set, Dict
+from typing import List, Tuple, Set
 from agent import Agent
 
-#In recuursive function remove move strings and instead add a height change value
-#Get rid of num_players
-#Get rid of list of winners, instead add a has won attribute to the player
-#Player doesnt need its starting starting point
-#Move the player intiializaiion into a funciton
-#mvoe the playermove lists into the player class
-#move the player relations into the player class
-#optimize game class
-#optimize reset with a function
+# In recuursive function remove move strings and instead add a height change value
+# Get rid of list of winners, instead add a has won attribute to the player
+# Player doesnt need its starting starting point
+# Move the player intiializaiion into a funciton
+# mvoe the playermove lists into the player class
+# move the player relations into the player class
+# optimize reset with a function
+# integrate the utility function into checker map
 
 class ChineseCheckersBoard:
     # Class attributes
     X_DIM = 25
     Y_DIM = 17
-    # num_players: int
     # players: List[Player]
     # current_player: Player
     # board: ndarray[Peg]
@@ -78,8 +76,8 @@ class ChineseCheckersBoard:
             self.agent = None #made this change
         else:
             self.scatter = None #made this change due to some error
-            self.num_players = self.initialize_num_players()
-            self.players = self.initialize_players()
+            num_players = self.initialize_num_players()
+            self.players = self.initialize_players(num_players)
             self.current_player = self.players[0]
             self.winning_players = []
             print("\nInitializing the board.")
@@ -90,21 +88,17 @@ class ChineseCheckersBoard:
     def initialize_custom_board(self, input: List) -> None:
         """
         Initializes the board from a custom input which is a list
-        input[0]: number of players in the game
-        input[1]: players in the game as a list of colors ["Red", 'Gold']
-        input[2]: current player, as a color
-        input[3]: list of winners as colors
-        input[4]: list of lists where each inner list is of the form [x, y, color]
+        input[0]: players in the game as a list of colors ["Red", 'Gold']
+        input[1]: current player, as a color
+        input[2]: list of winners as colors
+        input[3]: list of lists where each inner list is of the form [x, y, color]
         """
-        # Initializing the number of players
-        self.num_players = input[0]
-
         # Initializing the players
-        player_colors = input[1]
+        player_colors = input[0]
         self.players = [self.color_to_player[color] for color in player_colors]
 
         # Initializing the current player
-        current_player_color = input[2]
+        current_player_color = input[1]
         self.current_player = self.color_to_player[current_player_color]
         
         # Initializing the empty board
@@ -122,11 +116,11 @@ class ChineseCheckersBoard:
             player.current_pegs.clear()
 
         # Set the list of winners
-        winners = input[3]
+        winners = input[2]
         self.winning_players = [self.color_to_player[color] for color in winners]
 
         # Each piece is a tuple (x, y, color)
-        piece_positions = input[4]
+        piece_positions = input[3]
         for piece in piece_positions:
             piece_x = piece[0]
             piece_y = piece[1]
@@ -188,14 +182,14 @@ class ChineseCheckersBoard:
             number = input("Enter the number of players: ")
         return int(number)
 
-    def initialize_players(self) -> List[Player]:
+    def initialize_players(self, num_players) -> List[Player]:
         """
         Initializing the players in the game
         """
         print("\nInitializing the players.")
         number_of_players = 1
         list_of_players = []
-        while number_of_players < self.num_players:
+        while number_of_players < num_players:
             color = input(f"Input the color of Player {number_of_players}: ")
             while color not in self.player_colors or self.color_to_player[color] in list_of_players:
                 print("\nThe color you inputted is either already a player or not a possible player.")
@@ -1128,7 +1122,6 @@ class ChineseCheckersBoard:
         """
         # Appending the number of players
         gamestate = []
-        gamestate.append(self.num_players)
 
         # Appending the color of players
         player_colors = [player.color for player in self.players]
