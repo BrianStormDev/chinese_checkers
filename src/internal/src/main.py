@@ -13,7 +13,6 @@ import time
 from internal.msg import BoardMove
 
 # Hard coded for 2 players, being Gold and red and the current number of winners is none
-num_players = 2
 players = ["Gold", "Red"]
 winners = []
 IMAGE_COLLECTION_INTERVAL = 2
@@ -61,7 +60,7 @@ if __name__ == "__main__":
 
         can_collect_image = False
 
-        custom_board = convert_list_to_custom_game(num_players, players, current_player, winners, peg_colors)
+        custom_board = convert_list_to_custom_game(players, current_player, winners, peg_colors)
         game = ChineseCheckersBoard(custom_board)
         game.display_board()
         game.display_until_window_close()
