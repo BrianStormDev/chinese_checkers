@@ -5,7 +5,7 @@ import random
 from checker_map import Agent
 from Point import Point
 
-def jump_loop_test() -> None:
+def jump_loop_test():
     red_positions = [[12, 0, "Red"], [13, 1, "Red"], [15, 3, "Red"], [15, 5, "Red"], [13, 5, "Red"], [13, 3, "Red"]]
     yellow_positions = [[9, 3, "Gold"]]
     positions = red_positions + yellow_positions
@@ -14,7 +14,7 @@ def jump_loop_test() -> None:
     assert len(game.valid_player_moves(game.player_4)) == 29, "Jump Loop Test Failed!"
     print("Jump Loop Test Passed!")
     
-def swapping_test_2p() -> None:
+def swapping_test_2p():
     """
     Determines if we able to make any swaps when we have two players
     """
@@ -26,7 +26,7 @@ def swapping_test_2p() -> None:
     assert len(valid_swap_moves) == 3, "Two Player Swap Test Failed!"
     print("Two Player Swap Test Passed!")
 
-def swapping_test_6p() -> None:
+def swapping_test_6p():
     """
     Determines if we are able to make any swaps when we have six players
     """
@@ -43,7 +43,7 @@ def swapping_test_6p() -> None:
     assert len(valid_swap_moves) == 11, "Six Player Swap Test Failed!"
     print("Six Player Swap Test Passed!")
 
-def no_swap_test() -> None:
+def no_swap_test():
     """
     We should have no swaps allowed if there is an empty spot in the endzone
     """
@@ -55,7 +55,7 @@ def no_swap_test() -> None:
     assert len(valid_swap_moves) == 0, "No Swap Test Failed!"
     print("No Swap Test Passed!")
 
-def win_test() -> None:
+def win_test():
     red_positions = [[16, 12, 'Red'], [12, 16, 'Red'], [9, 13, 'Red'], [12, 14, 'Red'], [11, 15, 'Red'], [15, 13, 'Red'], [10, 14, 'Red'], [13, 15, 'Red'], [11, 13, 'Red'], [13, 13, 'Red']]
     yellow_positions = [[7, 11, 'Gold'], [19, 9, 'Gold'], [12, 8, 'Gold'], [13, 5, 'Gold'], [8, 10, 'Gold'], [9, 9, 'Gold'], [17, 11, 'Gold'], [9, 7, 'Gold'], [13, 7, 'Gold'], [5, 9, 'Gold']]
     positions = red_positions + yellow_positions
@@ -65,7 +65,7 @@ def win_test() -> None:
     assert game.check_player_won(player) == True, "Win Test Failed!"
     print("Win Test Passed!")
 
-def endzone_rule_test() -> None:
+def endzone_rule_test():
     red_positions = [[16, 12, 'Red'], [12, 16, 'Red'], [9, 13, 'Red'], [12, 14, 'Red'], [11, 15, 'Red'], [15, 13, 'Red'], [10, 14, 'Red'], [13, 15, 'Red'], [11, 13, 'Red'], [13, 13, 'Red']]
     yellow_positions = [[7, 11, 'Gold'], [19, 9, 'Gold'], [12, 8, 'Gold'], [13, 5, 'Gold'], [8, 10, 'Gold'], [9, 9, 'Gold'], [17, 11, 'Gold'], [9, 7, 'Gold'], [13, 7, 'Gold'], [5, 9, 'Gold']]
     positions = red_positions + yellow_positions
@@ -104,7 +104,6 @@ def function_game_loop_experiment_6p():
                 break
     game.display_until_window_close()
 
-
 # Max amount of moves has been found to be 148 empirically
 def maxMovesTest():
     numTrials = 100
@@ -122,87 +121,87 @@ def maxMovesTest():
                     break
         print(f"Trial: {trial}, MaxMoves: {maxMoves}")
 
-# def ai_performance_test(num_games: int = 3) -> None:
-#     import random
-#     step_counts = []
-#     results = []
+def ai_performance_test(num_games: int = 3):
+    import random
+    step_counts = []
+    results = []
 
-#     # Helper function to get all valid hexagonal points
-#     def get_hexagon_points(hexagon_origin, max_radius):
-#         hex_points = []
-#         for radii in range(0, max_radius + 1, 2):  # Ensure the radius matches the hexagon layers
-#             for x in range(-radii, radii + 1):
-#                 for y in range(-radii, radii + 1):
-#                     if abs(x) + abs(y) == radii:
-#                         i = x + hexagon_origin.x
-#                         j = y + hexagon_origin.y
-#                         hex_points.append((i, j))
-#         return hex_points
+    # Helper function to get all valid hexagonal points
+    def get_hexagon_points(hexagon_origin, max_radius):
+        hex_points = []
+        for radii in range(0, max_radius + 1, 2):  # Ensure the radius matches the hexagon layers
+            for x in range(-radii, radii + 1):
+                for y in range(-radii, radii + 1):
+                    if abs(x) + abs(y) == radii:
+                        i = x + hexagon_origin.x
+                        j = y + hexagon_origin.y
+                        hex_points.append((i, j))
+        return hex_points
 
-#     # Helper function to generate unique positions from valid hexagonal points
-#     def generate_unique_positions(num_positions: int, color: str, valid_points: list, used_positions: set):
-#         positions = []
-#         while len(positions) < num_positions:
-#             pos = random.choice(valid_points)
-#             if pos not in used_positions:  # Ensure the position is unique
-#                 positions.append([pos[0], pos[1], color])
-#                 used_positions.add(pos)  # Mark this position as used
-#         return positions
+    # Helper function to generate unique positions from valid hexagonal points
+    def generate_unique_positions(num_positions: int, color: str, valid_points: list, used_positions: set):
+        positions = []
+        while len(positions) < num_positions:
+            pos = random.choice(valid_points)
+            if pos not in used_positions:  # Ensure the position is unique
+                positions.append([pos[0], pos[1], color])
+                used_positions.add(pos)  # Mark this position as used
+        return positions
 
-#     # Get hexagonal valid points
-#     hexagon_origin = Point(12, 8)
-#     max_radius = 8
-#     valid_hex_points = get_hexagon_points(hexagon_origin, max_radius)
+    # Get hexagonal valid points
+    hexagon_origin = Point(12, 8)
+    max_radius = 8
+    valid_hex_points = get_hexagon_points(hexagon_origin, max_radius)
 
-#     for game_num in range(num_games):
-#         # Use a set to track already-used positions
-#         used_positions = set()
+    for game_num in range(num_games):
+        # Use a set to track already-used positions
+        used_positions = set()
 
-#         # Generate random positions for Red and Gold without overlap
-#         red_positions = generate_unique_positions(10, "Red", valid_hex_points, used_positions)
-#         gold_positions = generate_unique_positions(10, "Gold", valid_hex_points, used_positions)
-#         positions = red_positions + gold_positions
+        # Generate random positions for Red and Gold without overlap
+        red_positions = generate_unique_positions(10, "Red", valid_hex_points, used_positions)
+        gold_positions = generate_unique_positions(10, "Gold", valid_hex_points, used_positions)
+        positions = red_positions + gold_positions
 
-#         # Initialize the game with random positions
-#         game = ChineseCheckersBoard([["Red", "Gold"], "Red", [], positions])
+        # Initialize the game with random positions
+        game = ChineseCheckersBoard([["Red", "Gold"], "Red", [], positions])
 
-#         # Ensure the board is displayed
-#         game.display_board()
+        # Ensure the board is displayed
+        game.display_board()
 
-#         step_counter = 0
-#         max_steps = 150  # Avoid infinite loops or very long games
+        step_counter = 0
+        max_steps = 150  # Avoid infinite loops or very long games
 
-#         # Run the game where AI plays both sides
-#         while not game.is_game_over(0) and step_counter < max_steps:
-#             current_ai = Agent(game.current_player, game, game.get_opposite_player(game.current_player))
-#             best_move = current_ai.get_best_move(max_time=1.0)
-#             if best_move:
-#                 game.make_move(best_move)
-#                 game.update_board_visual()  # Visualize the updated board
-#             else:
-#                 print(f"No valid moves for {game.current_player.color}")
-#                 break
+        # Run the game where AI plays both sides
+        while not game.is_game_over(0) and step_counter < max_steps:
+            current_ai = Agent(game.current_player, game, game.get_opposite_player(game.current_player))
+            best_move = current_ai.get_best_move(max_time=1.0)
+            if best_move:
+                game.make_move(best_move)
+                game.update_board_visual()  # Visualize the updated board
+            else:
+                print(f"No valid moves for {game.current_player.color}")
+                break
             
-#             # Check if current player won
-#             if game.check_player_won(game.current_player):
-#                 results.append(game.current_player.color)
-#                 break
+            # Check if current player won
+            if game.check_player_won(game.current_player):
+                results.append(game.current_player.color)
+                break
             
-#             game.current_player = game.get_next_player(game.current_player)
-#             step_counter += 1
+            game.current_player = game.get_next_player(game.current_player)
+            step_counter += 1
 
-#         # Log the number of steps for this game
-#         step_counts.append(step_counter)
-#         if not game.is_game_over(0):
-#             results.append("Unfinished")
+        # Log the number of steps for this game
+        step_counts.append(step_counter)
+        if not game.is_game_over(0):
+            results.append("Unfinished")
 
-#         print(f"Game {game_num + 1}/{num_games} finished in {step_counter} steps.")
+        print(f"Game {game_num + 1}/{num_games} finished in {step_counter} steps.")
 
-#     # Print summary
-#     print("\nAI Performance Test Summary:")
-#     print(f"Total Games: {num_games}")
-#     print(f"Average Steps per Game: {sum(step_counts) / num_games:.2f}")
-#     print(f"Game Results: {results}")
+    # Print summary
+    print("\nAI Performance Test Summary:")
+    print(f"Total Games: {num_games}")
+    print(f"Average Steps per Game: {sum(step_counts) / num_games:.2f}")
+    print(f"Game Results: {results}")
 
 def get_hexagon_points(hexagon_origin, max_radius): #made this function
         hex_points = []
@@ -218,7 +217,6 @@ def get_hexagon_points(hexagon_origin, max_radius): #made this function
 hexagon_origin = Point(12, 8)
 max_radius = 8
 valid_hex_points = get_hexagon_points(hexagon_origin, max_radius)
-
 
 def generate_unique_positions(num_positions: int, color: str, valid_points: list, used_positions: set): #made this function
         positions = []
@@ -380,7 +378,7 @@ if __name__ == "__main__":
     swapping_test_6p()
     win_test()
     endzone_rule_test()
-    # function_game_loop_experiment_2p()
+    function_game_loop_experiment_2p()
     # function_game_loop_experiment_6p()
     # maxMovesTest()
     # calculateRewardTest()

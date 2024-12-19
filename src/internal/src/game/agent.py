@@ -46,7 +46,7 @@ class Agent:
             if stored_depth >= depth:
                 return stored_value
 
-        if depth == 0 or self.game.is_game_over(0):
+        if depth == 0 or self.game.is_game_over():
             return self.evaluate()
 
         if is_maximizing:
@@ -80,45 +80,6 @@ class Agent:
                     break
             self.transposition_table[board_hash] = (min_eval, depth)
             return min_eval
-
-    # def evaluate(self) -> float:
-    #     """
-    #     Evaluate board state by combining progress, blocking, and naive height metrics.
-    #     """
-    #     score = 0
-    #     for peg in self.player.current_pegs:
-    #         if self.game.in_endzone(self.player, peg.position):
-    #             score += 350
-    #         closest_goal_dist = min(
-    #             abs(peg.position.x - goal.x) + abs(peg.position.y - goal.y)
-    #             for goal in self.game.get_opposite_player(self.player).endzone_points
-    #         )
-    #         score -= closest_goal_dist * 5
-    #         # Reward movement closer to the goal's y-coordinate
-    #         goal_y = self.game.get_opposite_player(self.player).endzone_points[0].y  # Example: get the y of a goal peg
-    #         progress_toward_goal = goal_y - peg.position.y if goal_y > peg.position.y else peg.position.y - goal_y
-    #         score += progress_toward_goal * 10  # Reward proportional to progress
-
-    #         valid_jumps = self.game.get_valid_jumps(self.player, peg)
-    #         score += len(valid_jumps) * 5
-    #         moves = self.game.valid_peg_moves(peg, self.player)
-    #         score += sum(self.calc_height_change(self.player, move) for move in moves)
-
-    #     enemy_score = 0
-    #     for peg in self.enemy.current_pegs:
-    #         if self.game.in_endzone(self.enemy, peg.position):
-    #             enemy_score += 250
-    #         closest_goal_dist = min(
-    #             abs(peg.position.x - goal.x) + abs(peg.position.y - goal.y)
-    #             for goal in self.game.get_opposite_player(self.enemy).endzone_points
-    #         )
-    #         enemy_score -= closest_goal_dist * 5
-    #         # Penalize enemy progress toward their goal
-    #         enemy_goal_y = self.game.get_opposite_player(self.enemy).endzone_points[0].y
-    #         enemy_progress_toward_goal = enemy_goal_y - peg.position.y if enemy_goal_y > peg.position.y else peg.position.y - enemy_goal_y
-    #         enemy_score += enemy_progress_toward_goal * 10
-
-    #     return score - enemy_score
     
     def evaluate(self) -> float:
         """
