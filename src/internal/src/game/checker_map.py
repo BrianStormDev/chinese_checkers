@@ -11,7 +11,6 @@ from agent import Agent
 
 # In recuursive function remove move strings and instead add a height change value
 # Get rid of list of winners, instead add a has won attribute to the player
-# Player doesnt need its starting starting point
 # Move the player intiializaiion into a funciton
 # mvoe the playermove lists into the player class
 # move the player relations into the player class
