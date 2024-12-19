@@ -9,10 +9,20 @@ from Player import Player
 from typing import List, Tuple, Set, Dict
 from agent import Agent
 
+#In recuursive function remove move strings and instead add a height change value
+#Get rid of num_players
+#Get rid of list of winners, instead add a has won attribute to the player
+#Player doesnt need its starting starting point
+#Move the player intiializaiion into a funciton
+#mvoe the playermove lists into the player class
+#move the player relations into the player class
+#optimize game class
+#optimize reset with a function
+
 class ChineseCheckersBoard:
     # Class attributes
-    x_dim = 25
-    y_dim = 17
+    X_DIM = 25
+    Y_DIM = 17
     # num_players: int
     # players: List[Player]
     # current_player: Player
@@ -132,9 +142,9 @@ class ChineseCheckersBoard:
         Initialize a board with white pegs in the background and black pegs in the playable region
         """
         # Fill the whole board as white pegs
-        board = np.ndarray((self.x_dim, self.y_dim), dtype=Peg)
-        for i in range(self.x_dim):
-            for j in range(self.y_dim):
+        board = np.ndarray((self.X_DIM, self.Y_DIM), dtype=Peg)
+        for i in range(self.X_DIM):
+            for j in range(self.Y_DIM):
                 board[i, j] = Peg(Point(i, j), "White", False, True)
 
         # Initialize the center hexagon for the board
@@ -242,16 +252,16 @@ class ChineseCheckersBoard:
                 data_coords = self.ax.transData.inverted().transform((event.x, event.y))
                 x = round(data_coords[0])
                 y = round(data_coords[1])
-                if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
+                if x >= 0 and x < self.X_DIM and y >= 0 and y < self.Y_DIM:
                     print(f"Graph coordinates: ({x}, {y}) | {self.board[x, y]}")
 
         # Connect the button press event to the callback function
         self.fig.canvas.mpl_connect("button_press_event", on_mouse_click)
 
         self.ax.set_xlabel("X-axis")
-        self.ax.set_xticks(list(range(self.x_dim)))
+        self.ax.set_xticks(list(range(self.X_DIM)))
         self.ax.set_ylabel("Y-axis")
-        self.ax.set_yticks(list(range(self.y_dim)))
+        self.ax.set_yticks(list(range(self.Y_DIM)))
         self.ax.set_title("Checker Board Visualization")
         self.ax.grid()
         plt.draw()
@@ -584,12 +594,12 @@ class ChineseCheckersBoard:
     def in_bounds(self, position: Point) -> bool:
         """Return whether or not the current position is in bounds"""
         # First checks to see if the position is in the array structure before checking if the position is in the playable area
-        if position.x < self.x_dim and position.x >= 0 and position.y < self.y_dim and position.y >= 0:
+        if position.x < self.X_DIM and position.x >= 0 and position.y < self.Y_DIM and position.y >= 0:
             return self.peg_at_position(position).in_board
         return False
 
     def is_midgame(self) -> bool:  #made this function for my Agent class but I am not sure if this accurately represents if game is in mid stage
-        starting_zone_pegs = sum(1 for peg in self.agent.player.current_pegs if peg.position.y < self.y_dim / 3)
+        starting_zone_pegs = sum(1 for peg in self.agent.player.current_pegs if peg.position.y < self.Y_DIM / 3)
         endzone_pegs = sum(1 for peg in self.agent.player.current_pegs if self.in_endzone(self.agent.player, peg.position))
         total_pegs = len(self.agent.player.current_pegs)
         
@@ -638,7 +648,7 @@ class ChineseCheckersBoard:
                     y = int(round(data_coords[1]))
 
                     # If the press is on the actual graph
-                    if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
+                    if x >= 0 and x < self.X_DIM and y >= 0 and y < self.Y_DIM:
                         point = Point(x, y)
 
                         # If a point has already been pressed, attempt the move
@@ -701,9 +711,9 @@ class ChineseCheckersBoard:
 
         # Set up the axes of the graph
         ax.set_xlabel("X-axis")
-        ax.set_xticks(list(range(self.x_dim)))
+        ax.set_xticks(list(range(self.X_DIM)))
         ax.set_ylabel("Y-axis")
-        ax.set_yticks(list(range(self.y_dim)))
+        ax.set_yticks(list(range(self.Y_DIM)))
         ax.set_title("Checker Board Visualization")
         ax.grid()
 
@@ -743,7 +753,7 @@ class ChineseCheckersBoard:
                     y = int(round(data_coords[1]))
 
                     # If the press is on the actual graph
-                    if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
+                    if x >= 0 and x < self.X_DIM and y >= 0 and y < self.Y_DIM:
                         point = Point(x, y)
 
                         # If a point has already been pressed, attempt the move
@@ -809,9 +819,9 @@ class ChineseCheckersBoard:
 
         # Set up the axes of the graph
         ax.set_xlabel("X-axis")
-        ax.set_xticks(list(range(self.x_dim)))
+        ax.set_xticks(list(range(self.X_DIM)))
         ax.set_ylabel("Y-axis")
-        ax.set_yticks(list(range(self.y_dim)))
+        ax.set_yticks(list(range(self.Y_DIM)))
         ax.set_title("Checker Board Visualization")
         ax.grid()
 
@@ -834,9 +844,9 @@ class ChineseCheckersBoard:
             y_coords = [peg.position.y for peg in pegArray]
             ax.scatter(x_coords, y_coords, c=colors)
             ax.set_xlabel("X-axis")
-            ax.set_xticks(list(range(self.x_dim)))
+            ax.set_xticks(list(range(self.X_DIM)))
             ax.set_ylabel("Y-axis")
-            ax.set_yticks(list(range(self.y_dim)))
+            ax.set_yticks(list(range(self.Y_DIM)))
             ax.set_title("Chinese Checkers Board")
             ax.grid()
             fig.canvas.draw_idle()
@@ -850,7 +860,7 @@ class ChineseCheckersBoard:
                     data_coords = ax.transData.inverted().transform((event.x, event.y))
                     x, y = int(round(data_coords[0])), int(round(data_coords[1]))
                 
-                    if 0 <= x < self.x_dim and 0 <= y < self.y_dim:
+                    if 0 <= x < self.X_DIM and 0 <= y < self.Y_DIM:
                         point = Point(x, y)
                         
                         if buffer:
@@ -1062,9 +1072,9 @@ class ChineseCheckersBoard:
         The pegs are on the board are mapped to values between -1 and 6 to represent if those spots are 
         unreachable, empty, or belong to a player.
         """
-        new_board = np.ndarray((self.x_dim, self.y_dim))
-        for i in range(self.x_dim):
-            for j in range(self.y_dim):
+        new_board = np.ndarray((self.X_DIM, self.Y_DIM))
+        for i in range(self.X_DIM):
+            for j in range(self.Y_DIM):
                 peg = self.board[i, j]
                 new_board[i, j] = self.color_to_value[peg.color]
         return new_board

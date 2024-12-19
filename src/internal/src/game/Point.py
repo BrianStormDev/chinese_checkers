@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 class Point:
     """
-    Point class consisting of integer coordinates
+    Point class consisting of integer coordinates.
     """
     def __init__ (self, x, y):
         assert isinstance(x, int) and isinstance(y, int), "At least one of the input values was not an integer."
@@ -20,10 +20,10 @@ class Point:
         return isinstance(other, Point) and other.x == self.x and other.y == self.y
     
     def __repr__(self):
-        return f'Point ({self.x}, {self.y})'
+        return f'({self.x}, {self.y})'
     
     def __string__(self):
-        return f'Point ({self.x}, {self.y})'
+        return f'({self.x}, {self.y})'
     
     def __hash__(self):
-        return hash(tuple(self.x, self.y))
+        return hash(tuple([self.x, self.y]))
