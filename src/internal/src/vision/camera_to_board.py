@@ -95,7 +95,7 @@ def invert_board(board):
     board = reversed(board)
     for row in board: 
         for peg in row: 
-            peg.change_y(abs(NUM_ROWS - 1 - peg.position.y))
+            peg.position.y = abs(NUM_ROWS - 1 - peg.position.y)
 
 for i in range(NUM_ROWS): 
     num_boxes_before = sum(PEGS_PER_ROW[:i])

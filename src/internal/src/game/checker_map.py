@@ -919,7 +919,6 @@ class ChineseCheckersBoard:
         plt.close()
         plt.ioff()
 
-
     def play_game_terminal(self) -> None:
         """Main game loop."""
         self.display_board()
@@ -957,7 +956,6 @@ class ChineseCheckersBoard:
         # Appends the last place finisher
         self.winning_players.append(self.current_player)
         print(f"The game is over! The order of winning is {self.winning_players}.")
-
 
     def get_user_input(self) -> List:
         """
@@ -1054,8 +1052,6 @@ class ChineseCheckersBoard:
         while next_player not in self.players or next_player in self.winning_players:
             next_player_number = (next_player_number % 6) + 1
             next_player = self.number_to_player[next_player_number]
-            # print(next_player_number)
-            # print(self.winning_players)
         return next_player
 
     #####################################################################################################################################################################
@@ -1148,18 +1144,6 @@ class ChineseCheckersBoard:
             return len(self.winning_players) == (len(self.players) - 1)
         elif difference == 0:
             return len(self.winning_players) == len(self.players)
-    
-    def get_current_player(self) -> Player:
-        """
-        Return the current player in the game
-        """
-        return self.current_player
-    
-    def get_number_of_possible_moves_player(self, player: Player):
-        return len(self.format_for_update_func_possible_moves(player))
-    
-    def get_current_RL_player(self): #made this change
-        return self.current_player.number - 1
 
     def calculate_height_change(self, player: Player, moveIndex: int):
         """
@@ -1218,25 +1202,23 @@ class ChineseCheckersBoard:
 if __name__ == "__main__":
     print("Welcome to Chinese Checkers!")
     print("Select Game Mode:")
-    print("1. Play on UI without AI")
+    print("1. Play on UI ")
     print("2. Play on Terminal")
     print("3. Play on UI with AI")
 
-    mode = input("Enter the number corresponding to the game mode: ").strip()
+    mode = input("Enter the number corresponding to the game mode: ")
+    game = ChineseCheckersBoard() 
 
     if mode == "1":
         print("Starting game on UI without AI...")
-        game = ChineseCheckersBoard() 
         game.play_game_UI()
 
     elif mode == "2":
         print("Starting game on Terminal...")
-        game = ChineseCheckersBoard()  
         game.play_game_terminal()
 
     elif mode == "3":
         print("Starting game on UI with AI...")
-        game = ChineseCheckersBoard() 
 
         active_players = [player.color for player in game.players]
         valid_colors = {color: color for color in active_players}
