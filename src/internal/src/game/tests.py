@@ -12,7 +12,8 @@ CUSTOM_6P = [['Gold', 'Red', 'Purple', 'Darkorange', 'Green', 'Blue'], 'Gold', [
 
 def jump_loop_test():
     """
-    
+    Tests that we do not count jumping in a circle repeatedly as a valid move
+    Ex: Sometimes you can jump in a circle to end up back at the same position, we don't want to increase moves if repeatedly circle back
     """
     custom = [['Gold', 'Red'], 'Red', [], [[9, 3, 'Gold'], [12, 0, 'Red'], [13, 1, 'Red'], [15, 3, 'Red'], [15, 5, 'Red'], [13, 5, 'Red'], [13, 3, 'Red']]]
     game = ChineseCheckersBoard(custom)
@@ -44,7 +45,7 @@ def swapping_test_6p():
 
 def no_swap_test():
     """
-    We should have no swaps allowed if there is an empty spot in the endzone
+    Tests to see if there are no swaps allowed if there exists an empty spot in the endzone
     """
     custom = [['Gold', 'Red'], 'Red', [], [[9, 13, 'Gold'], [8, 12, 'Red'], [10, 14, 'Red'], [11, 15, 'Red'], [11, 13, 'Red'], [12, 14, 'Red'], [13, 15, 'Red'], [13, 13, 'Red'], [14, 14, 'Red'], [15, 13, 'Red']]]
     game = ChineseCheckersBoard(custom)
@@ -53,6 +54,9 @@ def no_swap_test():
     print("No Swap Test Passed!")
 
 def win_test():
+    """
+    Tests to see if all players pegs in an endzone results in a win
+    """
     custom = [['Red', 'Gold'], 'Red', [], [[16, 12, 'Red'], [12, 16, 'Red'], [9, 13, 'Red'], [12, 14, 'Red'], [11, 15, 'Red'], [15, 13, 'Red'], [10, 14, 'Red'], [13, 15, 'Red'], [11, 13, 'Red'], [13, 13, 'Red'], [7, 11, 'Gold'], [19, 9, 'Gold'], [12, 8, 'Gold'], [13, 5, 'Gold'], [8, 10, 'Gold'], [9, 9, 'Gold'], [17, 11, 'Gold'], [9, 7, 'Gold'], [13, 7, 'Gold'], [5, 9, 'Gold']]]
     game = ChineseCheckersBoard(custom)
     red_player = game.color_to_player["Red"]
@@ -61,6 +65,9 @@ def win_test():
     print("Win Test Passed!")
 
 def endzone_rule_test():
+    """
+    Tests to see if moving a piece out of the endzone is prevented
+    """
     custom = [['Red', 'Gold'], 'Red', [], [[16, 12, 'Red'], [12, 16, 'Red'], [9, 13, 'Red'], [12, 14, 'Red'], [11, 15, 'Red'], [15, 13, 'Red'], [10, 14, 'Red'], [13, 15, 'Red'], [11, 13, 'Red'], [13, 13, 'Red'], [7, 11, 'Gold'], [19, 9, 'Gold'], [12, 8, 'Gold'], [13, 5, 'Gold'], [8, 10, 'Gold'], [9, 9, 'Gold'], [17, 11, 'Gold'], [9, 7, 'Gold'], [13, 7, 'Gold'], [5, 9, 'Gold']]]
     game = ChineseCheckersBoard(custom)
     move_succesful = game.update_game([13, 13, 'DL'])
@@ -68,6 +75,9 @@ def endzone_rule_test():
     print("Endzone Rule Passed!")
 
 def random_moves_2p():
+    """
+    Simulates a game with two players who randomly move pieces 
+    """
     game = ChineseCheckersBoard(CUSTOM_2P)
     game.display_board()
     for _ in range(10000):
@@ -81,6 +91,9 @@ def random_moves_2p():
     game.display_until_window_close()
 
 def random_moves_6p():
+    """
+    Simulates a game with six players who randomly move pieces 
+    """
     game = ChineseCheckersBoard(CUSTOM_6P)
     game.display_board()
     for _ in range(20000):
@@ -95,6 +108,9 @@ def random_moves_6p():
     game.display_until_window_close()
 
 def naive_vs_random_2p():
+    """
+    Simulates a game with two players: Red makes moves according to the largest jump possible, while Gold randomly moves pieces 
+    """
     custom = [['Gold', 'Red'], 'Gold', [], [[12, 16, 'Gold'], [13, 15, 'Gold'], [11, 15, 'Gold'], [14, 14, 'Gold'], [12, 14, 'Gold'], [10, 14, 'Gold'], [15, 13, 'Gold'], [13, 13, 'Gold'], [11, 13, 'Gold'], [9, 13, 'Gold'], [12, 0, 'Red'], [11, 1, 'Red'], [13, 1, 'Red'], [10, 2, 'Red'], [12, 2, 'Red'], [14, 2, 'Red'], [9, 3, 'Red'], [11, 3, 'Red'], [13, 3, 'Red'], [15, 3, 'Red']]]
     game = ChineseCheckersBoard(custom)
     game.display_board()
@@ -114,6 +130,9 @@ def naive_vs_random_2p():
     game.display_until_window_close()
 
 def naive_vs_random_6p():
+    """
+    Simulates a game with six players: Red makes moves according to the largest jump possible, while five players randomly move pieces while red 
+    """
     custom = [['Red', 'Gold', 'Green', 'Blue', 'Purple', 'Darkorange'], 'Red', [], [[12, 0, 'Red'], [11, 1, 'Red'], [13, 1, 'Red'], [10, 2, 'Red'], [12, 2, 'Red'], [14, 2, 'Red'], [9, 3, 'Red'], [11, 3, 'Red'], [13, 3, 'Red'], [15, 3, 'Red'], [12, 16, 'Gold'], [13, 15, 'Gold'], [11, 15, 'Gold'], [14, 14, 'Gold'], [12, 14, 'Gold'], [10, 14, 'Gold'], [15, 13, 'Gold'], [13, 13, 'Gold'], [11, 13, 'Gold'], [9, 13, 'Gold'], [24, 4, 'Green'], [22, 4, 'Green'], [23, 5, 'Green'], [20, 4, 'Green'], [21, 5, 'Green'], [22, 6, 'Green'], [18, 4, 'Green'], [19, 5, 'Green'], [20, 6, 'Green'], [21, 7, 'Green'], [0, 12, 'Blue'], [2, 12, 'Blue'], [1, 11, 'Blue'], [4, 12, 'Blue'], [3, 11, 'Blue'], [2, 10, 'Blue'], [6, 12, 'Blue'], [5, 11, 'Blue'], [4, 10, 'Blue'], [3, 9, 'Blue'], [24, 12, 'Purple'], [23, 11, 'Purple'], [22, 12, 'Purple'], [22, 10, 'Purple'], [21, 11, 'Purple'], [20, 12, 'Purple'], [21, 9, 'Purple'], [20, 10, 'Purple'], [19, 11, 'Purple'], [18, 12, 'Purple'], [0, 4, 'Darkorange'], [1, 5, 'Darkorange'], [2, 4, 'Darkorange'], [2, 6, 'Darkorange'], [3, 5, 'Darkorange'], [4, 4, 'Darkorange'], [3, 7, 'Darkorange'], [4, 6, 'Darkorange'], [5, 5, 'Darkorange'], [6, 4, 'Darkorange']]]
     game = ChineseCheckersBoard(custom)
     game.display_board()
@@ -133,6 +152,9 @@ def naive_vs_random_6p():
     game.display_until_window_close()
 
 def max_moves_experiment():
+    """
+    An experiment that determines the maximum number of moves possible for any game state
+    """
     # Max amount of moves has been found to be 148 empirically
     numTrials = 100
     maxMoves = 0
@@ -150,6 +172,9 @@ def max_moves_experiment():
         print(f"Trial: {trial}, MaxMoves: {maxMoves}")
 
 def ai_performance_test(num_games: int = 3):
+    """
+    An experiment that tests AI capablities
+    """
     import random
     step_counts = []
     results = []
