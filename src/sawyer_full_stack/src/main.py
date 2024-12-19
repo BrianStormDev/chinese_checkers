@@ -217,7 +217,7 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, trans):
     REAL_SPACING_X = -0.01963
     REAL_SPACING_Y = 0.00937
 
-    REAL_BOTTOM_LEFT_X, REAL_BOTTOM_LEFT_Y, REAL_SPACING_X, REAL_SPACING_Y = [0.1449, 0.1824, -0.0244, -0.0081]
+    REAL_BOTTOM_LEFT_X, REAL_BOTTOM_LEFT_Y, REAL_SPACING_X, REAL_SPACING_Y = [-0.0553, -0.0147, -0.0189, 0.00992]
 
     # Getting the position of the AR tag wrt the base frame
     ar_tag_x = trans.transform.translation.x
@@ -279,7 +279,7 @@ def callback(message):
     # Default parameters
     ar_marker = 0
     TOP_HEIGHT = 0.125
-    PICKUP_HEIGHT = 0.057
+    PICKUP_HEIGHT = 0.093
 
     # Unpack the message    
     start_x = message.start_x
@@ -310,10 +310,8 @@ def callback(message):
 
     # Tuck the robot into a position that it can do IK with easily
     regular_tuck()
-    move_robot(342, 0.01)
-    move_robot(342, 0)
 
-    # # Pick up the ball
+    # Pick up the ball
     move_robot(start_position, TOP_HEIGHT)
     move_robot(start_position, PICKUP_HEIGHT)
     control_gripper(right_gripper, False)
@@ -324,7 +322,7 @@ def callback(message):
 
     # Drop the ball in the designated position
     move_robot(end_position, TOP_HEIGHT)
-    # move_robot(end_position, PICKUP_HEIGHT)
+    move_robot(end_position, PICKUP_HEIGHT)
     control_gripper(right_gripper, True)
     move_robot(end_position, TOP_HEIGHT)
 
@@ -342,7 +340,7 @@ def move_robot(position, height_offset):
     group.set_num_planning_attempts(5)  # Try multiple times
     group.set_max_velocity_scaling_factor(0.3)  # Slow down for precision
     group.set_max_acceleration_scaling_factor(0.005)  # Reduce jerks
-    group.set_workspace([0.4, -0.5, -0.17, 1, 0.6, 2]) # Setting the workspace 
+    group.set_workspace([0.4, -0.5, -0.17, 0.9, 0.6, 0.1]) # Setting the workspace 
 
     # Define goal pose
     goal_pose = PoseStamped()
