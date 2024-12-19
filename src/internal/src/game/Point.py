@@ -26,4 +26,7 @@ class Point:
         return f'({self.x}, {self.y})'
     
     def __hash__(self):
-        return hash(tuple([self.x, self.y]))
+        """
+        Converts the Point to a tuple and gets the hash of that tuple.
+        """
+        return hash((self.x, self.y))

@@ -931,7 +931,13 @@ class ChineseCheckersBoard:
 
     def play_game_terminal(self) -> None:
         """Main game loop."""
+        lst = []
         self.display_board()
+        for j in range(self.Y_DIM - 1, -1, -1):
+            for i in range(self.X_DIM):
+                if self.peg_at_position(Point(i, j)).in_board:
+                    lst.append((i, j))
+        print(lst)
         while not self.is_game_over(0):
             # Print which player it is and all their possible moves
             print(f"Player {self.current_player.number}/{self.current_player.color}'s turn.\n")
