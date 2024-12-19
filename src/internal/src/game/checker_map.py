@@ -4,18 +4,17 @@ import copy
 import matplotlib.pyplot as plt
 from Point import Point
 from Peg import Peg
-import time
 from Player import Player
-from typing import List, Tuple, Set
 from agent import Agent
+from typing import List, Tuple, Set
 
-# In recuursive function remove move strings and instead add a height change value
-# Get rid of list of winners, instead add a has won attribute to the player
+# In recursive function remove move strings and instead add a height change value
 # Move the player intiializaiion into a funciton
 # mvoe the playermove lists into the player class
 # move the player relations into the player class
 # optimize reset with a function
 # integrate the utility function into checker map
+# maybe move get next player, get opposite player to player class
 
 class ChineseCheckersBoard:
     # Class attributes
@@ -58,31 +57,23 @@ class ChineseCheckersBoard:
     swap_moves = ["SUL", "SUR", "SR", "SDR", "SDL", "SL"]
     player_moves = basic_moves + jump_moves + swap_moves
 
-    # Possible Player Color Pairings
-    two_player = [["Yellow", "Red"], ["Purple", "Orange"], ["Blue", "Green"]]
-    four_player = [["Yellow", "Red", "Purple", "Orange"], ["Yellow", "Red", "Blue", "Green"], ["Purple", "Orange", "Blue", "Green"]]
-    six_player = [["Yellow", "Red", "Purple", "Orange", "Blue", "Green"]] 
-
     #####################################################################################################################################################################
     # Board Setup Functions
-    def __init__(self, game_state=None) -> None:
+    def __init__(self, custom_game_state=None) -> None:
         """
         Initialize the game
         """
-        if game_state:
-            self.initialize_custom_board(game_state)
-            self.move_history = [] #made this change
-            self.agent = None #made this change
+        if custom_game_state:
+            self.initialize_custom_board(custom_game_state)
         else:
-            self.scatter = None #made this change due to some error
             num_players = self.initialize_num_players()
             self.players = self.initialize_players(num_players)
             self.current_player = self.players[0]
             self.winning_players = []
             print("\nInitializing the board.")
             self.board = self.initialize_board()
-            self.move_history = [] # made this change
-            self.agent = None #made this change
+        self.move_history = [] # made this change
+        self.agent = None # made this change
 
     def initialize_custom_board(self, input: List) -> None:
         """
@@ -904,7 +895,6 @@ class ChineseCheckersBoard:
                     self.make_move(best_move)
                     self.update_board_visual()
                     redraw_board()
-                    time.sleep(1)
                     if self.check_player_won(self.current_player):
                         print(f"Player {self.current_player.color} has won!")
                         self.winning_players.append(self.current_player)
