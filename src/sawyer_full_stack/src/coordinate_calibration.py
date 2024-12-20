@@ -73,7 +73,7 @@ def lookup_tag(tag_number):
         # The rospy.Duration(10.0) is the amount of time to wait for the transform to be available before throwing an exception
         trans = tfBuffer.lookup_transform('base', f'ar_marker_{tag_number}', rospy.Time(0), rospy.Duration(10.0))
         print("The tag was found!")
-        return trans.transform.position
+        return trans.transform.translation
     except Exception as e:
         print(e)
         print("The tag was not found!")
@@ -127,9 +127,11 @@ def process_points():
     A = np.array(A)
     B = np.array(B)
 
-    parameters = np.linalg.lstsq(A, B)
-    print(parameters)
-    
+    x, residuals, rank, s = np.linalg.lstsq(A, B, rcond = None)
+    print(x)
+    retList = [x[j][0] for j in range(NUM_POINTS)]
+    print(retList)
+
 
 if __name__ == '__main__':
     rospy.init_node('listener', anonymous=True)
