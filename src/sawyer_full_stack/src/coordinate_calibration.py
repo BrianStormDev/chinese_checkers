@@ -71,9 +71,11 @@ def lookup_tag(tag_number):
         # The rospy.Time(0) is the latest available 
         # The rospy.Duration(10.0) is the amount of time to wait for the transform to be available before throwing an exception
         trans = tfBuffer.lookup_transform('base', f'ar_marker_{tag_number}', rospy.Time(0), rospy.Duration(10.0))
+        print("The tag was found!")
         return trans.transform.position
     except Exception as e:
         print(e)
+        print("The tag was not found!")
         return None
 
 POINTS = []
