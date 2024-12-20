@@ -247,8 +247,8 @@ class ChineseCheckersBoard:
 
     def event_coord_to_board_coord(self, event):
         position = self.ax.transData.inverted().transform((event.x, event.y))
-        x = round(position[0])
-        y = round(position[1])
+        x = int(round(position[0]))
+        y = int(round(position[1]))
         return x, y
 
     def update_board_visual(self):
