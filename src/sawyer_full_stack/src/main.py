@@ -117,16 +117,16 @@ def ar_tuck():
 
         # Joints 1, 3, 5 are the joints to be changed
 
-        # Tuck the arm, Alice
-        tuck_positions = {
-            'right_j0': 0,
-            'right_j1': -0.5,
-            'right_j2': 0,
-            'right_j3': 1.25,
-            'right_j4': 0,
-            'right_j5': -0.75,
-            'right_j6': 1.7
-        }
+        # # Tuck the arm, Alice
+        # tuck_positions = {
+        #     'right_j0': 0,
+        #     'right_j1': -0.5,
+        #     'right_j2': 0,
+        #     'right_j3': 1.25,
+        #     'right_j4': 0,
+        #     'right_j5': -0.75,
+        #     'right_j6': 1.7
+        # }
 
         # # Tuck the arm, Azula
         # tuck_positions = {
@@ -138,6 +138,17 @@ def ar_tuck():
         #     'right_j5': -0.45,
         #     'right_j6': 1.7
         # }
+
+        # Tuck the arm, Ada
+        tuck_positions = {
+            'right_j0': 0.0,
+            'right_j1': -1.0,
+            'right_j2': 0.0,
+            'right_j3': 1.0,
+            'right_j4': 0.0,
+            'right_j5': 1.6,
+            'right_j6': 1.7
+        }
 
         """
         Publishes a command to control the Sawyer robot's head pan.

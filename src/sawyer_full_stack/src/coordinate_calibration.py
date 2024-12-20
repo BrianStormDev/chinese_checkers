@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import rospy
 import tf2_ros
+import numpy as np
 
 # Tuck dependencies
 from intera_core_msgs.msg import HeadPanCommand
@@ -75,7 +76,8 @@ def lookup_tag(tag_number):
         print(e)
         return None
 
-points = []
+POINTS = []
+AR_TAG = []
 
 def point_picker():
     tfBuffer = tf2_ros.Buffer()
@@ -86,9 +88,8 @@ def point_picker():
             print(trans)
             user = input("Enter y to save, n to stop, p to pass: ")
             if user == "y":
-                 points.append(trans.transform.translation)
-                 if len(points) == 3:
-                     break
+                 POINTS.append(trans.transform.translation)
+                 print(len(POINTS))
             elif user == "n":
                  break
             elif user == "p":
@@ -97,24 +98,42 @@ def point_picker():
             print("error")
 
 def process_points():
-    ar_tag = points[0]
-    bottom_left = points[1]
-    top_right = points[2]
+    NUM_POINTS = 7
+    ar_tag = AR_TAG[0]
 
     precision = 4
-    x_offset = round(bottom_left.x - ar_tag.x, precision)
-    y_offset = round(bottom_left.y - ar_tag.y, precision)
-    x_spacing = round((top_right.x - bottom_left.x) / 8, precision)
-    y_spacing = round((top_right.y - bottom_left.y) / 24, precision)
-    print(f"x_offset: {x_offset}, y_offset: {y_offset}, x_spacing: {x_spacing}, y_spacing: {y_spacing}")
-    print([x_offset, y_offset, x_spacing, y_spacing])
+
+    INTERNAL_Y = 4
+    INTERNAL_X = 0
+
+    INTERNAL_COORDS = [[0, 4], [0, 12], [12, 16], [24, 12], [24, 4], [12, 0], [12, 8]]
+
+    A = []
+    B = []
+
+    for i in range(NUM_POINTS):
+        internal_coord = INTERNAL_COORDS[i]
+        point = POINTS[i]
+
+        A.append([1, 0, internal_coord[1] - INTERNAL_Y, 0])
+        B.append([point.x - ar_tag.x])
+
+        A.append([0, 1, 0, internal_coord[0] - INTERNAL_X])
+        B.append([point.y - ar_tag.y])
+
+    A = np.array(A)
+    B = np.array(B)
+
+    parameters = np.linalg.lstsq(A, B)
+    print(parameters)
+    
 
 if __name__ == '__main__':
     rospy.init_node('listener', anonymous=True)
     ar_tuck()
     rospy.sleep(4)
-    points.append(lookup_tag(0))
+    AR_TAG.append(lookup_tag(0))
     point_picker()
-    print(points)
+    print(POINTS)
     process_points()
     
