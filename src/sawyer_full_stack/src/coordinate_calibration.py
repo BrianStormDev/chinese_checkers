@@ -40,7 +40,8 @@ def ar_tuck():
         pub.publish(command)
         rospy.sleep(1)  # Allow some time for the message to be processed
 
-        """
+        """n exception
+        trans = tfBuffer.lookup_transform('base', f'ar_marker_{tag_number}', rospy.Time(0), rospy.Duration(10.0))
         Commands the Sawyer robot's arm to a tucked position using joint positions.
         """
         limb = Limb("right")  # Use "right" since Sawyer has only one arm
