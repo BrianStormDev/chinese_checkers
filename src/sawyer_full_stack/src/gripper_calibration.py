@@ -38,6 +38,7 @@ def control_gripper(right_gripper, open):
     print([open_val, close_val])
 
 if __name__ == "__main__":
+    rospy.init_node('gripper_node')
     right_gripper = calibrate_gripper()
     while True:
         control_gripper(right_gripper, True)

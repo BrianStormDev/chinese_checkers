@@ -118,15 +118,15 @@ def ar_tuck():
         # Joints 1, 3, 5 are the joints to be changed
 
         # # Tuck the arm, Alice
-        # tuck_positions = {
-        #     'right_j0': 0,
-        #     'right_j1': -0.5,
-        #     'right_j2': 0,
-        #     'right_j3': 1.25,
-        #     'right_j4': 0,
-        #     'right_j5': -0.75,
-        #     'right_j6': 1.7
-        # }
+        tuck_positions = {
+            'right_j0': 0,
+            'right_j1': -0.5,
+            'right_j2': 0,
+            'right_j3': 1.25,
+            'right_j4': 0,
+            'right_j5': -0.75,
+            'right_j6': 1.7
+        }
 
         # # Tuck the arm, Azula
         # tuck_positions = {
@@ -138,17 +138,6 @@ def ar_tuck():
         #     'right_j5': -0.45,
         #     'right_j6': 1.7
         # }
-
-        # Tuck the arm, Ada
-        tuck_positions = {
-            'right_j0': 0.0,
-            'right_j1': -1.0,
-            'right_j2': 0.0,
-            'right_j3': 1.0,
-            'right_j4': 0.0,
-            'right_j5': 1.6,
-            'right_j6': 1.7
-        }
 
         """
         Publishes a command to control the Sawyer robot's head pan.
@@ -197,6 +186,9 @@ def lookup_tag(tag_number):
         print(e)
     return trans
 
+TOP_HEIGHT = 0.097
+PICKUP_HEIGHT = 0.083
+
 def convert_internal_coordinates_to_real_coordinates(x: int, y: int, trans):
     """
     Takes in internal coordinates of the board and converts them into real world coordinates
@@ -212,7 +204,7 @@ def convert_internal_coordinates_to_real_coordinates(x: int, y: int, trans):
     INTERNAL_BOTTOM_LEFT_Y = 4
 
     # The offset of the bottom left piece and the spacing of the pieces
-    REAL_BOTTOM_LEFT_X, REAL_BOTTOM_LEFT_Y, REAL_SPACING_X, REAL_SPACING_Y = [0.1449, 0.1824, -0.0244, -0.0081]
+    REAL_BOTTOM_LEFT_X, REAL_BOTTOM_LEFT_Y, REAL_SPACING_X, REAL_SPACING_Y = [-0.055, -0.016, -0.0182, 0.0102] #-0.017 real bottom left
 
     # Getting the position of the AR tag wrt the base frame
     ar_tag_x = trans.transform.translation.x
@@ -251,7 +243,7 @@ def control_gripper(right_gripper, open):
     if open:
         while input("Try opening the gripper: ") == "y":
             print('Opening gripper.')
-            right_gripper.set_position(0.022)
+            right_gripper.set_position(0.024)
             rospy.sleep(1)
 
     # Close the right gripper
@@ -267,8 +259,6 @@ def callback(message):
     """
     # Default parameters
     ar_marker = 0
-    TOP_HEIGHT = 0.125
-    PICKUP_HEIGHT = 0.093
 
     # Unpack the message    
     start_x = message.start_x
@@ -323,18 +313,13 @@ def move_robot(position, height_offset):
     group = MoveGroupCommander("right_arm")
 
     # Set up planner for precision and shortest path
-    group.set_planner_id("PRMstarConfigDefsdfault") # Optimal Smooth Paths
-    group.set_planning_time(10)  # Increase planning time for more complex paths
+    group.set_planner_id("PRMstarkConfigDefault") # Optimal Smooth Paths
+    group.set_planning_time(3)  # Increase planning time for more complex paths
     group.set_goal_tolerance(0.0001)  # Set the joint, position and orientation goal tolerances simultaneously 
-    group.set_num_planning_attempts(5)  # Try multiple times
-    group.set_max_velocity_scaling_factor(0.3)  # Slow down for precision
-    group.set_max_acceleration_scaling_factor(0.005)  # Reduce jerks
+    group.set_num_planning_attempts(3)  # Try multiple times
+    group.set_max_velocity_scaling_factor(0.5)  # Slow down for precision
+    group.set_max_acceleration_scaling_factor(0.001)  # Reduce jerks
     group.set_workspace([0.4, -0.5, -0.17, 0.9, 0.6, 0.1]) # Setting the workspace 
-
-
-    # Trying to get the planner list
-    rospy.loginfo(group.get_interface_description())
-    rospy.loginfo(group.get_planner_id())
 
     # Define goal pose
     goal_pose = PoseStamped()
@@ -358,40 +343,6 @@ def move_robot(position, height_offset):
         group.execute(plan[1])
         rospy.sleep(1.0)
 
-
-        # ADDED A STOP HERE, MIGHT BE HELPFUL TO STOP THE MVOEMENT?
-        group.stop()
-
-if __name__ == "__main__":
-    rospy.init_node('move_board_subscriber')
-    rospy.Subscriber('game_move', BoardMove, callback)
-    rospy.spin()
-
-def tuck_robot(joint_goal):
-    """
-    Joint goal is a list of joint angles we want to reach. The list is length 7
-    """
-   # Initialize group for the Sawyer arm
-    group = MoveGroupCommander("right_arm")
-
-    # Set up planner for precision and shortest path
-    group.set_planner_id("PRMstarConfigDefsdfault") # Optimal Smooth Paths
-    group.set_planning_time(10)  # Increase planning time for more complex paths
-    group.set_goal_tolerance(0.0001)  # Set the joint, position and orientation goal tolerances simultaneously 
-    group.set_num_planning_attempts(5)  # Try multiple times
-    group.set_max_velocity_scaling_factor(0.3)  # Slow down for precision
-    group.set_max_acceleration_scaling_factor(0.005)  # Reduce jerks
-    group.set_workspace([0.4, -0.5, -0.17, 1, 0.6, 2]) # Setting the workspace 
-
-    user_input = input("Enter 'y' if the trajectory looks safe on RVIZ: ")
-    
-    # Execute IK if safe
-    if user_input == 'y':
-        # Set the joint target
-        group.go(joint_goal, wait=True)
-
-        # Stop any residual movement
-        group.stop()
 
 if __name__ == "__main__":
     rospy.init_node('move_board_subscriber')

@@ -17,7 +17,7 @@ def ar_tuck():
         speed_ratio = 1
         pan_mode = 1
 
-        # Tuck the arm, Alan
+        # Tuck the arm
         tuck_positions = {
             'right_j0': 0,
             'right_j1': -0.5,
@@ -87,16 +87,16 @@ def point_picker():
     tfListener = tf2_ros.TransformListener(tfBuffer)
     while not rospy.is_shutdown():
         try: 
-            trans = tfBuffer.lookup_transform("base", "right_gripper_tip", rospy.Time())
-            print(trans)
+            trans = tfBuffer.lookup_transform("base", "right_gripper_tip", rospy.Time(0), rospy.Duration(10.0))
+            print(trans.transform.translation)
             user = input("Enter y to save, n to stop, p to pass: ")
             if user == "y":
                  POINTS.append(trans.transform.translation)
-                 print(len(POINTS))
             elif user == "n":
                  break
             elif user == "p":
                  continue
+            print(len(POINTS))
         except (tf2_ros.LookupException, tf2_ros.ConnectivityException, tf2_ros.ExtrapolationException):
             print("error")
 
@@ -129,8 +129,11 @@ def process_points():
 
     x, residuals, rank, s = np.linalg.lstsq(A, B, rcond = None)
     print(x)
-    retList = [x[j][0] for j in range(NUM_POINTS)]
+    retList = [x[j][0] for j in range(4)]
     print(retList)
+    retListRounded = [round(x[j][0], precision) for j in range(4)]
+    print(retListRounded)
+    
 
 
 if __name__ == '__main__':
