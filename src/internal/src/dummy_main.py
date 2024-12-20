@@ -13,10 +13,12 @@ if __name__ == "__main__":
     while not rospy.is_shutdown():
 
         # Calibration test
-        message = BoardMove(0, 4, 24, 12)
+        # message = BoardMove(0, 4, 24, 12)
         
         # Other extreme test
         # message = BoardMove(12, 0, 12, 16)
+    
+        message = BoardMove(8, 4, 16, 4)
 
         rospy.loginfo(f"Test Worked. Message: {message}.")
 

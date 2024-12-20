@@ -20,7 +20,7 @@ def control_gripper(right_gripper, open):
     # Lower values open it up
 
     # Open the right gripper
-    open_val, close_val = [0.022, 0.033]
+    open_val, close_val = [0.028, 0.034]
     if open:
         while input("Try opening the gripper: ") == "y":
             print('Opening gripper.')

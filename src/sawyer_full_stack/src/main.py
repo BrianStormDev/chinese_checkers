@@ -25,7 +25,7 @@ def camera_tuck():
     """
     Tuck the robot arm to the start position. Use with caution
     """
-    if input('Would you like to camera_tuck the arm? (y/n): ') == 'y':
+    if True:
         # Set the head pan
         target_pan = 0
         speed_ratio = 1
@@ -67,7 +67,7 @@ def regular_tuck():
     """
     Tuck the robot arm to the start position. Use with caution
     """
-    if input('Would you like to regular_tuck the arm? (y/n): ') == 'y':
+    if True:
         # Set the head pan
         target_pan = 0
         speed_ratio = 1
@@ -186,8 +186,8 @@ def lookup_tag(tag_number):
         print(e)
     return trans
 
-TOP_HEIGHT = 0.097
-PICKUP_HEIGHT = 0.083
+TOP_HEIGHT = 0.099
+PICKUP_HEIGHT = 0.0825
 
 def convert_internal_coordinates_to_real_coordinates(x: int, y: int, trans):
     """
@@ -227,6 +227,32 @@ def calibrate_gripper():
     right_gripper = robot_gripper.Gripper('right_gripper', calibrate=True)
     return right_gripper
 
+# def control_gripper(right_gripper, open):
+#     """
+#     Controls the custom reversed gripppers
+#     right_gripper: Gripper object
+#     open: boolean determining if we should open the grippers
+#     """
+#     # MAX_POSITION = 0.041667 
+#     # MIN_POSITION = 0.0
+
+#     # Higher values close it up
+#     # Lower values open it up
+
+#     # Open the right gripper
+#     if open:
+#         while input("Try opening the gripper: ") == "y":
+#             print('Opening gripper.')
+#             right_gripper.set_position(0.027)
+#             rospy.sleep(2.0)
+
+#     # Close the right gripper
+#     else:
+#         while input("Try closing the gripper: ") == "y":
+#             print('Closing gripper.')
+#             right_gripper.set_position(0.034)
+#             rospy.sleep(2.0)
+
 def control_gripper(right_gripper, open):
     """
     Controls the custom reversed gripppers
@@ -241,17 +267,13 @@ def control_gripper(right_gripper, open):
 
     # Open the right gripper
     if open:
-        while input("Try opening the gripper: ") == "y":
-            print('Opening gripper.')
-            right_gripper.set_position(0.024)
-            rospy.sleep(1)
+        right_gripper.set_position(0.027)
+        rospy.sleep(1.0)
 
     # Close the right gripper
     else:
-        while input("Try closing the gripper: ") == "y":
-            print('Closing gripper.')
-            right_gripper.set_position(0.033)
-            rospy.sleep(1)
+        right_gripper.set_position(0.034)
+        rospy.sleep(1.0)
 
 def callback(message):
     """
@@ -314,11 +336,11 @@ def move_robot(position, height_offset):
 
     # Set up planner for precision and shortest path
     group.set_planner_id("PRMstarkConfigDefault") # Optimal Smooth Paths
-    group.set_planning_time(3)  # Increase planning time for more complex paths
+    group.set_planning_time(2)  # Increase planning time for more complex paths
     group.set_goal_tolerance(0.0001)  # Set the joint, position and orientation goal tolerances simultaneously 
-    group.set_num_planning_attempts(3)  # Try multiple times
+    group.set_num_planning_attempts(5)  # Try multiple times
     group.set_max_velocity_scaling_factor(0.5)  # Slow down for precision
-    group.set_max_acceleration_scaling_factor(0.001)  # Reduce jerks
+    group.set_max_acceleration_scaling_factor(0.01)  # Reduce jerks
     group.set_workspace([0.4, -0.5, -0.17, 0.9, 0.6, 0.1]) # Setting the workspace 
 
     # Define goal pose
@@ -336,12 +358,9 @@ def move_robot(position, height_offset):
 
     # Plan path
     plan = group.plan()
-    user_input = input("Enter 'y' if the trajectory looks safe on RVIZ: ")
     
-    # Execute IK if safe
-    if user_input == 'y':
-        group.execute(plan[1])
-        rospy.sleep(1.0)
+    group.execute(plan[1])
+    rospy.sleep(2.0)
 
 
 if __name__ == "__main__":
