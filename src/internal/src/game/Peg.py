@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from .Point import Point
+from Point import Point
 
 class Peg:
     """

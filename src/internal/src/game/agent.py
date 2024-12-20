@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-from .Point import Point
+from Point import Point
 import time
-from .Player import Player
+from Player import Player
 from typing import List, Tuple, Dict
 
 class Agent:

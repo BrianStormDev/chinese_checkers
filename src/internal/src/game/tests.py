@@ -366,7 +366,7 @@ if __name__ == "__main__":
     # no_swap_test()
     # win_test()
     # endzone_rule_test()
-    # random_moves_2p()
+    random_moves_2p()
     # random_moves_6p()
     # maxMovesTest()
     # naive_vs_random_2p()

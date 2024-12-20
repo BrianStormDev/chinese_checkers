@@ -2,10 +2,10 @@
 import numpy as np
 import copy 
 import matplotlib.pyplot as plt
-from .Point import Point
-from .Peg import Peg
-from .Player import Player
-from .agent import Agent
+from Point import Point
+from Peg import Peg
+from Player import Player
+from agent import Agent
 from typing import List, Tuple, Set
 
 # In recursive function remove move strings and instead add a height change value
@@ -243,7 +243,7 @@ class ChineseCheckersBoard:
         self.setup_graph_labels()
         self.update_board_visual()
         plt.draw()
-        plt.pause(0.01)
+        plt.pause(0.0001)
 
     def event_coord_to_board_coord(self, event):
         position = self.ax.transData.inverted().transform((event.x, event.y))
@@ -254,18 +254,18 @@ class ChineseCheckersBoard:
     def update_board_visual(self):
         """Update the displayed board dynamically"""
         pegArray = self.board.flatten()
-        colors = [peg.color for peg in pegArray]
+        colors = [peg.color for peg in pegArray if peg.color != 'White']
 
         if not hasattr(self, "scatter"):
-            x_coords = [peg.position.x for peg in pegArray]
-            y_coords = [peg.position.y for peg in pegArray]
-            self.scatter = self.ax.scatter(x_coords, y_coords, c=colors)
+            x_coords = [peg.position.x for peg in pegArray if peg.color != 'White']
+            y_coords = [peg.position.y for peg in pegArray if peg.color != 'White']
+            self.positions = list(zip(x_coords, y_coords))
+            self.scatter = self.ax.scatter(x_coords, y_coords, c=colors, s = 100)
         
-        positions = [[peg.position.x, peg.position.y] for peg in pegArray]
-        self.scatter.set_offsets(positions)
+        self.scatter.set_offsets(self.positions)
         self.scatter.set_facecolor(colors)
         self.ax.figure.canvas.draw_idle()
-        plt.pause(0.001)
+        plt.pause(0.0001)
 
     def setup_graph_labels(self):
         self.ax.set_xlabel("X-axis")
