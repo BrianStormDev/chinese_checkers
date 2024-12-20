@@ -1,0 +1,7 @@
+path: ../drive/MyDrive/EECS106A/data
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 7
+names: ['yellow', 'blue', 'empty_peg', 'purple', 'green', 'red', 'orange']
