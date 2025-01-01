@@ -360,12 +360,12 @@ def whatsigoingon():
     print(game.valid_player_moves(player))
 
 if __name__ == "__main__":
-    # jump_loop_test()
-    # swapping_test_2p()
-    # swapping_test_6p()
-    # no_swap_test()
-    # win_test()
-    # endzone_rule_test()
+    jump_loop_test()
+    swapping_test_2p()
+    swapping_test_6p()
+    no_swap_test()
+    win_test()
+    endzone_rule_test()
     random_moves_2p()
     # random_moves_6p()
     # maxMovesTest()

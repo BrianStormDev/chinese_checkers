@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import numpy as np
-import copy 
 import matplotlib.pyplot as plt
 from Point import Point
 from Peg import Peg
@@ -8,7 +7,6 @@ from Player import Player
 from agent import Agent
 from typing import List, Tuple, Set
 
-# In recursive function remove move strings and instead add a height change value
 # Move the player intiializaiion into a funciton
 # mvoe the playermove lists into the player class
 # move the player relations into the player class
@@ -21,6 +19,7 @@ Y_DIM = 17
 
 class ChineseCheckersBoard:
     # Class attributes
+    # x_dim, y_dim
     # players: List[Player]
     # current_player: Player
     # board: ndarray[Peg]
@@ -63,6 +62,9 @@ class ChineseCheckersBoard:
         """
         Initialize the game
         """
+        self.x_dim = X_DIM
+        self.y_dim = Y_DIM
+
         if custom_game_state:
             self.initialize_custom_board(custom_game_state)
         else:
@@ -127,9 +129,9 @@ class ChineseCheckersBoard:
         Initialize a board with white pegs in the background and black pegs in the playable region
         """
         # Fill the whole board as white pegs
-        board = np.ndarray((X_DIM, Y_DIM), dtype=Peg)
-        for i in range(X_DIM):
-            for j in range(Y_DIM):
+        board = np.ndarray((self.x_dim, self.y_dim), dtype=Peg)
+        for i in range(self.x_dim):
+            for j in range(self.y_dim):
                 board[i, j] = Peg(Point(i, j), "White", False, True)
 
         # Initialize the center hexagon for the board
@@ -232,7 +234,7 @@ class ChineseCheckersBoard:
             if event.inaxes:
                 # Transform mouse coordinates to data coordinates
                 x, y = self.event_coord_to_board_coord(event)
-                if x >= 0 and x < X_DIM and y >= 0 and y < Y_DIM:
+                if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
                     print(f"Graph coordinates: ({x}, {y}) | {self.board[x, y]}")
             else:
                 print(self.output_gamestate())
@@ -269,9 +271,9 @@ class ChineseCheckersBoard:
 
     def setup_graph_labels(self):
         self.ax.set_xlabel("X-axis")
-        self.ax.set_xticks(list(range(X_DIM)))
+        self.ax.set_xticks(list(range(self.x_dim)))
         self.ax.set_ylabel("Y-axis")
-        self.ax.set_yticks(list(range(Y_DIM)))
+        self.ax.set_yticks(list(range(self.y_dim)))
         self.ax.set_title("Checker Board Visualization")
         self.ax.grid()
 
@@ -303,6 +305,7 @@ class ChineseCheckersBoard:
         return self.valid_peg_moves(peg, player) 
     
     def valid_peg_moves(self, peg: Peg, player: Player) -> List[Tuple[Point, str, Point]]:
+        assert peg in player.current_pegs, "This peg doesn't belong to this player!"
         def valid_jumps_from_point(visited_positions: set, move_string: str, origin_pos: Point, current_pos: Point) -> Set[Tuple[Point, str, Point]]:
             """
             Generate a list of valid moves for a singular peg
@@ -315,9 +318,9 @@ class ChineseCheckersBoard:
             jumps = set()
 
             for move_code, direction in player.directions.items(): # For each possible direction
-                if self.is_valid_move(player, current_pos, direction, True, False):
+                if self.is_valid_move(player, current_pos, direction, "Jump"):
                     jump_move_pos = current_pos + (direction * 2) # Get the jump_move_position
-                    if not self.in_bounds(jump_move_pos):  # Skip invalid positions
+                    if not self.in_playable_region(jump_move_pos):  # Skip invalid positions
                         print(f"Jump position out of bounds: {jump_move_pos}")
                         continue
                     # Determine if we stop jumping:
@@ -331,23 +334,21 @@ class ChineseCheckersBoard:
             return jumps
         moves = set()
         
-        if peg in player.current_pegs:
-            for move_code, direction in player.directions.items(): # For each possible direction
-                origin_pos = peg.position # Get the current position of the peg
-                single_move_pos = origin_pos + direction
+        for move_code, direction in player.directions.items(): # For each possible direction
+            origin_pos = peg.position # Get the current position of the peg
+            single_move_pos = origin_pos + direction
 
-                # First determine if we can make any moves one step away 
-                if self.is_valid_move(player, origin_pos, direction, False, False):
-                    moves.add((origin_pos, move_code, single_move_pos))
+            # First determine if we can make any moves one step away 
+            if self.is_valid_move(player, origin_pos, direction, "Regular"):
+                moves.add((origin_pos, move_code, single_move_pos))
 
-                # Second determine if we can make any swaps
-                if self.is_valid_move(player, origin_pos, direction, False, True):
-                    moves.add((origin_pos, "S" + move_code, single_move_pos))
+            # Second determine if we can make any swaps
+            if self.is_valid_move(player, origin_pos, direction, "Swap"):
+                moves.add((origin_pos, "S" + move_code, single_move_pos))
 
-                # Finally determine if we can make any jumps
-                moves.update(valid_jumps_from_point(set(), '', origin_pos, origin_pos))
-        else:
-            print("This peg doesn't belong to this player!")
+            # Finally determine if we can make any jumps
+            moves.update(valid_jumps_from_point(set(), '', origin_pos, origin_pos))
+
         return list(moves)
 
     def make_move(self, move: Tuple[Point, str, Point]): # made this function
@@ -368,11 +369,11 @@ class ChineseCheckersBoard:
         moving_peg.position = end_point
         
         # Update the player's peg list
-        current_player = self.get_player_by_color(moving_peg.color)
+        current_player = self.color_to_player[moving_peg.color]
         current_player.current_pegs.remove(moving_peg)
         current_player.current_pegs.append(moving_peg)
 
-    def undo_move(self, move: Tuple[Point, str, Point]): #made this function
+    def undo_move(self): #made this function
         if not self.move_history:
             return
 
@@ -391,37 +392,10 @@ class ChineseCheckersBoard:
             return
 
         # Update the player's peg list
-        current_player = self.get_player_by_color(moving_peg.color)
+        current_player = self.color_to_player[moving_peg.color]
         if current_player:
             current_player.current_pegs.remove(moving_peg)
             current_player.current_pegs.append(moving_peg)
-
-    def get_end_point(self, start_point: Point, move_string: str) -> Point:  #made this function
-        end_point = copy.deepcopy(start_point)
-        moves = move_string.split()
-        for move in moves:
-            direction = self.get_direction_from_move(move[-2:])
-            if move.startswith('J'):
-                end_point += direction * 2
-            else:
-                end_point += direction
-        return end_point
-
-    def get_direction_from_move(self, move_code: str) -> Point: #made this function 
-        directions = {
-            'UL': Point(-1, 1), 'UR': Point(1, 1),
-            'R': Point(2, 0), 'DR': Point(1, -1),
-            'DL': Point(-1, -1), 'L': Point(-2, 0),
-            'JUL': Point(-2, 2), 'JUR': Point(2, 2),
-            'JDR': Point(2, -2), 'JDL': Point(-2, -2),
-            'SUR': Point(1, 1),  # Example swap moves
-        }
-        return directions.get(move_code, None)
-
-    def get_player_by_color(self, color: str) -> Player: #made this function
-        if color == "Black":
-            return None  # Black does not belong to any player
-        return self.color_to_player[color]
 
     def move_piece(self, player: Player, starting_pos: Point, move_command: List[str]) -> bool:
         """
@@ -434,7 +408,7 @@ class ChineseCheckersBoard:
             if move[0] == "J":
                 actual_move = move[1:]
                 direction = player.directions[actual_move]
-                if self.is_valid_move(player, current_pos, direction, True, False):
+                if self.is_valid_move(player, current_pos, direction, "Jump"):
                     current_pos += (direction * 2)
                 else:
                     return False
@@ -443,7 +417,7 @@ class ChineseCheckersBoard:
             elif move[0] == "S":
                 actual_move = move[1:]
                 direction = player.directions[actual_move]
-                if self.is_valid_move(player, current_pos, direction, False, True):
+                if self.is_valid_move(player, current_pos, direction, "Swap"):
                     current_pos += direction
                 else:
                     return False
@@ -451,7 +425,7 @@ class ChineseCheckersBoard:
             # Checks if the move is a regular move
             else:
                 direction = player.directions[move]
-                if self.is_valid_move(player, current_pos, direction, False, False):
+                if self.is_valid_move(player, current_pos, direction, "Regular"):
                     current_pos += direction
                 else:
                     return False
@@ -479,7 +453,7 @@ class ChineseCheckersBoard:
         self.board[final_pos.x, final_pos.y] = initial_peg
         self.board[starting_pos.x, starting_pos.y] = final_peg
         
-    def is_valid_move(self, player: Player, starting_pos: Point, direction: Point, is_jump: bool, is_swap: bool) -> bool:
+    def is_valid_move(self, player: Player, starting_pos: Point, direction: Point, move_type: str) -> bool:
         """
         Check if the move is valid.
         starting_pos: A Point indicating the starting point of the peg
@@ -487,20 +461,22 @@ class ChineseCheckersBoard:
         return: If the singular move is possible, return True
         """
         # Jump case
-        if is_jump:
+        if move_type == "Jump":
             return self.is_valid_jump(player, starting_pos, direction)
         
         # Swap Case
-        elif is_swap:
+        elif move_type == "Swap":
             return self.is_valid_swap(player, starting_pos, direction)
         
         # Regular Move Case
-        else:
+        elif move_type == "Regular":
             target_pos = starting_pos + direction
             if self.in_endzone(player, starting_pos):
-                return self.is_empty(target_pos) and self.in_bounds(target_pos) and self.in_endzone(player, target_pos)
+                return self.is_empty(target_pos) and self.in_playable_region(target_pos) and self.in_endzone(player, target_pos)
             else:
-                return self.is_empty(target_pos) and self.in_bounds(target_pos)
+                return self.is_empty(target_pos) and self.in_playable_region(target_pos)
+        else:
+            assert False, "The move_type you tried is invalid. The valid types are 'Jump', 'Swap', and 'Regular'."
 
     def is_valid_jump(self, player: Player, starting_pos: Point, direction: Point) -> bool:
         """
@@ -511,9 +487,9 @@ class ChineseCheckersBoard:
         midpoint = starting_pos + direction
 
         if self.in_endzone(player, starting_pos):
-            return self.is_empty(target_pos) and self.in_bounds(target_pos) and not self.is_empty(midpoint) and self.in_endzone(player, target_pos)
+            return self.is_empty(target_pos) and self.in_playable_region(target_pos) and not self.is_empty(midpoint) and self.in_endzone(player, target_pos)
         else:
-            return self.is_empty(target_pos) and self.in_bounds(target_pos) and not self.is_empty(midpoint)
+            return self.is_empty(target_pos) and self.in_playable_region(target_pos) and not self.is_empty(midpoint)
 
     def is_valid_swap(self, player: Player, starting_point: Point, direction: Point) -> bool:
         """
@@ -521,7 +497,7 @@ class ChineseCheckersBoard:
         """
         end_point = starting_point + direction
         # First ensure that the end_point is in the endzone (you can't swap out of the endzone!)
-        if self.in_endzone(player, end_point) and self.in_bounds(end_point):
+        if self.in_endzone(player, end_point) and self.in_playable_region(end_point):
             # Second ensure that the endzone is full of pegs
             if self.is_endzone_full(player):
                 # Third ensure that you are swapping with a peg of a different color (and must be in bounds)
@@ -553,18 +529,20 @@ class ChineseCheckersBoard:
     
     def peg_at_position(self, position: Point) -> Peg:
         """Return the Peg located at the position"""
+        assert self.in_board_array(position), "The point you tried to index is not in bounds." 
         return self.board[position.x, position.y]
     
+    def in_board_array(self, position: Point) -> bool:
+        """Return whether or not the current position is in bounds"""
+        return position.x < self.x_dim and position.x >= 0 and position.y < self.y_dim and position.y >= 0
+
     def is_empty(self, position: Point) -> bool:
         """Return whether or not there is Peg located at a certain position"""
-        return not self.in_bounds(position) or self.peg_at_position(position).is_empty
+        return self.in_board_array(position) and self.peg_at_position(position).is_empty
         
-    def in_bounds(self, position: Point) -> bool:
-        """Return whether or not the current position is in bounds"""
-        # First checks to see if the position is in the array structure before checking if the position is in the playable area
-        if position.x < X_DIM and position.x >= 0 and position.y < Y_DIM and position.y >= 0:
-            return self.peg_at_position(position).in_board
-        return False
+    def in_playable_region(self, position: Point) -> bool:
+        """Returns whether or not the current position is in the playable region"""
+        return self.in_board_array(position) and self.peg_at_position(position).in_board
 
     #####################################################################################################################################################################
     # Subrat Function
@@ -606,7 +584,7 @@ class ChineseCheckersBoard:
                     x, y = self.event_coord_to_board_coord(event)
 
                     # If the press is on the actual graph
-                    if x >= 0 and x < X_DIM and y >= 0 and y < Y_DIM:
+                    if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
                         point = Point(x, y)
 
                         # If a point has already been pressed, attempt the move
@@ -687,7 +665,7 @@ class ChineseCheckersBoard:
                     x, y = self.event_coord_to_board_coord(event)
 
                     # If the press is on the actual graph
-                    if x >= 0 and x < X_DIM and y >= 0 and y < Y_DIM:
+                    if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
                         point = Point(x, y)
 
                         # If a point has already been pressed, attempt the move
@@ -764,7 +742,7 @@ class ChineseCheckersBoard:
                 if self.current_player != ai_player:
                     if event.inaxes:
                         x, y = self.event_coord_to_board_coord(event)
-                        if 0 <= x < X_DIM and 0 <= y < Y_DIM:
+                        if 0 <= x < self.x_dim and 0 <= y < self.y_dim:
                             point = Point(x, y)
                             if buffer:
                                 possible_moves = self.point_valid_moves(buffer[0], self.current_player)
@@ -955,18 +933,6 @@ class ChineseCheckersBoard:
 
     #####################################################################################################################################################################
     # FUNCTIONAL CODE
-    def board_to_RL_board(self): 
-        """
-        Converts a board that is more easily interpreted by the AI
-        The pegs are on the board are mapped to values between -1 and 6 to represent if those spots are 
-        unreachable, empty, or belong to a player.
-        """
-        new_board = np.ndarray((X_DIM, Y_DIM))
-        for i in range(X_DIM):
-            for j in range(Y_DIM):
-                peg = self.board[i, j]
-                new_board[i, j] = self.color_to_value[peg.color]
-        return new_board
 
     def update_game(self, moveslist: List) -> bool:
         """

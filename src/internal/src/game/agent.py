@@ -3,6 +3,7 @@ from Point import Point
 import time
 from Player import Player
 from typing import List, Tuple, Dict
+import numpy as np
 
 class Agent:
     def __init__(self, player: Player, game, enemy: Player):
@@ -53,7 +54,7 @@ class Agent:
             for move in moves:
                 self.game.make_move(move)
                 eval = self.minimax(depth - 1, False, alpha, beta)
-                self.game.undo_move(move)
+                self.game.undo_move()
                 if eval > max_eval:
                     max_eval = eval
                     if depth == self.initial_depth:
@@ -70,7 +71,7 @@ class Agent:
             for move in moves:
                 self.game.make_move(move)
                 eval = self.minimax(depth - 1, True, alpha, beta)
-                self.game.undo_move(move)
+                self.game.undo_move()
                 min_eval = min(min_eval, eval)
                 beta = min(beta, eval)
                 if beta <= alpha:
@@ -123,7 +124,17 @@ class Agent:
         return score - enemy_score
 
     def get_board_hash(self) -> str:
-        return str(self.game.board_to_RL_board().tobytes())
+        """
+        Converts a board that is more easily interpreted by the AI
+        The pegs are on the board are mapped to values between -1 and 6 to represent if those spots are 
+        unreachable, empty, or belong to a player.
+        """
+        new_board = np.ndarray((self.game.x_dim, self.game.y_dim))
+        for i in range(self.game.x_dim):
+            for j in range(self.game.y_dim):
+                peg = self.game.board[i, j]
+                new_board[i, j] = self.game.color_to_value[peg.color]
+        return str(new_board.tobytes())
 
     def get_best_move(self, max_time: float = 2.0) -> Tuple[Point, str, Point]:
         self.best_move = None
