@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-import numpy as np
-import matplotlib.pyplot as plt
-from Point import Point
-from Peg import Peg
-from Player import Player
+from point import Point
+from peg import Peg
+from player import Player
 from agent import Agent
 from typing import List, Tuple, Set
+import numpy as np
+import matplotlib.pyplot as plt
 
 # Move the player intiializaiion into a funciton
 # mvoe the playermove lists into the player class
@@ -13,6 +13,7 @@ from typing import List, Tuple, Set
 # optimize reset with a function
 # integrate the utility function into checker map
 # maybe move get next player, get opposite player to player class
+# Merge each of the UI gameplay functions into one function that is parameterized with how the second player is played
 
 X_DIM = 25
 Y_DIM = 17
@@ -305,10 +306,14 @@ class ChineseCheckersBoard:
         return self.valid_peg_moves(peg, player) 
     
     def valid_peg_moves(self, peg: Peg, player: Player) -> List[Tuple[Point, str, Point]]:
+        """
+        Generate a list of valid moves for a singular peg of a player as a list of tuples
+        Each tuple contains a starting point, the list of move codes to reach the ending point, and the ending point
+        """
         assert peg in player.current_pegs, "This peg doesn't belong to this player!"
         def valid_jumps_from_point(visited_positions: set, move_string: str, origin_pos: Point, current_pos: Point) -> Set[Tuple[Point, str, Point]]:
             """
-            Generate a list of valid moves for a singular peg
+            
             visited_positions: indicates all of the points we have visited before
             move_string: indicates the moves made up till this point
             origin_pos: indicates the initial position of the peg

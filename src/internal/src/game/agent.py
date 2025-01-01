@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-from Point import Point
-import time
-from Player import Player
+from point import Point
+from player import Player
 from typing import List, Tuple, Dict
 import numpy as np
+import time
 
 class Agent:
     def __init__(self, player: Player, game, enemy: Player):

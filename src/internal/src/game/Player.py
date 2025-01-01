@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-from Point import Point
-from Peg import Peg
+from point import Point
+from peg import Peg
 from typing import List
 
 class Player:

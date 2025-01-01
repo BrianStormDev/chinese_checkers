@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import rospy
 from game import *
-from game.checker_map import ChineseCheckersBoard
+from game.chineseCheckersBoard import ChineseCheckersBoard
 from game.game_utilities import convert_list_to_custom_game
 from game.Point import Point
 

@@ -3,8 +3,8 @@ from ultralytics import YOLO
 import cv2, cvzone
 import os, sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from Peg import Peg
-from Point import Point
+from peg import Peg
+from point import Point
 import matplotlib.pyplot as plt
 
 print('Import Success')
