@@ -81,10 +81,11 @@ def random_moves_2p():
     game = ChineseCheckersBoard(CUSTOM_2P)
     game.display_board()
     for _ in range(10000):
-            moves = game.format_for_update_func_possible_moves(game.current_player)
+            moves = game.valid_player_moves(game.current_player)
             if (len(moves) != 0):
                 j = np.random.randint(0, len(moves))
-                game.update_game(moves[j])
+                move = game.format_move_for_update_func(moves[j])
+                game.update_game(move)
                 game.update_board_visual()
             else:
                 break
@@ -97,10 +98,11 @@ def random_moves_6p():
     game = ChineseCheckersBoard(CUSTOM_6P)
     game.display_board()
     for _ in range(20000):
-            moves = game.format_for_update_func_possible_moves(game.current_player)
+            moves = game.valid_player_moves(game.current_player)
             if (len(moves) != 0):
                 j = np.random.randint(0, len(moves))
-                game.update_game(moves[j])
+                move = game.format_move_for_update_func(moves[j])
+                game.update_game(move)
                 if _ % 10 == 0:
                     game.update_board_visual()
             else:
@@ -115,14 +117,15 @@ def naive_vs_random_2p():
     game = ChineseCheckersBoard(custom)
     game.display_board()
     for _ in range(20000):
-            if _ % 6 == 0 and game.get_current_player().color == 'Gold':
+            if _ % 6 == 0 and game.current_player.color == 'Gold':
                 move = game.naive_algorithm_update_move()
                 game.update_game(move)
             else:
-                moves = game.format_for_update_func_possible_moves(game.current_player)
+                moves = game.valid_player_moves(game.current_player)
                 if (len(moves) != 0):
                     j = np.random.randint(0, len(moves))
-                    game.update_game(moves[j])
+                    move = game.format_move_for_update_func(moves[j])
+                    game.update_game(move)
                     if _ % 10 == 0:
                         game.update_board_visual()
                 else:
@@ -137,14 +140,15 @@ def naive_vs_random_6p():
     game = ChineseCheckersBoard(custom)
     game.display_board()
     for _ in range(20000):
-            if _ % 6 == 0 and game.get_current_player().color == 'Red':
+            if _ % 6 == 0 and game.current_player.color == 'Red':
                 move = game.naive_algorithm_update_move()
                 game.update_game(move)
             else:
-                moves = game.format_for_update_func_possible_moves(game.current_player)
+                moves = game.valid_player_moves(game.current_player)
                 if (len(moves) != 0):
                     j = np.random.randint(0, len(moves))
-                    game.update_game(moves[j])
+                    move = game.format_move_for_update_func(moves[j])
+                    game.update_game(move)
                     if _ % 10 == 0:
                         game.update_board_visual()
                 else:
@@ -162,11 +166,12 @@ def max_moves_experiment():
         custom = [['Red', 'Gold', 'Green', 'Blue', 'Purple', 'Darkorange'], 'Red', [], [[12, 0, 'Red'], [11, 1, 'Red'], [13, 1, 'Red'], [10, 2, 'Red'], [12, 2, 'Red'], [14, 2, 'Red'], [9, 3, 'Red'], [11, 3, 'Red'], [13, 3, 'Red'], [15, 3, 'Red'], [12, 16, 'Gold'], [13, 15, 'Gold'], [11, 15, 'Gold'], [14, 14, 'Gold'], [12, 14, 'Gold'], [10, 14, 'Gold'], [15, 13, 'Gold'], [13, 13, 'Gold'], [11, 13, 'Gold'], [9, 13, 'Gold'], [24, 4, 'Green'], [22, 4, 'Green'], [23, 5, 'Green'], [20, 4, 'Green'], [21, 5, 'Green'], [22, 6, 'Green'], [18, 4, 'Green'], [19, 5, 'Green'], [20, 6, 'Green'], [21, 7, 'Green'], [0, 12, 'Blue'], [2, 12, 'Blue'], [1, 11, 'Blue'], [4, 12, 'Blue'], [3, 11, 'Blue'], [2, 10, 'Blue'], [6, 12, 'Blue'], [5, 11, 'Blue'], [4, 10, 'Blue'], [3, 9, 'Blue'], [24, 12, 'Purple'], [23, 11, 'Purple'], [22, 12, 'Purple'], [22, 10, 'Purple'], [21, 11, 'Purple'], [20, 12, 'Purple'], [21, 9, 'Purple'], [20, 10, 'Purple'], [19, 11, 'Purple'], [18, 12, 'Purple'], [0, 4, 'Darkorange'], [1, 5, 'Darkorange'], [2, 4, 'Darkorange'], [2, 6, 'Darkorange'], [3, 5, 'Darkorange'], [4, 4, 'Darkorange'], [3, 7, 'Darkorange'], [4, 6, 'Darkorange'], [5, 5, 'Darkorange'], [6, 4, 'Darkorange']]]
         game = ChineseCheckersBoard(custom)
         for _ in range(20000):
-                moves = game.format_for_update_func_possible_moves(game.current_player)
+                moves = game.valid_player_moves(game.current_player)
                 maxMoves = max(maxMoves, len(moves))
                 if (len(moves) != 0):
                     j = np.random.randint(0, len(moves))
-                    game.update_game(moves[j])
+                    move = game.format_move_for_update_func(moves[j])
+                    game.update_game(move)
                 else:
                     break
         print(f"Trial: {trial}, MaxMoves: {maxMoves}")
@@ -366,10 +371,10 @@ if __name__ == "__main__":
     no_swap_test()
     win_test()
     endzone_rule_test()
-    random_moves_2p()
+    # random_moves_2p()
     # random_moves_6p()
     # maxMovesTest()
-    # naive_vs_random_2p()
+    naive_vs_random_2p()
     # naive_vs_random_6p()
     # tune_parameters()
     whatsigoingon()

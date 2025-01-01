@@ -292,9 +292,9 @@ class ChineseCheckersBoard:
         returns: List of valid moves (a list of tuples, where each element is a tuple containing the start point and end point)
         """
         all_moves = []
-        for peg in player.current_pegs: # For each of the pegs of the current player
+        # For each of the pegs of the current player
+        for peg in player.current_pegs: 
             all_moves.extend(self.valid_peg_moves(peg, player))
-
         return all_moves
     
     def point_valid_moves(self, point: Point, player: Player) -> List[Tuple[Point, str, Point]]:
@@ -306,14 +306,14 @@ class ChineseCheckersBoard:
         return self.valid_peg_moves(peg, player) 
     
     def valid_peg_moves(self, peg: Peg, player: Player) -> List[Tuple[Point, str, Point]]:
+        assert peg in player.current_pegs, "This peg doesn't belong to this player!"
         """
         Generate a list of valid moves for a singular peg of a player as a list of tuples
         Each tuple contains a starting point, the list of move codes to reach the ending point, and the ending point
         """
-        assert peg in player.current_pegs, "This peg doesn't belong to this player!"
+        
         def valid_jumps_from_point(visited_positions: set, move_string: str, origin_pos: Point, current_pos: Point) -> Set[Tuple[Point, str, Point]]:
             """
-            
             visited_positions: indicates all of the points we have visited before
             move_string: indicates the moves made up till this point
             origin_pos: indicates the initial position of the peg
@@ -337,6 +337,7 @@ class ChineseCheckersBoard:
                         visited_positions.add(jump_move_pos) # Update the visited positions
                         jumps.update(valid_jumps_from_point(visited_positions, updated_move_code, origin_pos, jump_move_pos)) # Add all the other valid moves
             return jumps
+        
         moves = set()
         
         for move_code, direction in player.directions.items(): # For each possible direction
@@ -491,25 +492,25 @@ class ChineseCheckersBoard:
         target_pos = starting_pos + direction * 2
         midpoint = starting_pos + direction
 
+        endzone_check = True
+
         if self.in_endzone(player, starting_pos):
-            return self.is_empty(target_pos) and self.in_playable_region(target_pos) and not self.is_empty(midpoint) and self.in_endzone(player, target_pos)
-        else:
-            return self.is_empty(target_pos) and self.in_playable_region(target_pos) and not self.is_empty(midpoint)
+            endzone_check = self.in_endzone(player, target_pos)
+
+        # The jump must ensure the final position is empty and in the playable region, the mid point is not empty, and that endzone rules are followed
+        return self.is_empty(target_pos) and self.in_playable_region(target_pos) and not self.is_empty(midpoint) and endzone_check
 
     def is_valid_swap(self, player: Player, starting_point: Point, direction: Point) -> bool:
         """
         Checks if a swap between two points is valid for a player
         """
         end_point = starting_point + direction
-        # First ensure that the end_point is in the endzone (you can't swap out of the endzone!)
-        if self.in_endzone(player, end_point) and self.in_playable_region(end_point):
-            # Second ensure that the endzone is full of pegs
-            if self.is_endzone_full(player):
-                # Third ensure that you are swapping with a peg of a different color (and must be in bounds)
-                starting_peg = self.peg_at_position(starting_point)
-                final_peg = self.peg_at_position(end_point)
-                if (starting_peg.color != final_peg.color):
-                    return True
+        # Ensure that the end_point is in the endzone and the endzone is full of pegs
+        if self.in_endzone(player, end_point) and self.is_endzone_full(player):
+            # Next ensure that you are swapping with a peg of a different color (and must be in bounds)
+            starting_peg = self.peg_at_position(starting_point)
+            final_peg = self.peg_at_position(end_point)
+            return starting_peg.color != final_peg.color
         return False
 
     def is_endzone_full(self, player: Player) -> bool:
@@ -939,7 +940,7 @@ class ChineseCheckersBoard:
     #####################################################################################################################################################################
     # FUNCTIONAL CODE
 
-    def update_game(self, moveslist: List) -> bool:
+    def update_game(self, move_command: List) -> bool:
         """
         Updates the gamestate based on the player_input
         Returns if the move happened
@@ -947,40 +948,43 @@ class ChineseCheckersBoard:
         moveslist[1]: y-coordinate of peg
         moveslist[2:]: list of move commands (strings)
         """
-        x = moveslist[0]
-        y = moveslist[1]
+        # Unpacking the move_command
+        x = move_command[0]
+        y = move_command[1]
+        move_list = move_command[2:]
+
         starting_peg = Point(x, y)
-        move_command = moveslist[2:]
-        move_happened = self.move_piece(self.current_player, starting_peg, move_command) 
+        move_succeeded = self.move_piece(self.current_player, starting_peg, move_list) 
+
+        # If the player wins from this move, append that player to the list of winning players
         if (self.check_player_won(self.current_player)):
             self.winning_players.append(self.current_player)  
-        if not self.is_game_over():
-            self.current_player = self.get_next_player(self.current_player)
-        return move_happened
 
-    def format_for_update_func_possible_moves(self, player: Player) -> List:
+        # If the game is not over yet and the move happened, change the current player to the next player
+        if not self.is_game_over() and move_succeeded:
+            self.current_player = self.get_next_player(self.current_player)
+
+        # Return if the move succeeded
+        return move_succeeded
+
+    def format_move_for_update_func(self, move) -> List:
         """
         Format's a possible move from self.valid_player_moves into a format that can be input as a function call to update_gaame
         Ex: [x, y, move_command move_command ...]
         """
-        movesList = []
-        valid_player_moves = self.valid_player_moves(player)
-        for move in valid_player_moves:
-            formattedMove = []
-            formattedMove.append(move[0].x)
-            formattedMove.append(move[0].y)
-            string_moves = move[1]
-            string_list = string_moves.split(" ")
-            for command in string_list:
-                formattedMove.append(command)
-            movesList.append(formattedMove)
-        return movesList
+        formattedMove = []
+        formattedMove.append(move[0].x)
+        formattedMove.append(move[0].y)
+        string_moves = move[1]
+        string_list = string_moves.split(" ")
+        for command in string_list:
+            formattedMove.append(command)
+        return formattedMove
 
     def output_gamestate(self) -> List:
         """
         returns the gamestate which can be used to initialize a custom board
         """
-        # Appending the number of players
         gamestate = []
 
         # Appending the color of players
@@ -996,13 +1000,14 @@ class ChineseCheckersBoard:
         gamestate.append(winning_colors)
 
         # Append the remaining pieces on the board
-        piece_positions = []
+        pieces = []
         for player in self.players:
             for peg in player.current_pegs:
                 peg_position = peg.position
                 piece = [peg_position.x, peg_position.y, peg.color]
-                piece_positions.append(piece)
-        gamestate.append(piece_positions)
+                pieces.append(piece)
+        gamestate.append(pieces)
+
         return gamestate
     
     def is_game_over(self) -> bool:
@@ -1011,15 +1016,11 @@ class ChineseCheckersBoard:
         """
         return len(self.winning_players) == len(self.players)
 
-    def calculate_height_change(self, player: Player, moveIndex: int):
+    def calculate_height_change_from_move_code(self, move_code: int):
         """
         Calculates the height change of a specific move
         """
-        # Get the move
-        movesList = self.valid_player_moves(player)
-        move = movesList[moveIndex]
-        moveCode = move[1]
-        individualMoves = moveCode.split(" ")
+        individualMoves = move_code.split(" ")
         upMoves = 0
         downMoves = 0
         for code in individualMoves:
@@ -1028,41 +1029,49 @@ class ChineseCheckersBoard:
             elif "D" in code:
                 downMoves += 1
         return upMoves - downMoves 
-    
-    def naive_algorithm_move_index(self) -> int:
+
+    #####################################################################################################################################################################
+    # NAIVE ALGORITHM CODE
+
+    # Thinking about changing the format move function. Change it so that it formats a single move
+
+    def naive_algorithm_move(self) -> int:
         """
         Naive algorithm that gets the current player and goes through all of their possible moves, looking
         for the best move which is defined as the move that moves one of their pieces the furthest
         """
         current_player = self.current_player
-        moves = self.format_for_update_func_possible_moves(current_player)
-        bestMoveIndex = set()
+        moves = self.valid_player_moves(current_player)
+        bestMoveIndexSet = set()
         bestMoveHeight = 0
         for i in range(len(moves)):
-            moveHeight = self.calculate_height_change(current_player, i)
+            move_code = moves[i][1]
+            moveHeight = self.calculate_height_change_from_move_code(current_player, move_code)
             if moveHeight > bestMoveHeight:
-                bestMoveIndex.clear()
-                bestMoveIndex.add(i)
+                bestMoveIndexSet.clear()
+                bestMoveIndexSet.add(i)
                 bestMoveHeight = moveHeight
             elif moveHeight == bestMoveHeight:
-                bestMoveIndex.add(i)
-        bestMoveList = list(bestMoveIndex)
-        randomMoveIndex = np.random.randint(len(bestMoveList))
-        index = bestMoveList[randomMoveIndex]
-        return index
+                bestMoveIndexSet.add(i)
+        bestMoveIndexList = list(bestMoveIndexSet)
+        randomMoveIndex = np.random.randint(len(bestMoveIndexList))
+        index = bestMoveIndexList[randomMoveIndex]
+        bestMove = moves[index]
+        return bestMove
     
     def naive_algorithm_update_move(self):
         """
-        Returns the optimal move outputted by the naive algorithm
+        Returns the optimal move outputted by the naive algorithm to be used by the update function
         """
-        index = self.naive_algorithm_move_index()
-        return self.format_for_update_func_possible_moves(self.current_player)[index]
+        move = self.naive_algorithm_move()
+        return self.format_move_for_update_func(move)
     
     def naive_algorithm_initial_and_final_positions(self):
-        index = self.naive_algorithm_move_index()
-        move = self.valid_player_moves(self.current_player)[index]
-        start = move[0]
-        end = move[2]
+        """
+        Returns the optimal move outputted by the naive algorithm to be used by the internal package (Sawyer)
+        """
+        move = self.naive_algorithm_move()
+        start, end = move[0], move[2]
         return start.x, start.y, end.x, end.y
 
 if __name__ == "__main__":
