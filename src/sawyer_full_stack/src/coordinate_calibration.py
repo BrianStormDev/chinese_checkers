@@ -37,7 +37,6 @@ def tuck(angles):
         # Publishes a command to control the Sawyer robot's head pan.
         pub = rospy.Publisher('/robot/head/command_head_pan', HeadPanCommand, queue_size=10)
         rospy.loginfo("Waiting for publisher to register...")
-        
         command = HeadPanCommand(target=target_pan, speed_ratio=speed_ratio, pan_mode=pan_mode)
         rospy.loginfo(f"Publishing head pan command: {command}")
         pub.publish(command)
