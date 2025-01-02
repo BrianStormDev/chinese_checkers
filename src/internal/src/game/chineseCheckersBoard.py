@@ -49,7 +49,7 @@ class ChineseCheckersBoard:
         """
         Initialize all of the player objects and all of the useful mappings relating to them
         """
-        # The player directions, starting from the topmost and going clockwise.
+        # The player directions, starting from the top most and going clockwise.
         directions_1 = [Point( 1, -1), Point(-1, -1), Point(-2,  0), Point(-1,  1), Point( 1,  1), Point( 2,  0)]
         directions_2 = [Point(-1, -1), Point(-2,  0), Point(-1,  1), Point( 1,  1), Point( 2,  0), Point( 1, -1)]
         directions_3 = [Point(-2,  0), Point(-1,  1), Point( 1,  1), Point( 2,  0), Point( 1, -1), Point(-1, -1)]
@@ -182,7 +182,7 @@ class ChineseCheckersBoard:
         list_of_players = []
         while number_of_players < num_players:
             color = input(f"Input the color of Player {number_of_players}: ")
-            while color not in self.player_colors or self.color_to_player[color] in list_of_players:
+            while color not in ALL_PLAYER_COLORS or self.color_to_player[color] in list_of_players:
                 print("\nThe color you inputted is either already a player or not a possible player.")
                 color = input(f"Input the color of Player {number_of_players}: ")
 
@@ -197,8 +197,7 @@ class ChineseCheckersBoard:
 
             print(f"Player {number_of_players} is now color {color} and Player {number_of_players + 1} is now color {color2}.")
 
-            # Change the number_of_players
-            number_of_players += 2
+            number_of_players += 2 # Update the number_of_players
 
         print(f"The players are {list_of_players}.")
         return list_of_players
@@ -225,10 +224,8 @@ class ChineseCheckersBoard:
             player.reset_pegs()
             for peg in player.current_pegs:
                 self.board[peg.position.x, peg.position.y] = peg
-        self.winning_players.clear()
-
-        # Reset the scatter so that the board can be visualized again
-        self.scatter = None
+        self.winning_players.clear() # Reset the list of winning players so that players can make moves
+        self.scatter = None # Reset the scatter so that the board can be visualized again
 
 ####################################################################################################################################################################
 # Board visualization functions
@@ -248,7 +245,7 @@ class ChineseCheckersBoard:
                 # Transform mouse coordinates to data coordinates
                 x, y = self.event_coord_to_board_coord(event)
                 if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
-                    print(f"Graph coordinates: ({x}, {y}) | {self.board[x, y]}")
+                    print(f"{self.board[x, y]}")
             else:
                 print(self.output_gamestate())
 
@@ -298,7 +295,11 @@ class ChineseCheckersBoard:
 ####################################################################################################################################################################
     # Movement Functions
 
-    def is_valid_move_sawyer(self, x_start: int, y_start: int, x_end: int, y_end: int, player_color: str): 
+    def is_valid_move_sawyer(self, x_start: int, y_start: int, x_end: int, y_end: int, player_color: str) -> bool: 
+        """
+        Checks if a move is valid by checking if there is a move in the list of possible moves of a player that has
+        the same starting and ending coordinates of the input
+        """
         player = self.color_to_player[player_color]
         start_point = Point(x_start, y_start)
         end_point = Point(x_end, y_end)
@@ -311,8 +312,7 @@ class ChineseCheckersBoard:
         returns: List of valid moves (a list of tuples, where each element is a tuple containing the start point and end point)
         """
         all_moves = []
-        # For each of the pegs of the current player
-        for peg in player.current_pegs: 
+        for peg in player.current_pegs: # For each of the pegs of the current player
             all_moves.extend(self.valid_peg_moves(peg, player))
         return all_moves
     
@@ -379,7 +379,7 @@ class ChineseCheckersBoard:
     def move_piece(self, player: Player, starting_pos: Point, move_command: List[str]) -> bool:
         """
         Attempt to move a piece for a player
-        return: If the movement is successful, the board and player will be modified and the function will return True
+        return: If the movement is successful, the board and player will be modified and the function will return True or else it will return False
         """
         current_pos = starting_pos
         for move in move_command:
@@ -500,13 +500,13 @@ class ChineseCheckersBoard:
     
     def in_starting_zone(self, player: Player, point: Point) -> bool:
         """
-        Checks if a point which contains the peg of a player is in the starting zone of that player.
+        Checks if a point is in the starting zone of the player.
         """
         return point in player.starting_zone_points
 
     def in_end_zone(self, player: Player, point: Point) -> bool:
         """
-        Checks if a point which contains the peg of a player is in the end zone of that player.
+        Checks if a point is in the end zone of the player.
         """
         opposite_player = self.get_opposite_player(player)
         end_zone_points = opposite_player.end_zone_points
@@ -684,12 +684,21 @@ class ChineseCheckersBoard:
         plt.show()
 
     def human_UI(self):
+        """
+        Gets the next move from a human
+        """
         pass
 
     def naive_AI_UI(self):
+        """
+        Gets the next move from the naive AI and updates the game
+        """
         self.update_game(self.naive_AI_update_move())
 
     def minimax_AI_UI(self):
+        """
+        Gets the next move from the minimax AI and updates the game
+        """
         agent = Agent(self.current_player, self, self.get_opposite_player(self.current_player))
         best_move = agent.get_best_move(max_time=1.0)
         if best_move:
@@ -995,6 +1004,7 @@ class ChineseCheckersBoard:
 
 ####################################################################################################################################################################
     # Minimax AI code
+
     def minimax_AI_move(self):
         agent = Agent(self.current_player, self, self.get_opposite_player(self.current_player))
         best_move = agent.get_best_move(max_time=1.0)
@@ -1021,7 +1031,7 @@ class ChineseCheckersBoard:
 ####################################################################################################################################################################
     # Main game loop
 
-    def play_game(self):
+    def play_game():
         print("Welcome to Chinese Checkers!")
         print("Select Game Mode:")
         print("1. Play on Terminal")
