@@ -115,15 +115,17 @@ def naive_vs_naive():
     """
     custom = [['Gold', 'Red'], 'Gold', [], [[12, 16, 'Gold'], [13, 15, 'Gold'], [11, 15, 'Gold'], [14, 14, 'Gold'], [12, 14, 'Gold'], [10, 14, 'Gold'], [15, 13, 'Gold'], [13, 13, 'Gold'], [11, 13, 'Gold'], [9, 13, 'Gold'], [12, 0, 'Red'], [11, 1, 'Red'], [13, 1, 'Red'], [10, 2, 'Red'], [12, 2, 'Red'], [14, 2, 'Red'], [9, 3, 'Red'], [11, 3, 'Red'], [13, 3, 'Red'], [15, 3, 'Red']]]
     game = ChineseCheckersBoard(custom)
-    game.display_board()
-    for _ in range(20000):
-        if not game.is_game_over():
-            move = game.naive_algorithm_update_move()
-            game.update_game(move)
-            if _ % 1 ==0:
-                game.update_board_visual()
+    for i in range(10):
+        game.display_board()
+        for _ in range(20000):
+            if not game.is_game_over():
+                move = game.naive_AI_update_move()
+                game.update_game(move)
+                if _ % 10 == 0:
+                    game.update_board_visual()
 
-    game.display_until_window_close()
+        game.display_until_window_close()
+        game.reset_game()
 
 def naive_vs_random_2p():
     """
@@ -134,7 +136,7 @@ def naive_vs_random_2p():
     game.display_board()
     for _ in range(20000):
             if game.current_player.color == 'Gold':
-                move = game.naive_algorithm_update_move()
+                move = game.naive_AI_update_move()
                 game.update_game(move)
             else:
                 moves = game.valid_player_moves(game.current_player)
@@ -157,7 +159,7 @@ def naive_vs_random_6p():
     game.display_board()
     for _ in range(20000):
             if game.current_player.color == 'Red':
-                move = game.naive_algorithm_update_move()
+                move = game.naive_AI_update_move()
                 game.update_game(move)
             else:
                 moves = game.valid_player_moves(game.current_player)
@@ -191,6 +193,16 @@ def max_moves_experiment():
                 else:
                     break
         print(f"Trial: {trial}, MaxMoves: {maxMoves}")
+
+def convert_list_to_custom_game_test():
+    players = ["Gold", "Red"]
+    winners = []
+    current_player = "Gold"
+    peg_colors = ['Red', 'Black', 'Purple', 'Darkorange', 'Black', 'Red', 'Red', 'Red', 'Green', 'Purple', 'Blue', 'Red', 'Gold', 'Gold', 'Black', 'Green', 'Purple', 'Black', 'Darkorange', 'Purple', 'Red', 'Green', 'Darkorange', 'Black', 'Purple', 'Darkorange', 'Red', 'Black', 'Black', 'Red', 'Gold', 'Green', 'Red', 'Green', 'Red', 'Purple', 'Gold', 'Red', 'Purple', 'Darkorange', 'Green', 'Darkorange', 'Black', 'Darkorange', 'Red', 'Green', 'Gold', 'Blue', 'Blue', 'Green', 'Blue', 'Green', 'Green', 'Blue', 'Green', 'Blue', 'Green', 'Black', 'Green', 'Gold', 'Blue', 'Darkorange', 'Blue', 'Black', 'Black', 'Red', 'Blue', 'Darkorange', 'Red', 'Red', 'Green', 'Black', 'Black', 'Purple', 'Gold', 'Purple', 'Purple', 'Red', 'Purple', 'Gold', 'Gold', 'Darkorange', 'Red', 'Green', 'Purple', 'Purple', 'Black', 'Blue', 'Red', 'Green', 'Darkorange', 'Red', 'Gold', 'Darkorange', 'Purple', 'Blue', 'Purple', 'Purple', 'Green', 'Black', 'Blue', 'Gold', 'Red', 'Darkorange', 'Purple', 'Red', 'Gold', 'Blue', 'Red', 'Green', 'Purple', 'Green', 'Purple', 'Green', 'Red', 'Darkorange', 'Black', 'Blue', 'Darkorange', 'Blue', 'Darkorange']
+    custom_board = ChineseCheckersBoard.convert_list_to_custom_game(players, current_player, winners, peg_colors)
+    game = ChineseCheckersBoard(custom_board)
+    game.display_board()
+    game.display_until_window_close()
 
 def ai_performance_test(num_games: int = 3):
     """
@@ -383,6 +395,7 @@ if __name__ == "__main__":
     # random_moves_2p()
     # random_moves_6p()
     # maxMovesTest()
+    # convert_list_to_custom_game_test
     naive_vs_naive()
     # naive_vs_random_2p()
     # naive_vs_random_6p()

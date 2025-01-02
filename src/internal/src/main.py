@@ -2,7 +2,6 @@
 import rospy
 from game import *
 from game.chineseCheckersBoard import ChineseCheckersBoard
-from game.game_utilities import convert_list_to_custom_game
 from game.Point import Point
 
 from sensor_msgs.msg import Image
@@ -51,7 +50,7 @@ if __name__ == "__main__":
 
         can_collect_image = False
 
-        custom_board = convert_list_to_custom_game(players, current_player, winners, peg_colors)
+        custom_board = ChineseCheckersBoard.convert_list_to_custom_game(players, current_player, winners, peg_colors)
         game = ChineseCheckersBoard(custom_board)
         game.display_board()
         game.display_until_window_close()

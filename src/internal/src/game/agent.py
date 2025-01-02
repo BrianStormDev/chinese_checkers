@@ -11,7 +11,7 @@ class Agent:
         self.enemy = enemy
         self.game = game
         self.best_move = None
-        self.transposition_table: Dict[str, Tuple[float, int]] = {}
+        self.transposition_table = {} #: Dict[str, Tuple[float, int]]
 
     def order_moves(self, moves: List[Tuple[Point, str]]) -> List[Tuple[Point, str]]:
         """
@@ -116,10 +116,11 @@ class Agent:
         unreachable, empty, or belong to a player.
         """
         new_board = np.ndarray((self.game.x_dim, self.game.y_dim))
-        for i in range(self.game.x_dim):
-            for j in range(self.game.y_dim):
-                peg = self.game.board[i, j]
-                new_board[i, j] = self.game.color_to_value[peg.color]
+
+        def peg_to_color(peg):
+            return self.game.color_to_value[peg.color]
+        new_board = np.vectorize(peg_to_color)(self.game.board)
+        
         return str(new_board.tobytes())
 
     def get_best_move(self, max_time) -> Tuple[Point, str, Point]:

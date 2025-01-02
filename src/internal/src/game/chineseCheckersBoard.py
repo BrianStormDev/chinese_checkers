@@ -7,11 +7,10 @@ from typing import List, Tuple, Set
 import numpy as np
 import matplotlib.pyplot as plt
 
-# integrate the utility function into checker map
-
-X_DIM = 25
-Y_DIM = 17
+X_DIM = 26
+Y_DIM = 18
 POINT_SIZE = 100
+PLOT_DELAY = 0.01
 
 class ChineseCheckersBoard:
     # Class attributes
@@ -22,9 +21,6 @@ class ChineseCheckersBoard:
     # winning_players: List[Player]
     # fig, ax, scatter
 
-    x_dim = X_DIM
-    y_dim = Y_DIM
-
 ####################################################################################################################################################################
     # Board Setup Functions
 
@@ -32,6 +28,7 @@ class ChineseCheckersBoard:
         """
         Initialize the game
         """
+        self.x_dim, self.y_dim = X_DIM, Y_DIM
         self.initialize_player_objects()
 
         if custom_game_state:
@@ -166,7 +163,7 @@ class ChineseCheckersBoard:
             number = input("Enter the number of players: ")
         return int(number)
 
-    def initialize_players(self, num_players) -> List[Player]:
+    def initialize_players(self, num_players: int) -> List[Player]:
         """
         Initializing the players in the game
         """
@@ -209,10 +206,21 @@ class ChineseCheckersBoard:
         return board
 
     def reset_game(self):
+        """
+        Reset the game
+        """
+        # Reset the pegs of the actual players and update those pegs on the board
         for player in self.players:
             player.reset_pegs()
             for peg in player.current_pegs:
                 self.board[peg.position.x, peg.position.y] = peg
+        self.winning_players.clear()
+
+        # Reset the scatter so that the board can be visualized again
+        self.scatter = None
+
+#####################################################################################################################################################################
+# Board visualization functions
 
     def display_board(self):
         """
@@ -239,7 +247,7 @@ class ChineseCheckersBoard:
         self.setup_graph_labels()
         self.update_board_visual()
         plt.draw()
-        plt.pause(0.0001)
+        plt.pause(PLOT_DELAY)
 
     def event_coord_to_board_coord(self, event):
         position = self.ax.transData.inverted().transform((event.x, event.y))
@@ -252,7 +260,7 @@ class ChineseCheckersBoard:
         pegArray = self.board.flatten()
         colors = [peg.color for peg in pegArray if peg.color != 'White']
 
-        if not hasattr(self, "scatter"):
+        if not hasattr(self, "scatter") or self.scatter == None:
             x_coords = [peg.position.x for peg in pegArray if peg.color != 'White']
             y_coords = [peg.position.y for peg in pegArray if peg.color != 'White']
             self.positions = list(zip(x_coords, y_coords))
@@ -261,7 +269,7 @@ class ChineseCheckersBoard:
         self.scatter.set_offsets(self.positions)
         self.scatter.set_facecolor(colors)
         self.ax.figure.canvas.draw_idle()
-        plt.pause(0.0001)
+        plt.pause(PLOT_DELAY)
 
     def setup_graph_labels(self):
         self.ax.set_xlabel("X-axis")
@@ -597,59 +605,58 @@ class ChineseCheckersBoard:
                 # Ensure the event is within the axes
                 if event.inaxes: 
 
-                    # Transform mouse coordinates to data coordinates   
+                    # Transform mouse coordinates to data coordinates and then to a point
                     x, y = self.event_coord_to_board_coord(event)
+                    point = Point(x, y)
+                        
+                    # If a point has already been pressed, attempt the move
+                    if buffer:
 
-                    # If the press is on the actual graph
-                    if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
-                        point = Point(x, y)
+                        # Checks that the endpoint is a point that can be reached
+                        possible_moves = self.point_valid_moves(buffer[0], self.current_player)
+                        possible_endpoints = [move[2] for move in possible_moves]
 
-                        # If a point has already been pressed, attempt the move
-                        if buffer:
+                        # If the final point is in the possible_endpoints
+                        if point in possible_endpoints: 
+                            # Swap the pegs
+                            self.swap_pegs(buffer[0], point)
+                            print(f"Peg being moved to point ({point.x}, {point.y})")
 
-                            # Checks that the endpoint is a point that can be reached
-                            possible_moves = self.point_valid_moves(buffer[0], self.current_player)
-                            possible_endpoints = [move[2] for move in possible_moves]
+                            # check if someone has won
+                            if self.check_player_won(self.current_player):
+                                print(f"Player {self.current_player.number}/{self.current_player.color} has won in place {len(self.winning_players) + 1}!")
+                                self.winning_players.append(self.current_player)
 
-                            # If the final point is in the possible_endpoints
-                            if point in possible_endpoints: 
-                                # Swap the pegs
-                                self.swap_pegs(buffer[0], point)
-                                print(f"Peg being moved to point ({point.x}, {point.y})")
+                            # Get the next player, clear the buffer, and redraw the board    
+                            self.current_player = self.get_next_player(self.current_player)
 
-                                # check if someone has won
-                                if self.check_player_won(self.current_player):
-                                    print(f"Player {self.current_player.number}/{self.current_player.color} has won in place {len(self.winning_players) + 1}!")
-                                    self.winning_players.append(self.current_player)
+                            # Update the board with the other player whether it be a human, Naive AI, or minimax AI
+                            other_player_function()
 
-                                # Get the next player, clear the buffer, and redraw the board    
-                                self.current_player = self.get_next_player(self.current_player)
-
-                                other_player_function()
-
-                                buffer.clear()
-                                self.update_board_visual()
-                            else:
-                                # If the final point is not in the possible_endpoints
-                                print("The point you pressed is not a valid spot to move to.")
-
-                        # If there is nothing in the buffer
+                            # Clear the buffer for the next player and update the board
+                            buffer.clear()
+                            self.update_board_visual()
                         else:
-                            # Ensure the peg trying to be moved is in the list of the player's pegs
-                            if self.peg_at_position(point) in self.current_player.current_pegs:
-                                possible_moves = self.point_valid_moves(point, self.current_player)
+                            # If the final point is not in the possible_endpoints
+                            print("The point you pressed is not a valid spot to move to.")
 
-                                # Also check that this peg has a possible move:
-                                if len(possible_moves) > 0: 
-                                    print(f"Selected peg at point ({point.x}, {point.y}).\n")
-                                    buffer.append(point)
-                                else:
-                                    print("This peg has no spots to which it can go to.")
+                    # If there is nothing in the buffer
+                    else:
+                        # Ensure the peg trying to be moved is in the list of the player's pegs
+                        if self.peg_at_position(point) in self.current_player.current_pegs:
+                            possible_moves = self.point_valid_moves(point, self.current_player)
+
+                            # Also check that this peg has a possible move:
+                            if len(possible_moves) > 0: 
+                                print(f"Selected peg at point ({point.x}, {point.y}).\n")
+                                buffer.append(point)
+                                print("If you want to cancel the current peg you have selected, click outside the graph.\n")
                             else:
-                                print("The point you pressed is not a valid peg to move in the current player's pegs.")
+                                print("This peg has no spots to which it can go to.")
+                        else:
+                            print("The point you pressed is not a valid peg to move in the current player's pegs.")
                 else:
                     print(f"\nPlayer {self.current_player.number}/{self.current_player.color}'s turn.")
-                    print("If you want to cancel the current peg you have selected, click outside the graph.\n")
                     print(self.output_gamestate())
                     buffer.clear()
             else:
@@ -669,7 +676,7 @@ class ChineseCheckersBoard:
         pass
 
     def naive_AI_UI(self):
-        self.update_game(self.naive_algorithm_update_move())
+        self.update_game(self.naive_AI_update_move())
 
     def minimax_AI_UI(self):
         agent = Agent(self.current_player, self, self.get_opposite_player(self.current_player))
@@ -916,10 +923,26 @@ class ChineseCheckersBoard:
                 downMoves += 1
         return upMoves - downMoves 
 
-    #####################################################################################################################################################################
-    # NAIVE ALGORITHM CODE
+    def convert_list_to_custom_game(self, players: List[str], curr_player: str, winners: List[str], list_of_colors: List[str]):
+        """
+        Converts the input to an output that is able to construct a custom game.
+        """
+        points_list = [(12, 16), (11, 15), (13, 15), (10, 14), (12, 14), (14, 14), (9, 13), (11, 13), (13, 13), (15, 13), (0, 12), (2, 12), (4, 12), (6, 12), (8, 12), (10, 12), (12, 12), (14, 12), (16, 12), (18, 12), (20, 12), (22, 12), (24, 12), (1, 11), (3, 11), (5, 11), (7, 11), (9, 11), (11, 11), (13, 11), (15, 11), (17, 11), (19, 11), (21, 11), (23, 11), (2, 10), (4, 10), (6, 10), (8, 10), (10, 10), (12, 10), (14, 10), (16, 10), (18, 10), (20, 10), (22, 10), (3, 9), (5, 9), (7, 9), (9, 9), (11, 9), (13, 9), (15, 9), (17, 9), (19, 9), (21, 9), (4, 8), (6, 8), (8, 8), (10, 8), (12, 8), (14, 8), (16, 8), (18, 8), (20, 8), (3, 7), (5, 7), (7, 7), (9, 7), (11, 7), (13, 7), (15, 7), (17, 7), (19, 7), (21, 7), (2, 6), (4, 6), (6, 6), (8, 6), (10, 6), (12, 6), (14, 6), (16, 6), (18, 6), (20, 6), (22, 6), (1, 5), (3, 5), (5, 5), (7, 5), (9, 5), (11, 5), (13, 5), (15, 5), (17, 5), (19, 5), (21, 5), (23, 5), (0, 4), (2, 4), (4, 4), (6, 4), (8, 4), (10, 4), (12, 4), (14, 4), (16, 4), (18, 4), (20, 4), (22, 4), (24, 4), (9, 3), (11, 3), (13, 3), (15, 3), (10, 2), (12, 2), (14, 2), (11, 1), (13, 1), (12, 0)]
 
-    def naive_algorithm_move(self) -> int:
+        converted_points = []
+        for index in range(len(points_list)):
+            point = points_list[index]
+            x = point[0]
+            y = point[1]
+            color = list_of_colors[index]
+            if color in players:
+                converted_points.append([x, y, color])
+        return [players, curr_player, winners, converted_points]
+
+#####################################################################################################################################################################
+    # Naive AI Code
+
+    def naive_AI_move(self) -> int:
         """
         Naive algorithm that gets the current player and goes through all of their possible moves, looking
         for the best move which is defined as the move that moves one of their pieces the furthest
@@ -941,47 +964,78 @@ class ChineseCheckersBoard:
         randomMoveIndex = np.random.randint(len(bestMoveList))
         return bestMoveList[randomMoveIndex]
     
-    def naive_algorithm_update_move(self):
+    def naive_AI_update_move(self):
         """
         Returns the optimal move outputted by the naive algorithm to be used by the update function
         """
-        move = self.naive_algorithm_move()
+        move = self.naive_AI_move()
         return self.format_move_for_update_func(move)
     
-    def naive_algorithm_sawyer_move(self):
+    def naive_AI_sawyer_move(self):
         """
         Returns the optimal move outputted by the naive algorithm to be used by the internal package (Sawyer)
         """
-        move = self.naive_algorithm_move()
+        move = self.naive_AI_move()
         start, end = move[0], move[2]
         return start.x, start.y, end.x, end.y
 
+#####################################################################################################################################################################
+    # Minimax algorithm code
+    def minimax_AI_move(self):
+        agent = Agent(self.current_player, self, self.get_opposite_player(self.current_player))
+        best_move = agent.get_best_move(max_time=1.0)
+        if best_move:
+            move = self.format_move_for_update_func(best_move)
+            return move
+        assert False, "The minimax AI was not able to find a move."
+    
+    def minimax_AI_update_move(self):
+        """
+        Returns the optimal move outputted by the minimax AI to be used by the update function
+        """
+        move = self.minimax_AI_move()
+        return self.format_move_for_update_func(move)
+    
+    def minimax_AI_sawyer_move(self):
+        """
+        Returns the optimal move outputted by the minimax AI to be used by the internal package (Sawyer)
+        """
+        move = self.minimax_AI_move()
+        start, end = move[0], move[2]
+        return start.x, start.y, end.x, end.y
+
+#####################################################################################################################################################################
+    # Main game loop
+
+    def play_game(self):
+        print("Welcome to Chinese Checkers!")
+        print("Select Game Mode:")
+        print("1. Play on Terminal")
+        print("2. Play on UI with Human")
+        print("3. Play on UI with Naive AI")
+        print("4. Play on UI with Minimax AI")
+
+        mode = input("Enter the number corresponding to the game mode: ")
+        game = ChineseCheckersBoard() 
+
+        if mode == "1":
+            print("Starting game on Terminal...")
+            game.play_game_terminal()
+
+        elif mode == "2":
+            print("Starting game on UI with Humans...")
+            game.play_game_UI(game.human_UI)
+
+        elif mode == "3":
+            print("Starting game on UI with Naive AI...")
+            game.play_game_UI(game.naive_AI_UI)
+
+        elif mode == "4":
+            print("Starting game on UI with Minimax AI...")
+            game.play_game_UI(game.minimax_AI_UI)
+
+        else:
+            print("Invalid input. Please restart the program and select a valid game mode.")
+
 if __name__ == "__main__":
-    print("Welcome to Chinese Checkers!")
-    print("Select Game Mode:")
-    print("1. Play on Terminal")
-    print("2. Play on UI with Human")
-    print("3. Play on UI with Naive AI")
-    print("4. Play on UI with Minimax AI")
-
-    mode = input("Enter the number corresponding to the game mode: ")
-    game = ChineseCheckersBoard() 
-
-    if mode == "1":
-        print("Starting game on Terminal...")
-        game.play_game_terminal()
-
-    elif mode == "2":
-        print("Starting game on UI with Humans...")
-        game.play_game_UI(game.human_UI)
-
-    elif mode == "3":
-        print("Starting game on UI with Naive AI...")
-        game.play_game_UI(game.naive_AI_UI)
-
-    elif mode == "4":
-        print("Starting game on UI with Minimax AI...")
-        game.play_game_UI(game.minimax_AI_UI)
-
-    else:
-        print("Invalid input. Please restart the program and select a valid game mode.")
+    ChineseCheckersBoard.play_game()
