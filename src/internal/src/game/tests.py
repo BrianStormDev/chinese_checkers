@@ -8,8 +8,6 @@ import random
 CUSTOM_2P = [['Gold', 'Red'], 'Gold', [], [[12, 16, 'Gold'], [13, 15, 'Gold'], [11, 15, 'Gold'], [14, 14, 'Gold'], [12, 14, 'Gold'], [10, 14, 'Gold'], [15, 13, 'Gold'], [13, 13, 'Gold'], [11, 13, 'Gold'], [9, 13, 'Gold'], [12, 0, 'Red'], [11, 1, 'Red'], [13, 1, 'Red'], [10, 2, 'Red'], [12, 2, 'Red'], [14, 2, 'Red'], [9, 3, 'Red'], [11, 3, 'Red'], [13, 3, 'Red'], [15, 3, 'Red']]]
 CUSTOM_6P = [['Gold', 'Red', 'Purple', 'Darkorange', 'Green', 'Blue'], 'Gold', [], [[12, 16, 'Gold'], [13, 15, 'Gold'], [11, 15, 'Gold'], [14, 14, 'Gold'], [12, 14, 'Gold'], [10, 14, 'Gold'], [15, 13, 'Gold'], [13, 13, 'Gold'], [11, 13, 'Gold'], [9, 13, 'Gold'], [12, 0, 'Red'], [11, 1, 'Red'], [13, 1, 'Red'], [10, 2, 'Red'], [12, 2, 'Red'], [14, 2, 'Red'], [9, 3, 'Red'], [11, 3, 'Red'], [13, 3, 'Red'], [15, 3, 'Red'], [24, 12, 'Purple'], [23, 11, 'Purple'], [22, 12, 'Purple'], [22, 10, 'Purple'], [21, 11, 'Purple'], [20, 12, 'Purple'], [21, 9, 'Purple'], [20, 10, 'Purple'], [19, 11, 'Purple'], [18, 12, 'Purple'], [0, 4, 'Darkorange'], [1, 5, 'Darkorange'], [2, 4, 'Darkorange'], [2, 6, 'Darkorange'], [3, 5, 'Darkorange'], [4, 4, 'Darkorange'], [3, 7, 'Darkorange'], [4, 6, 'Darkorange'], [5, 5, 'Darkorange'], [6, 4, 'Darkorange'], [24, 4, 'Green'], [22, 4, 'Green'], [23, 5, 'Green'], [20, 4, 'Green'], [21, 5, 'Green'], [22, 6, 'Green'], [18, 4, 'Green'], [19, 5, 'Green'], [20, 6, 'Green'], [21, 7, 'Green'], [0, 12, 'Blue'], [2, 12, 'Blue'], [1, 11, 'Blue'], [4, 12, 'Blue'], [3, 11, 'Blue'], [2, 10, 'Blue'], [6, 12, 'Blue'], [5, 11, 'Blue'], [4, 10, 'Blue'], [3, 9, 'Blue']]]
 
-# Need to write better descriptions of the test
-
 def jump_loop_test():
     """
     Tests that we do not count jumping in a circle repeatedly as a valid move
@@ -113,21 +111,19 @@ def random_moves_6p():
 
 def naive_vs_naive():
     """
-    Simulates a game with two players: Red makes moves according to the largest jump possible, while Gold randomly moves pieces 
+    Simulates a game with two players: Red and Gold both following the naive AI
     """
     custom = [['Gold', 'Red'], 'Gold', [], [[12, 16, 'Gold'], [13, 15, 'Gold'], [11, 15, 'Gold'], [14, 14, 'Gold'], [12, 14, 'Gold'], [10, 14, 'Gold'], [15, 13, 'Gold'], [13, 13, 'Gold'], [11, 13, 'Gold'], [9, 13, 'Gold'], [12, 0, 'Red'], [11, 1, 'Red'], [13, 1, 'Red'], [10, 2, 'Red'], [12, 2, 'Red'], [14, 2, 'Red'], [9, 3, 'Red'], [11, 3, 'Red'], [13, 3, 'Red'], [15, 3, 'Red']]]
     game = ChineseCheckersBoard(custom)
-    for i in range(10):
-        game.display_board()
-        for _ in range(20000):
-            if not game.is_game_over():
-                move = game.naive_AI_update_move()
-                game.update_game(move)
-                if _ % 10 == 0:
-                    game.update_board_visual()
+    game.display_board()
+    for _ in range(20000):
+        if not game.is_game_over():
+            move = game.naive_AI_update_move()
+            game.update_game(move)
+            if _ % 10 == 0:
+                game.update_board_visual()
 
-        game.display_until_window_close()
-        game.reset_game()
+    game.display_until_window_close()
 
 def naive_vs_random_2p():
     """
@@ -154,7 +150,7 @@ def naive_vs_random_2p():
 
 def naive_vs_random_6p():
     """
-    Simulates a game with six players: Red makes moves according to the largest jump possible, while five players randomly move pieces while red 
+    Simulates a game with six players: Red makes moves according to the largest jump possible, while five players randomly move pieces
     """
     custom = [['Red', 'Gold', 'Green', 'Blue', 'Purple', 'Darkorange'], 'Red', [], [[12, 0, 'Red'], [11, 1, 'Red'], [13, 1, 'Red'], [10, 2, 'Red'], [12, 2, 'Red'], [14, 2, 'Red'], [9, 3, 'Red'], [11, 3, 'Red'], [13, 3, 'Red'], [15, 3, 'Red'], [12, 16, 'Gold'], [13, 15, 'Gold'], [11, 15, 'Gold'], [14, 14, 'Gold'], [12, 14, 'Gold'], [10, 14, 'Gold'], [15, 13, 'Gold'], [13, 13, 'Gold'], [11, 13, 'Gold'], [9, 13, 'Gold'], [24, 4, 'Green'], [22, 4, 'Green'], [23, 5, 'Green'], [20, 4, 'Green'], [21, 5, 'Green'], [22, 6, 'Green'], [18, 4, 'Green'], [19, 5, 'Green'], [20, 6, 'Green'], [21, 7, 'Green'], [0, 12, 'Blue'], [2, 12, 'Blue'], [1, 11, 'Blue'], [4, 12, 'Blue'], [3, 11, 'Blue'], [2, 10, 'Blue'], [6, 12, 'Blue'], [5, 11, 'Blue'], [4, 10, 'Blue'], [3, 9, 'Blue'], [24, 12, 'Purple'], [23, 11, 'Purple'], [22, 12, 'Purple'], [22, 10, 'Purple'], [21, 11, 'Purple'], [20, 12, 'Purple'], [21, 9, 'Purple'], [20, 10, 'Purple'], [19, 11, 'Purple'], [18, 12, 'Purple'], [0, 4, 'Darkorange'], [1, 5, 'Darkorange'], [2, 4, 'Darkorange'], [2, 6, 'Darkorange'], [3, 5, 'Darkorange'], [4, 4, 'Darkorange'], [3, 7, 'Darkorange'], [4, 6, 'Darkorange'], [5, 5, 'Darkorange'], [6, 4, 'Darkorange']]]
     game = ChineseCheckersBoard(custom)
@@ -175,6 +171,24 @@ def naive_vs_random_6p():
                     break
     game.display_until_window_close()
 
+def reset_function_test():
+    """
+    Tests the reset function and ensures everything works as intended after resetting the game
+    """
+    custom = [['Gold', 'Red'], 'Gold', [], [[12, 16, 'Gold'], [13, 15, 'Gold'], [11, 15, 'Gold'], [14, 14, 'Gold'], [12, 14, 'Gold'], [10, 14, 'Gold'], [15, 13, 'Gold'], [13, 13, 'Gold'], [11, 13, 'Gold'], [9, 13, 'Gold'], [12, 0, 'Red'], [11, 1, 'Red'], [13, 1, 'Red'], [10, 2, 'Red'], [12, 2, 'Red'], [14, 2, 'Red'], [9, 3, 'Red'], [11, 3, 'Red'], [13, 3, 'Red'], [15, 3, 'Red']]]
+    game = ChineseCheckersBoard(custom)
+    for i in range(10):
+        game.display_board()
+        for _ in range(20000):
+            if not game.is_game_over():
+                move = game.naive_AI_update_move()
+                game.update_game(move)
+                if _ % 10 == 0:
+                    game.update_board_visual()
+
+        game.display_until_window_close()
+        game.reset_game()
+
 def max_moves_experiment():
     """
     An experiment that determines the maximum number of moves possible for any game state
@@ -182,21 +196,23 @@ def max_moves_experiment():
     # Max amount of moves has been found to be 148 empirically
     numTrials = 100
     maxMoves = 0
+    custom = [['Red', 'Gold', 'Green', 'Blue', 'Purple', 'Darkorange'], 'Red', [], [[12, 0, 'Red'], [11, 1, 'Red'], [13, 1, 'Red'], [10, 2, 'Red'], [12, 2, 'Red'], [14, 2, 'Red'], [9, 3, 'Red'], [11, 3, 'Red'], [13, 3, 'Red'], [15, 3, 'Red'], [12, 16, 'Gold'], [13, 15, 'Gold'], [11, 15, 'Gold'], [14, 14, 'Gold'], [12, 14, 'Gold'], [10, 14, 'Gold'], [15, 13, 'Gold'], [13, 13, 'Gold'], [11, 13, 'Gold'], [9, 13, 'Gold'], [24, 4, 'Green'], [22, 4, 'Green'], [23, 5, 'Green'], [20, 4, 'Green'], [21, 5, 'Green'], [22, 6, 'Green'], [18, 4, 'Green'], [19, 5, 'Green'], [20, 6, 'Green'], [21, 7, 'Green'], [0, 12, 'Blue'], [2, 12, 'Blue'], [1, 11, 'Blue'], [4, 12, 'Blue'], [3, 11, 'Blue'], [2, 10, 'Blue'], [6, 12, 'Blue'], [5, 11, 'Blue'], [4, 10, 'Blue'], [3, 9, 'Blue'], [24, 12, 'Purple'], [23, 11, 'Purple'], [22, 12, 'Purple'], [22, 10, 'Purple'], [21, 11, 'Purple'], [20, 12, 'Purple'], [21, 9, 'Purple'], [20, 10, 'Purple'], [19, 11, 'Purple'], [18, 12, 'Purple'], [0, 4, 'Darkorange'], [1, 5, 'Darkorange'], [2, 4, 'Darkorange'], [2, 6, 'Darkorange'], [3, 5, 'Darkorange'], [4, 4, 'Darkorange'], [3, 7, 'Darkorange'], [4, 6, 'Darkorange'], [5, 5, 'Darkorange'], [6, 4, 'Darkorange']]]
+    game = ChineseCheckersBoard(custom)
     for trial in range(numTrials):
-        custom = [['Red', 'Gold', 'Green', 'Blue', 'Purple', 'Darkorange'], 'Red', [], [[12, 0, 'Red'], [11, 1, 'Red'], [13, 1, 'Red'], [10, 2, 'Red'], [12, 2, 'Red'], [14, 2, 'Red'], [9, 3, 'Red'], [11, 3, 'Red'], [13, 3, 'Red'], [15, 3, 'Red'], [12, 16, 'Gold'], [13, 15, 'Gold'], [11, 15, 'Gold'], [14, 14, 'Gold'], [12, 14, 'Gold'], [10, 14, 'Gold'], [15, 13, 'Gold'], [13, 13, 'Gold'], [11, 13, 'Gold'], [9, 13, 'Gold'], [24, 4, 'Green'], [22, 4, 'Green'], [23, 5, 'Green'], [20, 4, 'Green'], [21, 5, 'Green'], [22, 6, 'Green'], [18, 4, 'Green'], [19, 5, 'Green'], [20, 6, 'Green'], [21, 7, 'Green'], [0, 12, 'Blue'], [2, 12, 'Blue'], [1, 11, 'Blue'], [4, 12, 'Blue'], [3, 11, 'Blue'], [2, 10, 'Blue'], [6, 12, 'Blue'], [5, 11, 'Blue'], [4, 10, 'Blue'], [3, 9, 'Blue'], [24, 12, 'Purple'], [23, 11, 'Purple'], [22, 12, 'Purple'], [22, 10, 'Purple'], [21, 11, 'Purple'], [20, 12, 'Purple'], [21, 9, 'Purple'], [20, 10, 'Purple'], [19, 11, 'Purple'], [18, 12, 'Purple'], [0, 4, 'Darkorange'], [1, 5, 'Darkorange'], [2, 4, 'Darkorange'], [2, 6, 'Darkorange'], [3, 5, 'Darkorange'], [4, 4, 'Darkorange'], [3, 7, 'Darkorange'], [4, 6, 'Darkorange'], [5, 5, 'Darkorange'], [6, 4, 'Darkorange']]]
-        game = ChineseCheckersBoard(custom)
-        for _ in range(20000):
+        while not game.is_game_over():
                 moves = game.valid_player_moves(game.current_player)
                 maxMoves = max(maxMoves, len(moves))
-                if (len(moves) != 0):
-                    j = np.random.randint(0, len(moves))
-                    move = game.format_move_for_update_func(moves[j])
-                    game.update_game(move)
-                else:
-                    break
+                j = np.random.randint(0, len(moves))
+                move = game.format_move_for_update_func(moves[j])
+                game.update_game(move)
+                print(f"Trial: {trial}, MaxMoves: {maxMoves}")
+        game.reset_game()
         print(f"Trial: {trial}, MaxMoves: {maxMoves}")
 
 def convert_list_to_custom_game_test():
+    """
+    Tests the convert_list_to_custom_game function
+    """
     players = ["Gold", "Red", "Purple", "Darkorange", "Green", "Blue"]
     winners = []
     current_player = "Gold"
@@ -388,17 +404,23 @@ def tune_parameters(): #made this function
     print(f"Best Parameters: {best_parameters}, Performance: {best_performance}")
 
 if __name__ == "__main__":
+    # Tests that should always pass
     jump_loop_test()
     swapping_test_2p()
     swapping_test_6p()
     no_swap_test()
     win_test()
     endzone_rule_test()
+
+    # Experimental Tests
     # random_moves_2p()
     # random_moves_6p()
-    # maxMovesTest()
-    convert_list_to_custom_game_test()
-    naive_vs_naive()
+    # naive_vs_naive()
     # naive_vs_random_2p()
     # naive_vs_random_6p()
+    # reset_function_test()
+    max_moves_experiment()
+    # convert_list_to_custom_game_test()
+
+    # AI tests
     # tune_parameters()
