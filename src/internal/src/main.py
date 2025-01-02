@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # Main file to be run that combines everything in the internal package and publishes a message to the sawyer actuation package
-
 import rospy
 import time
 from internal.msg import BoardMove
@@ -29,11 +28,10 @@ def image_collection_callback(msg):
         rospy.logerr("Error in callback: %s", str(e))
 
 if __name__ == "__main__":
-    rospy.init_node('talker', anonymous=True)
+    rospy.init_node('talker', anonymous=True) # Create the ros node
+    pub = rospy.Publisher("game_move", BoardMove, queue_size=10) # Create a publisher to the game_move topic
 
-    # Create the publisher to the topic using this message
-    pub = rospy.Publisher("game_move", BoardMove, queue_size=10)
-
+    # Image stuff
     image_sub = rospy.Subscriber('/camera/color/image_raw', Image, image_collection_callback)
     bridge = CvBridge()
     image = None
@@ -41,9 +39,9 @@ if __name__ == "__main__":
     peg_colors = []
     can_collect_image = True
 
+    # Main game loop
     while not rospy.is_shutdown():
-        # Get the current player from the user (as a color)
-        current_player = input("Enter the current player as a color: ")
+        current_player = input("Enter the current player as a color: ") # Get the current player from the user (as a color)
 
         can_collect_image = False # Stop collecting images for now
 
@@ -53,11 +51,11 @@ if __name__ == "__main__":
         game.display_board()
         game.display_until_window_close()
 
-        # Ask what the user wants to do.
+        # Ask what the user wants to do
         choice = input("Enter 1 if you want to make the next move, 2 if you want the naive AI to make the next move, 3 if you want the minimax AI to make the next move, or 4 if a move has already been made in real life: ")
         num = int(choice)
 
-        # User specified input
+        # User input
         if num == 1:
             moveInput = input("Enter the start and end position as x y coordinates, space separated: ")
             moveList = moveInput.split(" ")
@@ -78,7 +76,7 @@ if __name__ == "__main__":
         elif num == 3:
             x_start, y_start, x_end, y_end = game.minimax_AI_sawyer_move()
 
-        # The case when the user makes an irl move and we want to update the board
+        # The case when the user makes a move in real life and wants to update the internal board
         elif num == 4:
             can_collect_image = True
             continue

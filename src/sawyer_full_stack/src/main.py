@@ -221,7 +221,7 @@ def callback(message):
 
     # Move the arm to a spot that doesn't block the camera
     tuck(CAMERA_TUCK)
-
+    
 if __name__ == "__main__":
     rospy.init_node('move_board_subscriber') # Create the ros node
     rospy.Subscriber('game_move', BoardMove, callback) # Subscribe to the game_move topic which publishes the BoardMove message
