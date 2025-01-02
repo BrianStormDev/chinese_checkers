@@ -30,15 +30,6 @@ def image_collection_callback(msg):
     except Exception as e:
         rospy.logerr("Error in callback: %s", str(e))
 
-
-def move_is_valid(game_board: ChineseCheckersBoard, x_start: int, y_start: int, x_end: int, y_end: int, player_color: str): 
-    player = game_board.color_to_player[player_color]
-    start_point = Point(x_start, y_start)
-    end_point = Point(x_end, y_end)
-    moves = set(map(lambda x: (x[0], x[2]), game_board.valid_player_moves(player)))
-    return (start_point, end_point) in moves
-
-
 if __name__ == "__main__":
     # THIS IS THE MAIN FILE THROUGH WHICH EVERYTHING IS RUN
     
@@ -57,7 +48,6 @@ if __name__ == "__main__":
     while not rospy.is_shutdown():
 
         current_player = input("Enter the current player as a color: ")
-        current_player = current_player.strip()
 
         can_collect_image = False
 
@@ -79,14 +69,14 @@ if __name__ == "__main__":
             y_start = int(moveList[1])
             x_end = int(moveList[2])
             y_end = int(moveList[3])
-            if not move_is_valid(game, int(x_start), int(y_start), int(x_end), int(y_end), current_player): 
+            if not game.is_valid_move(x_start, y_start, x_end, y_end, current_player): 
                 can_collect_image = True
-                print('Not valid move!')
+                print('The input is not a valid move!')
                 continue
 
         # AI input
         elif num == 2:
-            x_start, y_start, x_end, y_end = game.naive_algorithm_initial_and_final_positions()
+            x_start, y_start, x_end, y_end = game.naive_algorithm_sawyer_move()
 
         # The case when the user makes an irl move and we want to update the board
         elif num == 3:

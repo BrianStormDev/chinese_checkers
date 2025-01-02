@@ -12,29 +12,15 @@ class Agent:
         self.game = game
         self.best_move = None
         self.transposition_table: Dict[str, Tuple[float, int]] = {}
-    
-    def calc_height_change(self, player: Player, move) -> int:
-        """
-        Calculate the height change of a specific move, relative to the player's goal direction.
-        """
-        start, move_code, end = move
-        # Convert endzone_points (set) to a list to extract a reference point
-        endzone_y = next(iter(player.endzone_points)).y  # Use any point from the end zone
-        # Determine goal direction based on the relative y-coordinates of the endzone
-        goal_direction = 1 if endzone_y > player.current_pegs[0].position.y else -1
-        # Compute the y-coordinate change of the move
-        y_change = end.y - start.y
-        return goal_direction * y_change
 
     def order_moves(self, moves: List[Tuple[Point, str]]) -> List[Tuple[Point, str]]:
         """
         Orders moves based on a combination of jump prioritization and height change.
         """
         def move_value(move):
-            start, move_string, end = move
-            jump_bonus = 10 * len(move_string.split()) if "J" in move_string else 0
-            height_change = self.calc_height_change(self.player, move)
-            return jump_bonus + height_change
+            move_code = move[1]
+            return self.game.calculate_height_change_from_move_code(move_code)
+        
         return sorted(moves, key=move_value, reverse=True)
 
     def minimax(self, depth: int, is_maximizing: bool, alpha: float, beta: float) -> float:
@@ -84,25 +70,25 @@ class Agent:
         Evaluate board state with progress toward winning as the primary focus.
         """
         score = 0
-        endzone_pegs = 0  # Count of pegs securely in the end zone
+        end_zone_pegs = 0  # Count of pegs securely in the end zone
         stranded_pegs_score = 0
 
         for peg in self.player.current_pegs:
-            if self.game.in_endzone(self.player, peg.position):
-                endzone_pegs += 1  # Count securely placed pegs
+            if self.game.in_end_zone(self.player, peg.position):
+                end_zone_pegs += 1  # Count securely placed pegs
             else:
                 # Penalize pegs still outside the end zone based on distance to the closest goal
                 closest_goal_dist = min(
                     abs(peg.position.x - goal.x) + abs(peg.position.y - goal.y)
-                    for goal in self.game.get_opposite_player(self.player).endzone_points
+                    for goal in self.game.get_opposite_player(self.player).end_zone_points
                 )
                 stranded_pegs_score -= closest_goal_dist * 10  # Stronger penalty for stranded pegs
 
         # Reward having more pegs securely in the end zone
-        score += endzone_pegs * 500  # Higher weight for end zone pegs
+        score += end_zone_pegs * 500  # Higher weight for end zone pegs
         
         # Strong reward for completing the win condition
-        if endzone_pegs == len(self.player.current_pegs):
+        if end_zone_pegs == len(self.player.current_pegs):
             score += 10000  # Huge bonus for achieving the win condition
 
         # Add stranded pegs score (negative impact)
@@ -111,12 +97,12 @@ class Agent:
         # Enemy evaluation (opposite of player's strategy)
         enemy_score = 0
         for peg in self.enemy.current_pegs:
-            if self.game.in_endzone(self.enemy, peg.position):
+            if self.game.in_end_zone(self.enemy, peg.position):
                 enemy_score += 250  # Reward for enemy's end zone pegs
             else:
                 closest_goal_dist = min(
                     abs(peg.position.x - goal.x) + abs(peg.position.y - goal.y)
-                    for goal in self.game.get_opposite_player(self.enemy).endzone_points
+                    for goal in self.game.get_opposite_player(self.enemy).end_zone_points
                 )
                 enemy_score -= closest_goal_dist * 5  # Penalize enemy's stranded pegs less
 
@@ -136,7 +122,7 @@ class Agent:
                 new_board[i, j] = self.game.color_to_value[peg.color]
         return str(new_board.tobytes())
 
-    def get_best_move(self, max_time: float = 2.0) -> Tuple[Point, str, Point]:
+    def get_best_move(self, max_time) -> Tuple[Point, str, Point]:
         self.best_move = None
         self.initial_depth = 2
         start_time = time.time()

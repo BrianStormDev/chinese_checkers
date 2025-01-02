@@ -12,7 +12,7 @@ class Player:
         directions: a list of strings representing coordinate movements with respect to each player
         initial_pegs: a list of Pegs representing the initial position of pegs a player occupies
         current_pegs: a list of Pegs representing the current position of pegs a player occupies
-        endzone_points: a list of Points representing the initial position of each of the player's intial pegs
+        end_zone_points: a list of Points representing the initial position of each of the player's intial pegs
         """
         self.number = number
         self.color = color
@@ -27,7 +27,8 @@ class Player:
         self.directions["L"] = directions[5]
 
         # Set the origin of the pegs and the current state of pegs
-        self.endzone_points = set()
+        self.starting_zone_points = set()
+        self.end_zone_points = set()
         self.initial_pegs = self.initialize_pegs(origin)
         self.current_pegs = []
         self.reset_pegs()
@@ -41,7 +42,8 @@ class Player:
         for i in range(4):
             for j in range(0, i + 1):
                 cur_position = origin + self.directions["UL"] * i + self.directions["R"] * j
-                self.endzone_points.add(cur_position)
+                self.starting_zone_points.add(cur_position)
+                self.end_zone_points.add(cur_position)
                 cur_peg = Peg(cur_position, self.color, True, False)
                 pegs.append(cur_peg)
         return pegs
