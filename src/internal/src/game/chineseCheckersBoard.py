@@ -11,9 +11,7 @@ X_DIM = 26
 Y_DIM = 18
 POINT_SIZE = 100
 PLOT_DELAY = 0.01
-ALL_PLAYER_COLORS = ['Gold', "Purple", "Green", "Red", 'Darkorange', "Blue"]
-
-# Turn Everything Snake Case
+ALL_PLAYER_COLORS = ['GOLD', "PURPLE", "GREEN", "RED", 'DARKORANGE', "BLUE"]
 
 class ChineseCheckersBoard:
     # Class attributes
@@ -43,7 +41,7 @@ class ChineseCheckersBoard:
             self.winning_players = []
             self.board = self.initialize_board()
 
-        self.move_history = [] # Subrat Change, required for agent
+        self.move_history = [] # Subrat Change
 
     def initialize_player_objects(self):
         """
@@ -64,11 +62,11 @@ class ChineseCheckersBoard:
         player_4 = Player(4, ALL_PLAYER_COLORS[3], Point(12,  0), directions_4)
         player_5 = Player(5, ALL_PLAYER_COLORS[4], Point( 0,  4), directions_5)
         player_6 = Player(6, ALL_PLAYER_COLORS[5], Point( 0, 12), directions_6)
-        
-        # Useful player mappings
-        self.number_to_player = {1: player_1, 2: player_2, 3: player_3, 4: player_4, 5: player_5, 6: player_6}
-        self.color_to_player = {ALL_PLAYER_COLORS[0]: player_1, ALL_PLAYER_COLORS[1]: player_2, ALL_PLAYER_COLORS[2]: player_3, ALL_PLAYER_COLORS[3]: player_4, ALL_PLAYER_COLORS[4]: player_5, ALL_PLAYER_COLORS[5]: player_6}
-        self.color_to_number = {'White': -1, 'Black': 0, ALL_PLAYER_COLORS[0]: 1, ALL_PLAYER_COLORS[1]: 2, ALL_PLAYER_COLORS[2]: 3, ALL_PLAYER_COLORS[3]: 4, ALL_PLAYER_COLORS[4]: 5, ALL_PLAYER_COLORS[5]: 6}
+
+        # Useful player mappings, using lambda functions
+        self.number_to_player = lambda number: {1: player_1, 2: player_2, 3: player_3, 4: player_4, 5: player_5, 6: player_6}[number]
+        self.color_to_player = lambda color: {ALL_PLAYER_COLORS[0]: player_1, ALL_PLAYER_COLORS[1]: player_2, ALL_PLAYER_COLORS[2]: player_3, ALL_PLAYER_COLORS[3]: player_4, ALL_PLAYER_COLORS[4]: player_5, ALL_PLAYER_COLORS[5]: player_6}[color.upper()]
+        self.color_to_number = lambda color: {'WHITE': -1, 'BLACK': 0, ALL_PLAYER_COLORS[0]: 1, ALL_PLAYER_COLORS[1]: 2, ALL_PLAYER_COLORS[2]: 3, ALL_PLAYER_COLORS[3]: 4, ALL_PLAYER_COLORS[4]: 5, ALL_PLAYER_COLORS[5]: 6}[color.upper()]
         self.all_players = [player_1, player_2, player_3, player_4, player_5, player_6]
 
     def initialize_custom_board(self, input: List):
@@ -81,12 +79,12 @@ class ChineseCheckersBoard:
         """
         # Initialize the players
         player_colors = input[0]
-        self.players = [self.color_to_player[color] for color in player_colors]
+        self.players = [self.color_to_player(color) for color in player_colors]
 
         # Initialize the current player
         current_player_color = input[1]
-        self.current_player = self.color_to_player[current_player_color]
-        
+        self.current_player = self.color_to_player(current_player_color)
+
         # Initialize the empty board
         self.board = self.initialize_empty_board()
 
@@ -102,7 +100,7 @@ class ChineseCheckersBoard:
 
         # Set the list of winners
         winners = input[2]
-        self.winning_players = [self.color_to_player[color] for color in winners]
+        self.winning_players = [self.color_to_player(color) for color in winners]
 
         # Each piece is a tuple [x, y, "color1"]
         piece_positions = input[3]
@@ -110,11 +108,11 @@ class ChineseCheckersBoard:
             # Unpack the piece
             piece_x = piece[0]
             piece_y = piece[1]
-            piece_color = piece[2]
+            piece_color = piece[2].upper()
 
             # Convert the piece into a peg 
             peg = Peg(Point(piece_x, piece_y), piece_color, True, False)
-            player_of_peg = self.color_to_player[piece_color]
+            player_of_peg = self.color_to_player(piece_color)
 
             # Add the peg to the player and update the board at that position
             player_of_peg.current_pegs.append(peg)
@@ -126,11 +124,11 @@ class ChineseCheckersBoard:
         """
         # Generate the board
         board = np.ndarray((self.x_dim, self.y_dim), dtype=Peg)
-        
+
         # Fill the whole board as white pegs that are out of the board
         for i in range(self.x_dim):
             for j in range(self.y_dim):
-                board[i, j] = Peg(Point(i, j), "White", False, True)
+                board[i, j] = Peg(Point(i, j), "WHITE", False, True)
 
         # Fill the center board as black pegs that are in the board and empty
         hexagon_origin_x, hexagon_origin_y = 12, 8
@@ -140,8 +138,8 @@ class ChineseCheckersBoard:
                     if abs(x_offset) + abs(y_offset) == radii:
                         i = x_offset + hexagon_origin_x
                         j = y_offset + hexagon_origin_y
-                        board[i, j] =  Peg(Point(i, j), "Black", True, True)
-        
+                        board[i, j] =  Peg(Point(i, j), "BLACK", True, True)
+
         # Initialize each of the empty corners of the board
         self.initialize_player_corner(board, Point(12, 16), Point( 1, -1), Point(-2,  0))
         self.initialize_player_corner(board, Point(24, 12), Point(-1, -1), Point(-1,  1))
@@ -149,7 +147,7 @@ class ChineseCheckersBoard:
         self.initialize_player_corner(board, Point(12,  0), Point(-1,  1), Point( 2,  0))
         self.initialize_player_corner(board, Point( 0,  4), Point( 1,  1), Point( 1, -1))
         self.initialize_player_corner(board, Point( 0, 12), Point( 2,  0), Point(-1, -1))
-        
+
         return board
     
     def initialize_player_corner(self, board: np.ndarray, point: Point, upper_left: Point, right: Point):
@@ -159,7 +157,7 @@ class ChineseCheckersBoard:
         for i in range(4):
             for j in range(0, i + 1):
                 cur_position = point + upper_left * i + right * j
-                cur_peg = Peg(cur_position, "Black", True, True)
+                cur_peg = Peg(cur_position, "BLACK", True, True)
                 board[cur_position.x, cur_position.y] = cur_peg
 
     def initialize_num_players(self) -> int:
@@ -181,13 +179,13 @@ class ChineseCheckersBoard:
         number_of_players = 1
         list_of_players = []
         while number_of_players < num_players:
-            color = input(f"Input the color of Player {number_of_players}: ")
-            while color not in ALL_PLAYER_COLORS or self.color_to_player[color] in list_of_players:
+            color = input(f"Input the color of Player {number_of_players}: ").upper()
+            while color not in ALL_PLAYER_COLORS or self.color_to_player(color) in list_of_players:
                 print("\nThe color you inputted is either already a player or not a possible player.")
-                color = input(f"Input the color of Player {number_of_players}: ")
+                color = input(f"Input the color of Player {number_of_players}: ").upper()
 
             # Adding the player corresponding to the color the user input
-            player = self.color_to_player[color]
+            player = self.color_to_player(color)
             list_of_players.append(player)
 
             # Adding the player corresponding to the opposite color of the user input
@@ -201,7 +199,7 @@ class ChineseCheckersBoard:
 
         print(f"The players are {list_of_players}.")
         return list_of_players
-
+    
     def initialize_board(self):
         """
         Initialize the Board
@@ -214,7 +212,7 @@ class ChineseCheckersBoard:
             for peg in player.current_pegs:
                 board[peg.position.x, peg.position.y] = peg
         return board
-
+    
     def reset_game(self):
         """
         Reset the game
@@ -262,18 +260,18 @@ class ChineseCheckersBoard:
         x = int(round(position[0]))
         y = int(round(position[1]))
         return x, y
-
+    
     def update_board_visual(self):
         """Update the displayed board dynamically"""
         peg_array = self.board.flatten()
-        colors = [peg.color for peg in peg_array if peg.color != 'White']
+        colors = [peg.color for peg in peg_array if peg.color != 'WHITE']
 
         if not hasattr(self, "scatter") or self.scatter == None:
-            x_coords = [peg.position.x for peg in peg_array if peg.color != 'White']
-            y_coords = [peg.position.y for peg in peg_array if peg.color != 'White']
+            x_coords = [peg.position.x for peg in peg_array if peg.color != 'WHITE']
+            y_coords = [peg.position.y for peg in peg_array if peg.color != 'WHITE']
             self.positions = list(zip(x_coords, y_coords))
             self.scatter = self.ax.scatter(x_coords, y_coords, c=colors, s = POINT_SIZE)
-        
+
         self.scatter.set_offsets(self.positions)
         self.scatter.set_facecolor(colors)
         self.ax.figure.canvas.draw_idle()
@@ -300,7 +298,7 @@ class ChineseCheckersBoard:
         Checks if a move is valid by checking if there is a move in the list of possible moves of a player that has
         the same starting and ending coordinates of the input
         """
-        player = self.color_to_player[player_color]
+        player = self.color_to_player(player_color)
         start_point = Point(x_start, y_start)
         end_point = Point(x_end, y_end)
         moves = set(map(lambda x: (x[0], x[2]), self.valid_player_moves(player)))
@@ -330,7 +328,7 @@ class ChineseCheckersBoard:
         Generate a list of valid moves for a singular peg of a player as a list of tuples
         Each tuple contains a starting point, the list of move codes to reach the ending point, and the ending point
         """
-        
+
         def valid_jumps_from_point(visited_positions: set, move_string: str, origin_pos: Point, current_pos: Point) -> Set[Tuple[Point, str, Point]]:
             """
             visited_positions: indicates all of the points we have visited before
@@ -408,7 +406,7 @@ class ChineseCheckersBoard:
                     current_pos += direction
                 else:
                     return False
-
+                
         # Add an additional check that ensure that if the peg started in the end_zone, it can't go out of it
         if (self.in_end_zone(player, starting_pos) and not self.in_end_zone(player, current_pos)):
             return False
@@ -532,7 +530,7 @@ class ChineseCheckersBoard:
 ####################################################################################################################################################################
     # Agent class Functions
 
-    def make_move(self, move: Tuple[Point, str, Point]): # made this function
+    def make_move(self, move: Tuple[Point, str, Point]): # Subrat Change
         start_point = move[0]
         end_point = move [2]
         
@@ -541,21 +539,21 @@ class ChineseCheckersBoard:
         
         # Update the board
         moving_peg = self.board[start_point.x, start_point.y]
-        if moving_peg.color not in self.color_to_player:
+        if moving_peg.color not in ALL_PLAYER_COLORS:
             print(f"Invalid peg color detected: {moving_peg.color}")
             return  # Or handle error appropriately
         self.board[end_point.x, end_point.y] = moving_peg
-        self.board[start_point.x, start_point.y] = Peg(start_point, "Black", True, True)
+        self.board[start_point.x, start_point.y] = Peg(start_point, "BLACK", True, True)
         
         # Update the peg's position
         moving_peg.position = end_point
         
         # Update the player's peg list
-        current_player = self.color_to_player[moving_peg.color]
+        current_player = self.color_to_player(moving_peg.color)
         current_player.current_pegs.remove(moving_peg)
         current_player.current_pegs.append(moving_peg)
 
-    def undo_move(self): #made this function
+    def undo_move(self): # Subrat Change
         if not self.move_history:
             return
 
@@ -570,11 +568,11 @@ class ChineseCheckersBoard:
         moving_peg.position = start_point
 
         # Skip updating player pegs if the moving peg is "Black"
-        if moving_peg.color == "Black":
+        if moving_peg.color == "BLACK":
             return
 
         # Update the player's peg list
-        current_player = self.color_to_player[moving_peg.color]
+        current_player = self.color_to_player(moving_peg.color)
         if current_player:
             current_player.current_pegs.remove(moving_peg)
             current_player.current_pegs.append(moving_peg)
@@ -585,7 +583,7 @@ class ChineseCheckersBoard:
         """
         starting_zone_pegs = sum(1 for peg in self.current_player.current_pegs if self.in_starting_zone(self.current_player, peg.position))
         end_zone_pegs = sum(1 for peg in self.current_player.current_pegs if self.in_end_zone(self.current_player, peg.position))
-        
+
         # Midgame if fewer than half the pegs are in the starting zone, and less than half are in the end zone
         return starting_zone_pegs < 5 and end_zone_pegs < 5
 
@@ -594,7 +592,7 @@ class ChineseCheckersBoard:
         Function for the agent class, determines if the game is in the endgame 
         """
         end_zone_pegs = sum(1 for peg in self.current_player.current_pegs if self.in_end_zone(self.current_player, peg.position))
-        
+
         # Endgame if more than half the pegs are in the end zone
         return end_zone_pegs > 5
 
@@ -603,25 +601,18 @@ class ChineseCheckersBoard:
 
     def play_game_UI(self, other_player_function):
         """Display the board using matplotlib with dynamic updates"""
-
         self.fig, self.ax = plt.subplots()  # Create figure and axes
-
-        # Buffer to store the user's peg they want to move
-        buffer = []
+        buffer = [] # Buffer to store the user's peg they want to move
 
         def on_mouse_press(event):
-            # If the game is not over yet
-            if not self.is_game_over():
-
-                # Ensure the event is within the axes
-                if event.inaxes: 
+            if not self.is_game_over(): # If the game is not over yet
+                if event.inaxes: # Ensure the event is within the axes
 
                     # Transform mouse coordinates to data coordinates and then to a point
                     x, y = self.event_coord_to_board_coord(event)
                     point = Point(x, y)
                         
-                    # If a point has already been pressed, attempt the move
-                    if buffer:
+                    if buffer: # If a point has already been pressed, attempt the move
 
                         # Checks that the endpoint is a point that can be reached
                         possible_moves = self.point_valid_moves(buffer[0], self.current_player)
@@ -629,12 +620,10 @@ class ChineseCheckersBoard:
 
                         # If the final point is in the possible_endpoints
                         if point in possible_endpoints: 
-                            # Swap the pegs
-                            self.swap_pegs(buffer[0], point)
+                            self.swap_pegs(buffer[0], point) # Swap the pegs
                             print(f"Peg being moved to point ({point.x}, {point.y})")
 
-                            # check if someone has won
-                            if self.check_player_won(self.current_player):
+                            if self.check_player_won(self.current_player): # Check if someone has won
                                 print(f"Player {self.current_player.number}/{self.current_player.color} has won in place {len(self.winning_players) + 1}!")
                                 self.winning_players.append(self.current_player)
 
@@ -644,21 +633,19 @@ class ChineseCheckersBoard:
                             # Update the board with the other player whether it be a human, Naive AI, or minimax AI
                             other_player_function()
 
-                            # Clear the buffer for the next player and update the board
+                            # Clear the buffer for the next player and update the board visualy
                             buffer.clear()
                             self.update_board_visual()
                         else:
                             # If the final point is not in the possible_endpoints
                             print("The point you pressed is not a valid spot to move to.")
 
-                    # If there is nothing in the buffer
-                    else:
+                    else: # If there is nothing in the buffer
                         # Ensure the peg trying to be moved is in the list of the player's pegs
                         if self.peg_at_position(point) in self.current_player.current_pegs:
                             possible_moves = self.point_valid_moves(point, self.current_player)
 
-                            # Also check that this peg has a possible move:
-                            if len(possible_moves) > 0: 
+                            if len(possible_moves) > 0: # Check that this peg has a possible move:
                                 print(f"Selected peg at point ({point.x}, {point.y}).\n")
                                 buffer.append(point)
                                 print("If you want to cancel the current peg you have selected, click outside the graph.\n")
@@ -676,12 +663,9 @@ class ChineseCheckersBoard:
         # Calls on_mouse_press when the user clicks on the graph
         self.fig.canvas.mpl_connect("button_press_event", on_mouse_press)  
 
-        # Set up the axes of the graph
-        self.setup_graph_labels()
-
-        # Initial draw
-        self.update_board_visual()  
-        plt.show()
+        self.setup_graph_labels() # Set up the axes of the graph
+        self.update_board_visual() # Initial draw
+        plt.show() # Plot the board
 
     def human_UI(self):
         """
@@ -704,6 +688,8 @@ class ChineseCheckersBoard:
         if best_move:
             move = self.format_move_for_update_func(best_move)
             self.update_game(move)
+        else:
+            print("The AI was unable to find a move in time. ")
 
 ####################################################################################################################################################################
     # Terminal Gameplay Functions
@@ -741,7 +727,7 @@ class ChineseCheckersBoard:
 
             # Get the next player
             self.current_player = self.get_next_player(self.current_player)
-
+            
         # Appends the last place finisher
         self.winning_players.append(self.current_player)
         print(f"The game is over! The order of winning is {self.winning_players}.")
@@ -763,7 +749,7 @@ class ChineseCheckersBoard:
             user_input_split = user_input.split(" ")
         x = int(user_input_split[0])
         y = int(user_input_split[1])
-        moves = user_input_split[2:]
+        moves = [move.upper() for move in user_input_split[2:]] # Ensures that all of the moves inputted are converted to uppercase
         return [Point(x, y)] + moves
     
     def valid_move_string(self, moves: List[str]) -> bool:
@@ -785,6 +771,7 @@ class ChineseCheckersBoard:
 
         # Checks if all of the moves are even in the list of moves
         for move in moves:
+            move = move.upper()
             if move in basic_moves:
                 basic_exists = True
             elif move in jump_moves:
@@ -835,7 +822,7 @@ class ChineseCheckersBoard:
         """
         player_number = player.number
         opposite_player = (player_number + 2) % 6 + 1
-        return self.number_to_player[opposite_player]
+        return self.number_to_player(opposite_player)
  
     def get_next_player(self, current_player: Player) -> Player:
         """
@@ -845,12 +832,12 @@ class ChineseCheckersBoard:
         assert not self.is_game_over(), "The game is already over, there is no next player."
         current_player_number = current_player.number
         next_player_number = (current_player_number % 6) + 1
-        next_player = self.number_to_player[next_player_number]
+        next_player = self.number_to_player(next_player_number)
 
         # Converts the self.winners which is a list of colors to a list of players
         while next_player not in self.players or next_player in self.winning_players:
             next_player_number = (next_player_number % 6) + 1
-            next_player = self.number_to_player[next_player_number]
+            next_player = self.number_to_player(next_player_number)
         return next_player
 
 ####################################################################################################################################################################

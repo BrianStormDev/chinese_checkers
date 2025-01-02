@@ -15,7 +15,7 @@ class Agent:
 
     def order_moves(self, moves: List[Tuple[Point, str]]) -> List[Tuple[Point, str]]:
         """
-        Orders moves based on a combination of jump prioritization and height change.
+        Orders moves based on height change.
         """
         def move_value(move):
             move_code = move[1]
@@ -118,7 +118,7 @@ class Agent:
         new_board = np.ndarray((self.game.x_dim, self.game.y_dim))
 
         def peg_to_color(peg):
-            return self.game.color_to_number[peg.color]
+            return self.game.color_to_number(peg.color)
         new_board = np.vectorize(peg_to_color)(self.game.board)
         
         return str(new_board.tobytes())
