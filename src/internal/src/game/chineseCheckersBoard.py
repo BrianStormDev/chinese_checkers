@@ -14,6 +14,7 @@ PLOT_DELAY = 0.01
 ALL_PLAYER_COLORS = ['Gold', "Purple", "Green", "Red", 'Darkorange', "Blue"]
 
 # Turn Everything Snake Case
+
 class ChineseCheckersBoard:
     # Class attributes
     # x_dim, y_dim
@@ -945,7 +946,7 @@ class ChineseCheckersBoard:
                 downMoves += 1
         return upMoves - downMoves 
 
-    def convert_list_to_custom_game(self, players: List[str], curr_player: str, winners: List[str], list_of_colors: List[str]):
+    def convert_list_to_custom_game(players: List[str], curr_player: str, winners: List[str], list_of_colors: List[str]):
         """
         Converts the input to an output that is able to construct a custom game.
         """

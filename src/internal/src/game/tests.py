@@ -197,7 +197,7 @@ def max_moves_experiment():
         print(f"Trial: {trial}, MaxMoves: {maxMoves}")
 
 def convert_list_to_custom_game_test():
-    players = ["Gold", "Red"]
+    players = ["Gold", "Red", "Purple", "Darkorange", "Green", "Blue"]
     winners = []
     current_player = "Gold"
     peg_colors = ['Red', 'Black', 'Purple', 'Darkorange', 'Black', 'Red', 'Red', 'Red', 'Green', 'Purple', 'Blue', 'Red', 'Gold', 'Gold', 'Black', 'Green', 'Purple', 'Black', 'Darkorange', 'Purple', 'Red', 'Green', 'Darkorange', 'Black', 'Purple', 'Darkorange', 'Red', 'Black', 'Black', 'Red', 'Gold', 'Green', 'Red', 'Green', 'Red', 'Purple', 'Gold', 'Red', 'Purple', 'Darkorange', 'Green', 'Darkorange', 'Black', 'Darkorange', 'Red', 'Green', 'Gold', 'Blue', 'Blue', 'Green', 'Blue', 'Green', 'Green', 'Blue', 'Green', 'Blue', 'Green', 'Black', 'Green', 'Gold', 'Blue', 'Darkorange', 'Blue', 'Black', 'Black', 'Red', 'Blue', 'Darkorange', 'Red', 'Red', 'Green', 'Black', 'Black', 'Purple', 'Gold', 'Purple', 'Purple', 'Red', 'Purple', 'Gold', 'Gold', 'Darkorange', 'Red', 'Green', 'Purple', 'Purple', 'Black', 'Blue', 'Red', 'Green', 'Darkorange', 'Red', 'Gold', 'Darkorange', 'Purple', 'Blue', 'Purple', 'Purple', 'Green', 'Black', 'Blue', 'Gold', 'Red', 'Darkorange', 'Purple', 'Red', 'Gold', 'Blue', 'Red', 'Green', 'Purple', 'Green', 'Purple', 'Green', 'Red', 'Darkorange', 'Black', 'Blue', 'Darkorange', 'Blue', 'Darkorange']
@@ -397,7 +397,7 @@ if __name__ == "__main__":
     # random_moves_2p()
     # random_moves_6p()
     # maxMovesTest()
-    # convert_list_to_custom_game_test
+    convert_list_to_custom_game_test()
     naive_vs_naive()
     # naive_vs_random_2p()
     # naive_vs_random_6p()

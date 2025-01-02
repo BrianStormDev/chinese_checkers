@@ -1,10 +1,10 @@
 #!/usr/bin/env python
+# Used to test if the sawyer_actuation packages works by sending the same message continuously
 import rospy
 from internal.msg import BoardMove
 
 if __name__ == "__main__":
-    # # THIS IS THE MAIN FILE THROUGH WHICH EVERYTHING IS RUN
-    
+    # Create the ros node
     rospy.init_node('talker', anonymous=True)
 
     # Create the publisher to the topic using this message
@@ -12,15 +12,11 @@ if __name__ == "__main__":
 
     while not rospy.is_shutdown():
 
-        # Calibration test
+        # Create the message
         message = BoardMove(0, 4, 24, 12)
-        
-        # Other extreme test
-        # message = BoardMove(12, 0, 12, 16)
-    
-        # message = BoardMove(8, 4, 16, 4)
 
+        # Log the message 
         rospy.loginfo(f"Test Worked. Message: {message}.")
 
-        # Publish our string to the topic
+        # Publish the message
         pub.publish(message)

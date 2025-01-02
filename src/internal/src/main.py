@@ -1,17 +1,16 @@
 #!/usr/bin/env python
+# Main file to be run that combines everything in the internal package and publishes a message to the sawyer actuation package
+
 import rospy
-from game import *
-from game.chineseCheckersBoard import ChineseCheckersBoard
-from game.Point import Point
-
-from sensor_msgs.msg import Image
-from cv_bridge import CvBridge
-
-from cv.master_vision import image_to_board
 import time
 from internal.msg import BoardMove
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
+from cv.master_vision import image_to_board
+from game import *
+from game.chineseCheckersBoard import ChineseCheckersBoard
 
-# Hard coded for 2 players, being Gold and red and the current number of winners is none
+# Hard coded for 2 playerd, Darkorange and purple, with there being no current winners
 players = ["Darkorange", "Purple"]
 winners = []
 IMAGE_COLLECTION_INTERVAL = 2
@@ -30,8 +29,6 @@ def image_collection_callback(msg):
         rospy.logerr("Error in callback: %s", str(e))
 
 if __name__ == "__main__":
-    # THIS IS THE MAIN FILE THROUGH WHICH EVERYTHING IS RUN
-    
     rospy.init_node('talker', anonymous=True)
 
     # Create the publisher to the topic using this message
@@ -45,24 +42,24 @@ if __name__ == "__main__":
     can_collect_image = True
 
     while not rospy.is_shutdown():
-
+        # Get the current player from the user (as a color)
         current_player = input("Enter the current player as a color: ")
 
-        can_collect_image = False
+        can_collect_image = False # Stop collecting images for now
 
+        # Create the game object and display the board
         custom_board = ChineseCheckersBoard.convert_list_to_custom_game(players, current_player, winners, peg_colors)
         game = ChineseCheckersBoard(custom_board)
         game.display_board()
         game.display_until_window_close()
 
-        # Ask if the user wants to make the next move or let the AI come up witha move
-        choice = input("Enter 1 if you want to make the next move, 2 if you want the AI to make the next move, and 3 if a move has already been made in real life: ")
+        # Ask what the user wants to do.
+        choice = input("Enter 1 if you want to make the next move, 2 if you want the naive AI to make the next move, 3 if you want the minimax AI to make the next move, or 4 if a move has already been made in real life: ")
         num = int(choice)
 
-        # Handle how the move is inputted
         # User specified input
         if num == 1:
-            moveInput = input("Enter the start and end position as x y coordinates, spaced separated: ")
+            moveInput = input("Enter the start and end position as x y coordinates, space separated: ")
             moveList = moveInput.split(" ")
             x_start = int(moveList[0])
             y_start = int(moveList[1])
@@ -73,26 +70,28 @@ if __name__ == "__main__":
                 print('The input is not a valid move!')
                 continue
 
-        # AI input
+        # naive AI input
         elif num == 2:
-            x_start, y_start, x_end, y_end = game.naive_algorithm_sawyer_move()
+            x_start, y_start, x_end, y_end = game.naive_AI_sawyer_move()
+
+        # minimax AI input
+        elif num == 3:
+            x_start, y_start, x_end, y_end = game.minimax_AI_sawyer_move()
 
         # The case when the user makes an irl move and we want to update the board
-        elif num == 3:
+        elif num == 4:
             can_collect_image = True
             continue
 
-        # Construct the message
-        # The message are the internal board coordinates
+        # Create the message
+        # The message is in internal board coordinates
         message = BoardMove(x_start, y_start, x_end, y_end)
 
-        # Dummy test
-        # message = BoardMove(0, 4, 24, 12)
-        # message = BoardMove(24, 12, 24, 12)
-
+        # Log the message
         rospy.loginfo(f"Test Worked. Message: [{x_start}, {y_start}, {x_end}, {y_end}]")
 
-        # Publish our string to the topic
+        # Publish the message
         pub.publish(message)
 
+        # Allow the camera to continue collecting images again
         can_collect_image = True
