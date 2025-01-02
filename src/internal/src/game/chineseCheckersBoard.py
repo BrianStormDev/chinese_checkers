@@ -14,7 +14,6 @@ PLOT_DELAY = 0.01
 ALL_PLAYER_COLORS = ['Gold', "Purple", "Green", "Red", 'Darkorange', "Blue"]
 
 # Turn Everything Snake Case
-# Change all references of Peg to Hole?
 
 class ChineseCheckersBoard:
     # Class attributes
@@ -246,7 +245,7 @@ class ChineseCheckersBoard:
                 # Transform mouse coordinates to data coordinates
                 x, y = self.event_coord_to_board_coord(event)
                 if x >= 0 and x < self.x_dim and y >= 0 and y < self.y_dim:
-                    print(f"{self.board[x, y]}")
+                    print(f"\n{self.board[x, y]}")
             else:
                 print(self.output_gamestate())
 
@@ -266,12 +265,12 @@ class ChineseCheckersBoard:
 
     def update_board_visual(self):
         """Update the displayed board dynamically"""
-        pegArray = self.board.flatten()
-        colors = [peg.color for peg in pegArray if peg.color != 'White']
+        peg_array = self.board.flatten()
+        colors = [peg.color for peg in peg_array if peg.color != 'White']
 
         if not hasattr(self, "scatter") or self.scatter == None:
-            x_coords = [peg.position.x for peg in pegArray if peg.color != 'White']
-            y_coords = [peg.position.y for peg in pegArray if peg.color != 'White']
+            x_coords = [peg.position.x for peg in peg_array if peg.color != 'White']
+            y_coords = [peg.position.y for peg in peg_array if peg.color != 'White']
             self.positions = list(zip(x_coords, y_coords))
             self.scatter = self.ax.scatter(x_coords, y_coords, c=colors, s = POINT_SIZE)
         
@@ -889,14 +888,14 @@ class ChineseCheckersBoard:
         Format's a possible move from self.valid_player_moves into a format that can be input as a function call to update_gaame
         Ex: [x, y, move_command move_command ...]
         """
-        formattedMove = []
-        formattedMove.append(move[0].x)
-        formattedMove.append(move[0].y)
+        formatted_move = []
+        formatted_move.append(move[0].x)
+        formatted_move.append(move[0].y)
         string_moves = move[1]
         string_list = string_moves.split(" ")
         for command in string_list:
-            formattedMove.append(command)
-        return formattedMove
+            formatted_move.append(command)
+        return formatted_move
 
     def output_gamestate(self) -> List:
         """
@@ -937,15 +936,15 @@ class ChineseCheckersBoard:
         """
         Calculates the height change of a specific move
         """
-        individualMoves = move_code.split(" ")
-        upMoves = 0
-        downMoves = 0
-        for code in individualMoves:
+        individual_moves = move_code.split(" ")
+        up_moves = 0
+        down_moves = 0
+        for code in individual_moves:
             if "U" in code:
-                upMoves += 1
+                up_moves += 1
             elif "D" in code:
-                downMoves += 1
-        return upMoves - downMoves 
+                down_moves += 1
+        return up_moves - down_moves 
 
     def convert_list_to_custom_game(players: List[str], curr_player: str, winners: List[str], list_of_colors: List[str]):
         """
@@ -972,21 +971,21 @@ class ChineseCheckersBoard:
         for the best move which is defined as the move that moves one of their pieces the furthest
         """
         moves = self.valid_player_moves(self.current_player)
-        bestMoveList = []
-        bestMoveHeight = 0
+        best_move_list = []
+        best_move_height = 0
 
         for move in moves:
             move_code = move[1]
-            moveHeight = self.calculate_height_change_from_move_code(move_code)
-            if moveHeight > bestMoveHeight:
-                bestMoveList.clear()
-                bestMoveList.append(move)
-                bestMoveHeight = moveHeight
-            elif moveHeight == bestMoveHeight:
-                bestMoveList.append(move)
+            move_height = self.calculate_height_change_from_move_code(move_code)
+            if move_height > best_move_height:
+                best_move_list.clear()
+                best_move_list.append(move)
+                best_move_height = move_height
+            elif move_height == best_move_height:
+                best_move_list.append(move)
 
-        randomMoveIndex = np.random.randint(len(bestMoveList))
-        return bestMoveList[randomMoveIndex]
+        random_move_index = np.random.randint(len(best_move_list))
+        return best_move_list[random_move_index]
     
     def naive_AI_update_move(self):
         """
