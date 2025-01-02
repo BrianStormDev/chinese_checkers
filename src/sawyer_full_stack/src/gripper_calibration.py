@@ -3,6 +3,9 @@ from intera_interface import gripper as robot_gripper
 # Used to calibrate the gripper so that it can pick up the balls on the board consistently while not opening
 # so far that the sides of the gripper hit other sides of the board
 
+# How long to sleep in between actions
+SLEEP = 1.0
+
 def calibrate_gripper():
     """
     calibrates the gripper and returns the right_gripper object through which the gripper can be controlled
@@ -22,20 +25,20 @@ def control_gripper(right_gripper, open):
 
     # The open and close values for the gripper
     open_val, close_val = [0.028, 0.034]
-    
+
     # Open the right gripper
     if open:
         if input("Try opening the gripper: ") == "y":
             print('Opening gripper.')
             right_gripper.set_position(open_val)
-            rospy.sleep(1)
+            rospy.sleep(SLEEP)
 
     # Close the right gripper
     else:
         if input("Try closing the gripper: ") == "y":
             print('Closing gripper.')
             right_gripper.set_position(close_val)
-            rospy.sleep(1)
+            rospy.sleep(SLEEP)
 
     # Print out the gripper values for easier plugin into the main fuile
     print([open_val, close_val])

@@ -9,6 +9,9 @@ import numpy as np
 from intera_core_msgs.msg import HeadPanCommand
 from intera_interface import Limb
 
+# How long to sleep in between actions
+SLEEP = 1.0
+
 def tuck(angles):
     """
     Tuck the robot arm to a custom position
@@ -34,17 +37,17 @@ def tuck(angles):
         # Publishes a command to control the Sawyer robot's head pan.
         pub = rospy.Publisher('/robot/head/command_head_pan', HeadPanCommand, queue_size=10)
         rospy.loginfo("Waiting for publisher to register...")
-        rospy.sleep(1)  # Give some time for the publisher to register
         
         command = HeadPanCommand(target=target_pan, speed_ratio=speed_ratio, pan_mode=pan_mode)
         rospy.loginfo(f"Publishing head pan command: {command}")
         pub.publish(command)
-        rospy.sleep(1)  # Allow some time for the message to be processed
+        rospy.sleep(SLEEP)  
         
         # Commands the Sawyer robot's arm to a tucked position using joint positions.
         limb = Limb("right")  # Use "right" since Sawyer has only one arm
         rospy.loginfo(f"Moving arm to tuck position: {tuck_positions}")
         limb.move_to_joint_positions(tuck_positions)
+        rospy.sleep(SLEEP)
     else:
         print('Canceled. Not tucking the arm.')
 
