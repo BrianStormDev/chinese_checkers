@@ -11,6 +11,9 @@ X_DIM = 26
 Y_DIM = 18
 POINT_SIZE = 100
 PLOT_DELAY = 0.01
+ALL_PLAYER_COLORS = ['Gold', "Purple", "Green", "Red", 'Darkorange', "Blue"]
+
+# Decide between camel case or snake case
 
 class ChineseCheckersBoard:
     # Class attributes
@@ -19,7 +22,7 @@ class ChineseCheckersBoard:
     # current_player: Player
     # board: ndarray[Peg]
     # winning_players: List[Player]
-    # fig, ax, scatter
+    # fig, ax, scatter: matplotlib variables for plotting
 
 ####################################################################################################################################################################
     # Board Setup Functions
@@ -44,33 +47,32 @@ class ChineseCheckersBoard:
         self.move_history = [] # made this change
 
     def initialize_player_objects(self):
-        # Information about player directions 
-        yellow_directions = [Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0)]
-        purple_directions = [Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1)]
-        green_directions = [Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1)]
-        red_directions = [Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0)]
-        orange_directions = [Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1)]
-        blue_directions = [Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1)]
+        # The player directions, starting from the topmost and going clockwise.
+        directions_1 = [Point( 1, -1), Point(-1, -1), Point(-2,  0), Point(-1,  1), Point( 1,  1), Point( 2,  0)]
+        directions_2 = [Point(-1, -1), Point(-2,  0), Point(-1,  1), Point( 1,  1), Point( 2,  0), Point( 1, -1)]
+        directions_3 = [Point(-2,  0), Point(-1,  1), Point( 1,  1), Point( 2,  0), Point( 1, -1), Point(-1, -1)]
+        directions_4 = [Point(-1,  1), Point( 1,  1), Point( 2,  0), Point( 1, -1), Point(-1, -1), Point(-2,  0)]
+        directions_5 = [Point( 1,  1), Point( 2,  0), Point( 1, -1), Point(-1, -1), Point(-2,  0), Point(-1,  1)]
+        directions_6 = [Point( 2,  0), Point( 1, -1), Point(-1, -1), Point(-2,  0), Point(-1,  1), Point( 1,  1)]
 
-        # Initializing the player objects
-        self.player_1 = Player(1, 'Gold', Point(12, 16), yellow_directions)
-        self.player_2 = Player(2, "Purple", Point(24, 12), purple_directions)
-        self.player_3 = Player(3, "Green", Point(24, 4), green_directions)
-        self.player_4 = Player(4,"Red", Point(12, 0), red_directions)
-        self.player_5 = Player(5, 'Darkorange', Point(0, 4), orange_directions)
-        self.player_6 = Player(6, "Blue", Point(0, 12), blue_directions)
+        # Creating the playing objects 
+        player_1 = Player(1, ALL_PLAYER_COLORS[0], Point(12, 16), directions_1)
+        player_2 = Player(2, ALL_PLAYER_COLORS[1], Point(24, 12), directions_2)
+        player_3 = Player(3, ALL_PLAYER_COLORS[2], Point(24,  4), directions_3)
+        player_4 = Player(4, ALL_PLAYER_COLORS[3], Point(12,  0), directions_4)
+        player_5 = Player(5, ALL_PLAYER_COLORS[4], Point( 0,  4), directions_5)
+        player_6 = Player(6, ALL_PLAYER_COLORS[5], Point( 0, 12), directions_6)
         
         # Useful Player Relations
-        self.number_to_player = {1: self.player_1, 2: self.player_2, 3: self.player_3, 4: self.player_4, 5: self.player_5, 6: self.player_6}
-        self.color_to_player = {'Gold': self.player_1, "Purple": self.player_2, "Green": self.player_3, "Red": self.player_4, 'Darkorange': self.player_5, "Blue": self.player_6}
-        self.color_to_value = {'White': -1, 'Black': 0, 'Gold': 1, "Purple": 2, "Green": 3, "Red": 4, 'Darkorange': 5, "Blue": 6}
-        self.player_colors = ['Gold', "Purple", "Green", "Red", 'Darkorange', "Blue"]
-        self.all_players = [self.player_1, self.player_2, self.player_3, self.player_4, self.player_5, self.player_6]
+        self.number_to_player = {1: player_1, 2: player_2, 3: player_3, 4: player_4, 5: player_5, 6: player_6}
+        self.color_to_player = {ALL_PLAYER_COLORS[0]: player_1, ALL_PLAYER_COLORS[1]: player_2, ALL_PLAYER_COLORS[2]: player_3, ALL_PLAYER_COLORS[3]: player_4, ALL_PLAYER_COLORS[4]: player_5, ALL_PLAYER_COLORS[5]: player_6}
+        self.color_to_number = {'White': -1, 'Black': 0, ALL_PLAYER_COLORS[0]: 1, ALL_PLAYER_COLORS[1]: 2, ALL_PLAYER_COLORS[2]: 3, ALL_PLAYER_COLORS[3]: 4, ALL_PLAYER_COLORS[4]: 5, ALL_PLAYER_COLORS[5]: 6}
+        self.all_players = [player_1, player_2, player_3, player_4, player_5, player_6]
 
     def initialize_custom_board(self, input: List):
         """
         Initializes the board from a custom input which is a list
-        input[0]: players in the game as a list of colors ["Red", 'Gold']
+        input[0]: players in the game as a list of colors ["color1", "color2"]
         input[1]: current player, as a color
         input[2]: list of winners as colors
         input[3]: list of lists where each inner list is of the form [x, y, color]
@@ -219,7 +221,7 @@ class ChineseCheckersBoard:
         # Reset the scatter so that the board can be visualized again
         self.scatter = None
 
-#####################################################################################################################################################################
+####################################################################################################################################################################
 # Board visualization functions
 
     def display_board(self):
@@ -284,7 +286,7 @@ class ChineseCheckersBoard:
         plt.ioff()
         plt.show()
 
-#####################################################################################################################################################################
+####################################################################################################################################################################
     # Movement Functions
 
     def is_valid_move_sawyer(self, x_start: int, y_start: int, x_end: int, y_end: int, player_color: str): 
@@ -518,7 +520,7 @@ class ChineseCheckersBoard:
         """Returns whether or not the current position is in the playable region"""
         return self.in_board_array(position) and self.peg_at_position(position).in_board
 
-    #####################################################################################################################################################################
+####################################################################################################################################################################
     # Agent class Functions
 
     def make_move(self, move: Tuple[Point, str, Point]): # made this function
@@ -587,8 +589,8 @@ class ChineseCheckersBoard:
         # Endgame if more than half the pegs are in the end zone
         return end_zone_pegs > 5
 
-    #####################################################################################################################################################################
-    # Gameplay Functions
+####################################################################################################################################################################
+    # UI Gameplay Functions
 
     def play_game_UI(self, other_player_function):
         """Display the board using matplotlib with dynamic updates"""
@@ -684,6 +686,9 @@ class ChineseCheckersBoard:
         if best_move:
             move = self.format_move_for_update_func(best_move)
             self.update_game(move)
+
+####################################################################################################################################################################
+    # Terminal Gameplay Functions
 
     def play_game_terminal(self):
         """Main game loop."""
@@ -830,8 +835,8 @@ class ChineseCheckersBoard:
             next_player = self.number_to_player[next_player_number]
         return next_player
 
-    #####################################################################################################################################################################
-    # FUNCTIONAL CODE
+####################################################################################################################################################################
+    # Functional Code and utility functions
 
     def update_game(self, move_command: List) -> bool:
         """
@@ -939,7 +944,7 @@ class ChineseCheckersBoard:
                 converted_points.append([x, y, color])
         return [players, curr_player, winners, converted_points]
 
-#####################################################################################################################################################################
+####################################################################################################################################################################
     # Naive AI Code
 
     def naive_AI_move(self) -> int:
@@ -979,8 +984,8 @@ class ChineseCheckersBoard:
         start, end = move[0], move[2]
         return start.x, start.y, end.x, end.y
 
-#####################################################################################################################################################################
-    # Minimax algorithm code
+####################################################################################################################################################################
+    # Minimax AI code
     def minimax_AI_move(self):
         agent = Agent(self.current_player, self, self.get_opposite_player(self.current_player))
         best_move = agent.get_best_move(max_time=1.0)
@@ -1004,7 +1009,7 @@ class ChineseCheckersBoard:
         start, end = move[0], move[2]
         return start.x, start.y, end.x, end.y
 
-#####################################################################################################################################################################
+####################################################################################################################################################################
     # Main game loop
 
     def play_game(self):

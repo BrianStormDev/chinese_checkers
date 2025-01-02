@@ -118,7 +118,7 @@ class Agent:
         new_board = np.ndarray((self.game.x_dim, self.game.y_dim))
 
         def peg_to_color(peg):
-            return self.game.color_to_value[peg.color]
+            return self.game.color_to_number[peg.color]
         new_board = np.vectorize(peg_to_color)(self.game.board)
         
         return str(new_board.tobytes())
