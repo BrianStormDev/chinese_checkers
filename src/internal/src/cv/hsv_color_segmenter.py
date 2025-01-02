@@ -26,9 +26,6 @@ while True:
     lower = np.array([hMin, sMin, vMin])
     upper = np.array([hMax, sMax, vMax])
 
-    # lower = np.array([80, 100, 0])
-    # upper = np.array([150, 80, 210])
-
     # Convert image to HSV
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
 
@@ -44,6 +41,3 @@ while True:
         break
 
 cv2.destroyAllWindows()
-
-# Lower Bound: (80, 0, 100)
-# Upper Bound: (150, 80, 210)

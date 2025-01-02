@@ -14,6 +14,9 @@ class Image:
     colors = [red, orange, yellow, green, blue, purple, white]
 
     def __init__(self, origin_img_path, img_matrix, is_cropped=False, is_rectified=False):
+        """
+        Initializes information about the Image
+        """
         self.origin_img_path = origin_img_path
         self.img_matrix = img_matrix
         self.height, self.width, _ = self.img_matrix.shape
@@ -23,6 +26,13 @@ class Image:
         self.points = None
     
     def crop_image(self, origin_x, origin_y, width, height):
+        """
+        Crops the image according to the specified parameters
+        origin_x: x coordinate to start the crop
+        origin_y: y coordinate to start the crop
+        width: width of the cropped image
+        height: height of the cropped image
+        """
         cropped_image = self.img_matrix[origin_y: origin_y + height, origin_x: origin_x + width]
         self.img_matrix = cropped_image
         self.height, self.width, _ = cropped_image.shape
@@ -80,7 +90,7 @@ class Image:
     
     def find_colored_points(self, tolerance):
         """
-        ASSUMPTION: Runs on a homographied image
+        ASSUMPTION: Runs on a rectified image
         """
         assert self.is_rectified == True, "You need to get the top down image first!"
         points = []
@@ -123,6 +133,9 @@ class Image:
         return points
     
     def sort_points(self):
+        """
+        Sorts the points from top down left to right
+        """
         # Make sure that we have actually identified points
         assert self.points is not None, f"You need to find points first!"
 
@@ -144,12 +157,19 @@ class Image:
         return sorted_points
     
     def point_colors(self):
+        """
+        Outputs the colors of each of the points in a list
+        """
         # Make sure that we have actually identified points
         assert self.points is not None, f"You need to find points first!"
         # Return the colors in a list
         return [point[1] for point in self.points]
     
     def rectify(self, width, height):
+        """
+        Takes the corners of the board and uses a homography matrix to get top down image
+        rectified_img: Image matrix after being rectified
+        """
         assert self.corners != None, "You need to find corners first!"
         src_points = np.array(self.corners)
         dst_points = np.array([(0, 0), (width - 1, 0), (width - 1, height - 1), (0, height - 1)])
@@ -171,6 +191,9 @@ class Image:
         return in_bottom_left or in_top_left or in_top_right or in_bottom_right
     
     def reset_image(self):
+        """
+        Resets all of the flags for the image
+        """
         self.img_matrix = cv2.imread(self.origin_img_path)
         self.is_rectified = False
         self.is_flattened = False
