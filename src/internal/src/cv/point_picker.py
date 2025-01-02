@@ -5,6 +5,9 @@ import os
 from point_reader import write_points
 
 def pick_points(im_path):
+    """
+    Allows you to pick points of an image given its path
+    """
     print('Please click on the image to select points. Press Enter when finished.')
 
     if not os.path.exists(im_path):

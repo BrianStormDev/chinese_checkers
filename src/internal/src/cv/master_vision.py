@@ -67,22 +67,11 @@ def image_to_board(raw_image):
     h, w, _ = raw_image.shape
     cropped = image.crop_image(int(0.35 * w), int(0.2 * h), int(0.25 * w), int(0.5 * h)) # TODO: fill in parameters)
 
-    # cv2.imshow('Cropped', cropped)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
-
-    image.find_corners(50) # TODO: adjust in param
+    image.find_corners(50) # You can adjust the 50 value
     rectified_image = image.rectify(500, 500)
-
-    # cv2.imshow('Corrected', rectified_image)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
 
     # Write the image to the special file
     cv2.imwrite('/home/cc/ee106a/fa24/class/ee106a-air/ros_workspaces/chinese_checkers/src/internal/src/cv/special.jpg', rectified_image)
-
-    # print('Processing...')
-
     # boxes = detect_boxes(rectified_image)
     # return create_board(boxes)
 
