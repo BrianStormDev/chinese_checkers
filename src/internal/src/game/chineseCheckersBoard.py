@@ -7,12 +7,7 @@ from typing import List, Tuple, Set
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Move the player intiializaiion into a funciton
-# mvoe the playermove lists into the player class
-# move the player relations into the player class
-# optimize reset with a function
 # integrate the utility function into checker map
-# maybe move get next player, get opposite player to player class
 
 X_DIM = 25
 Y_DIM = 17
@@ -27,44 +22,17 @@ class ChineseCheckersBoard:
     # winning_players: List[Player]
     # fig, ax, scatter
 
-    # Information about players and directions to store for later
-    yellow_directions = [Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0)]
-    purple_directions = [Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1)]
-    green_directions = [Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1)]
-    red_directions = [Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0)]
-    orange_directions = [Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1)]
-    blue_directions = [Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1)]
-
-    # The next player clockwise is player.number + 1
-    # The opposite player is (player.number + 3) % 6
-    player_1 = Player(1, 'Gold', Point(12, 16), yellow_directions)
-    player_2 = Player(2, "Purple", Point(24, 12), purple_directions)
-    player_3 = Player(3, "Green", Point(24, 4), green_directions)
-    player_4 = Player(4,"Red", Point(12, 0), red_directions)
-    player_5 = Player(5, 'Darkorange', Point(0, 4), orange_directions)
-    player_6 = Player(6, "Blue", Point(0, 12), blue_directions)
-    
-    # Useful Player Relations
-    number_to_player = {1: player_1, 2: player_2, 3: player_3, 4: player_4, 5: player_5, 6: player_6}
-    color_to_player = {'Gold': player_1, "Purple": player_2, "Green": player_3, "Red": player_4, 'Darkorange': player_5, "Blue": player_6}
-    color_to_value = {'White': -1, 'Black': 0, 'Gold': 1, "Purple": 2, "Green": 3, "Red": 4, 'Darkorange': 5, "Blue": 6}
-    player_colors = ['Gold', "Purple", "Green", "Red", 'Darkorange', "Blue"]
-    all_players = [player_1, player_2, player_3, player_4, player_5, player_6]
-
-    # Useful Move Lists
-    basic_moves = ["UL", "UR", "R", "DR", "DL", "L"]
-    jump_moves = ["JUL", "JUR", "JR", "JDR", "JDL", "JL"]
-    swap_moves = ["SUL", "SUR", "SR", "SDR", "SDL", "SL"]
-    player_moves = basic_moves + jump_moves + swap_moves
+    x_dim = X_DIM
+    y_dim = Y_DIM
 
 ####################################################################################################################################################################
     # Board Setup Functions
+
     def __init__(self, custom_game_state=None):
         """
         Initialize the game
         """
-        self.x_dim = X_DIM
-        self.y_dim = Y_DIM
+        self.initialize_player_objects()
 
         if custom_game_state:
             self.initialize_custom_board(custom_game_state)
@@ -77,6 +45,30 @@ class ChineseCheckersBoard:
             self.board = self.initialize_board()
             
         self.move_history = [] # made this change
+
+    def initialize_player_objects(self):
+        # Information about player directions 
+        yellow_directions = [Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0)]
+        purple_directions = [Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1)]
+        green_directions = [Point(-2, 0), Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1)]
+        red_directions = [Point(-1, 1), Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0)]
+        orange_directions = [Point(1, 1), Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1)]
+        blue_directions = [Point(2, 0), Point(1, -1), Point(-1, -1), Point(-2, 0), Point(-1, 1), Point(1, 1)]
+
+        # Initializing the player objects
+        self.player_1 = Player(1, 'Gold', Point(12, 16), yellow_directions)
+        self.player_2 = Player(2, "Purple", Point(24, 12), purple_directions)
+        self.player_3 = Player(3, "Green", Point(24, 4), green_directions)
+        self.player_4 = Player(4,"Red", Point(12, 0), red_directions)
+        self.player_5 = Player(5, 'Darkorange', Point(0, 4), orange_directions)
+        self.player_6 = Player(6, "Blue", Point(0, 12), blue_directions)
+        
+        # Useful Player Relations
+        self.number_to_player = {1: self.player_1, 2: self.player_2, 3: self.player_3, 4: self.player_4, 5: self.player_5, 6: self.player_6}
+        self.color_to_player = {'Gold': self.player_1, "Purple": self.player_2, "Green": self.player_3, "Red": self.player_4, 'Darkorange': self.player_5, "Blue": self.player_6}
+        self.color_to_value = {'White': -1, 'Black': 0, 'Gold': 1, "Purple": 2, "Green": 3, "Red": 4, 'Darkorange': 5, "Blue": 6}
+        self.player_colors = ['Gold', "Purple", "Green", "Red", 'Darkorange', "Blue"]
+        self.all_players = [self.player_1, self.player_2, self.player_3, self.player_4, self.player_5, self.player_6]
 
     def initialize_custom_board(self, input: List):
         """
@@ -100,7 +92,6 @@ class ChineseCheckersBoard:
         # Set the pegs of the non_players
         non_players = set(self.all_players) - set(self.players)
         for player in non_players:
-            player.reset_pegs()
             for peg in player.current_pegs:
                 self.board[peg.position.x, peg.position.y] = peg
 
@@ -205,7 +196,7 @@ class ChineseCheckersBoard:
         print(f"The players are {list_of_players}.")
         return list_of_players
 
-    def initialize_board(self) -> np.ndarray:
+    def initialize_board(self):
         """
         Initialize a Board
         """
@@ -213,12 +204,15 @@ class ChineseCheckersBoard:
 
         # Initialize the players for the board
         for player in self.all_players:
-            # Reset the pegs of the player
-            player.reset_pegs()
             for peg in player.current_pegs:
                 board[peg.position.x, peg.position.y] = peg
-
         return board
+
+    def reset_game(self):
+        for player in self.players:
+            player.reset_pegs()
+            for peg in player.current_pegs:
+                self.board[peg.position.x, peg.position.y] = peg
 
     def display_board(self):
         """
@@ -285,7 +279,7 @@ class ChineseCheckersBoard:
 #####################################################################################################################################################################
     # Movement Functions
 
-    def move_is_valid(self, x_start: int, y_start: int, x_end: int, y_end: int, player_color: str): 
+    def is_valid_move_sawyer(self, x_start: int, y_start: int, x_end: int, y_end: int, player_color: str): 
         player = self.color_to_player[player_color]
         start_point = Point(x_start, y_start)
         end_point = Point(x_end, y_end)
@@ -520,7 +514,8 @@ class ChineseCheckersBoard:
     # Agent class Functions
 
     def make_move(self, move: Tuple[Point, str, Point]): # made this function
-        start_point, move_string, end_point = move
+        start_point = move[0]
+        end_point = move [2]
         
         # Store the move for potential undo
         self.move_history.append((start_point, end_point, self.board[end_point.x, end_point.y]))
@@ -748,8 +743,11 @@ class ChineseCheckersBoard:
         If there is a standard move, there can only be one standard move
         If there is a jump, every move has to be a jump
         """
-        # If a player is prevented from winning because of the presence of an opposing peg in the destination area, 
-        # the player is entitled to swap the opposing peg with that of his own peg. This applies for a single hole move.
+
+        # List of single player moves
+        basic_moves = ["UL", "UR", "R", "DR", "DL", "L"]
+        jump_moves = ["JUL", "JUR", "JR", "JDR", "JDL", "JL"]
+        swap_moves = ["SUL", "SUR", "SR", "SDR", "SDL", "SL"]
 
         basic_exists = False
         jump_count = 0
@@ -757,14 +755,14 @@ class ChineseCheckersBoard:
 
         # Checks if all of the moves are even in the list of moves
         for move in moves:
-            if move not in self.player_moves:
-                return False
-            if move in self.basic_moves:
+            if move in basic_moves:
                 basic_exists = True
-            elif move in self.jump_moves:
+            elif move in jump_moves:
                 jump_count += 1
-            elif move in self.swap_moves:
+            elif move in swap_moves:
                 swap_exists = True
+            else:
+                return False
 
         # If there is a basic move, ensure that the movelist is only that move
         if basic_exists and len(moves) != 1:
@@ -801,13 +799,20 @@ class ChineseCheckersBoard:
         return True
     
     def get_opposite_player(self, player: Player) -> Player:
-        """Returns the opposite player of the input player."""
+        """
+        Returns the opposite player of the input player.
+        The opposite player is (player.number + 2) % 6 + 1
+        """
         player_number = player.number
         opposite_player = (player_number + 2) % 6 + 1
         return self.number_to_player[opposite_player]
-
+ 
     def get_next_player(self, current_player: Player) -> Player:
-        """Returns the player after the input player."""
+        """
+        Returns the player after the input player.
+        The next player clockwise is (player.number % 6) + 1
+        """
+        assert not self.is_game_over(), "The game is already over, there is no next player."
         current_player_number = current_player.number
         next_player_number = (current_player_number % 6) + 1
         next_player = self.number_to_player[next_player_number]

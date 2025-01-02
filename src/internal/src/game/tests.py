@@ -109,6 +109,22 @@ def random_moves_6p():
                 break
     game.display_until_window_close()
 
+def naive_vs_naive():
+    """
+    Simulates a game with two players: Red makes moves according to the largest jump possible, while Gold randomly moves pieces 
+    """
+    custom = [['Gold', 'Red'], 'Gold', [], [[12, 16, 'Gold'], [13, 15, 'Gold'], [11, 15, 'Gold'], [14, 14, 'Gold'], [12, 14, 'Gold'], [10, 14, 'Gold'], [15, 13, 'Gold'], [13, 13, 'Gold'], [11, 13, 'Gold'], [9, 13, 'Gold'], [12, 0, 'Red'], [11, 1, 'Red'], [13, 1, 'Red'], [10, 2, 'Red'], [12, 2, 'Red'], [14, 2, 'Red'], [9, 3, 'Red'], [11, 3, 'Red'], [13, 3, 'Red'], [15, 3, 'Red']]]
+    game = ChineseCheckersBoard(custom)
+    game.display_board()
+    for _ in range(20000):
+        if not game.is_game_over():
+            move = game.naive_algorithm_update_move()
+            game.update_game(move)
+            if _ % 1 ==0:
+                game.update_board_visual()
+
+    game.display_until_window_close()
+
 def naive_vs_random_2p():
     """
     Simulates a game with two players: Red makes moves according to the largest jump possible, while Gold randomly moves pieces 
@@ -117,7 +133,7 @@ def naive_vs_random_2p():
     game = ChineseCheckersBoard(custom)
     game.display_board()
     for _ in range(20000):
-            if _ % 6 == 0 and game.current_player.color == 'Gold':
+            if game.current_player.color == 'Gold':
                 move = game.naive_algorithm_update_move()
                 game.update_game(move)
             else:
@@ -140,7 +156,7 @@ def naive_vs_random_6p():
     game = ChineseCheckersBoard(custom)
     game.display_board()
     for _ in range(20000):
-            if _ % 6 == 0 and game.current_player.color == 'Red':
+            if game.current_player.color == 'Red':
                 move = game.naive_algorithm_update_move()
                 game.update_game(move)
             else:
@@ -357,13 +373,6 @@ def tune_parameters(): #made this function
 
     print(f"Best Parameters: {best_parameters}, Performance: {best_performance}")
 
-def whatsigoingon():
-    custom = [['Darkorange', 'Purple'], 'Darkorange', [], [[12, 16, 'Gold'], [11, 15, 'Gold'], [13, 15, 'Gold'], [10, 14, 'Gold'], [12, 14, 'Gold'], [14, 14, 'Gold'], [9, 13, 'Gold'], [11, 13, 'Gold'], [13, 13, 'Gold'], [15, 13, 'Gold'], [0, 12, 'Blue'], [2, 12, 'Blue'], [4, 12, 'Blue'], [6, 12, 'Blue'], [8, 12, 'Black'], [10, 12, 'Purple'], [12, 12, 'Black'], [14, 12, 'Purple'], [16, 12, 'Black'], [18, 12, 'Purple'], [20, 12, 'Black'], [22, 12, 'Purple'], [24, 12, 'Black'], [1, 11, 'Blue'], [3, 11, 'Blue'], [5, 11, 'Blue'], [7, 11, 'Black'], [9, 11, 'Black'], [11, 11, 'Black'], [13, 11, 'Black'], [15, 11, 'Black'], [17, 11, 'Black'], [19, 11, 'Purple'], [21, 11, 'Black'], [23, 11, 'Purple'], [2, 10, 'Blue'], [4, 10, 'Blue'], [6, 10, 'Black'], [8, 10, 'Black'], [10, 10, 'Black'], [12, 10, 'Black'], [14, 10, 'Black'], [16, 10, 'Black'], [18, 10, 'Black'], [20, 10, 'Purple'], [22, 10, 'Black'], [3, 9, 'Blue'], [5, 9, 'Black'], [7, 9, 'Black'], [9, 9, 'Black'], [11, 9, 'Black'], [13, 9, 'Black'], [15, 9, 'Black'], [17, 9, 'Black'], [19, 9, 'Black'], [21, 9, 'Purple'], [4, 8, 'Black'], [6, 8, 'Darkorange'], [8, 8, 'Black'], [10, 8, 'Darkorange'], [12, 8, 'Black'], [14, 8, 'Purple'], [16, 8, 'Black'], [18, 8, 'Purple'], [20, 8, 'Black'], [3, 7, 'Darkorange'], [5, 7, 'Black'], [7, 7, 'Black'], [9, 7, 'Black'], [11, 7, 'Black'], [13, 7, 'Black'], [15, 7, 'Black'], [17, 7, 'Black'], [19, 7, 'Black'], [21, 7, 'Green'], [2, 6, 'Black'], [4, 6, 'Darkorange'], [6, 6, 'Black'], [8, 6, 'Black'], [10, 6, 'Black'], [12, 6, 'Black'], [14, 6, 'Black'], [16, 6, 'Black'], [18, 6, 'Black'], [20, 6, 'Green'], [22, 6, 'Green'], [1, 5, 'Darkorange'], [3, 5, 'Darkorange'], [5, 5, 'Darkorange'], [7, 5, 'Black'], [9, 5, 'Black'], [11, 5, 'Black'], [13, 5, 'Black'], [15, 5, 'Black'], [17, 5, 'Black'], [19, 5, 'Green'], [21, 5, 'Green'], [23, 5, 'Green'], [0, 4, 'Darkorange'], [2, 4, 'Darkorange'], [4, 4, 'Black'], [6, 4, 'Black'], [8, 4, 'Darkorange'], [10, 4, 'Black'], [12, 4, 'Black'], [14, 4, 'Black'], [16, 4, 'Black'], [18, 4, 'Green'], [20, 4, 'Green'], [22, 4, 'Green'], [24, 4, 'Green'], [9, 3, 'Red'], [11, 3, 'Red'], [13, 3, 'Red'], [15, 3, 'Red'], [10, 2, 'Red'], [12, 2, 'Red'], [14, 2, 'Red'], [11, 1, 'Red'], [13, 1, 'Red'], [12, 0, 'Red']]]
-    #custom = [['Darkorange', 'Purple'], 'Darkorange', [], [[6, 8, 'Darkorange'], [10, 8, 'Darkorange'], [3, 7, 'Darkorange'], [4, 6, 'Darkorange'], [1, 5, 'Darkorange'], [3, 5, 'Darkorange'], [5, 5, 'Darkorange'], [0, 4, 'Darkorange'], [2, 4, 'Darkorange'], [8, 4, 'Darkorange'], [10, 12, 'Purple'], [14, 12, 'Purple'], [18, 12, 'Purple'], [22, 12, 'Purple'], [19, 11, 'Purple'], [23, 11, 'Purple'], [20, 10, 'Purple'], [21, 9, 'Purple'], [14, 8, 'Purple'], [18, 8, 'Purple']]]
-    game = ChineseCheckersBoard(custom)
-    player = game.color_to_player['Darkorange']
-    print(game.valid_player_moves(player))
-
 if __name__ == "__main__":
     jump_loop_test()
     swapping_test_2p()
@@ -374,7 +383,7 @@ if __name__ == "__main__":
     # random_moves_2p()
     # random_moves_6p()
     # maxMovesTest()
-    naive_vs_random_2p()
+    naive_vs_naive()
+    # naive_vs_random_2p()
     # naive_vs_random_6p()
     # tune_parameters()
-    whatsigoingon()

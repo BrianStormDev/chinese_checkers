@@ -69,7 +69,7 @@ if __name__ == "__main__":
             y_start = int(moveList[1])
             x_end = int(moveList[2])
             y_end = int(moveList[3])
-            if not game.is_valid_move(x_start, y_start, x_end, y_end, current_player): 
+            if not game.is_valid_move_sawyer(x_start, y_start, x_end, y_end, current_player): 
                 can_collect_image = True
                 print('The input is not a valid move!')
                 continue
