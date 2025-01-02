@@ -13,8 +13,7 @@ POINT_SIZE = 100
 PLOT_DELAY = 0.01
 ALL_PLAYER_COLORS = ['Gold', "Purple", "Green", "Red", 'Darkorange', "Blue"]
 
-# Decide between camel case or snake case
-
+# Turn Everything Snake Case
 class ChineseCheckersBoard:
     # Class attributes
     # x_dim, y_dim
