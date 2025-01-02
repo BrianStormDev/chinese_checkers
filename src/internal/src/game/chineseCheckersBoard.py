@@ -29,7 +29,7 @@ class ChineseCheckersBoard:
 
     def __init__(self, custom_game_state=None):
         """
-        Initialize the game
+        Initialize the game object either from a custom state or from a starting state specified by the user
         """
         self.x_dim, self.y_dim = X_DIM, Y_DIM
         self.initialize_player_objects()
@@ -41,12 +41,14 @@ class ChineseCheckersBoard:
             self.players = self.initialize_players(num_players)
             self.current_player = self.players[0]
             self.winning_players = []
-            print("\nInitializing the board.")
             self.board = self.initialize_board()
-            
-        self.move_history = [] # made this change
+
+        self.move_history = [] # Subrat Change, required for agent
 
     def initialize_player_objects(self):
+        """
+        Initialize all of the player objects and all of the useful mappings relating to them
+        """
         # The player directions, starting from the topmost and going clockwise.
         directions_1 = [Point( 1, -1), Point(-1, -1), Point(-2,  0), Point(-1,  1), Point( 1,  1), Point( 2,  0)]
         directions_2 = [Point(-1, -1), Point(-2,  0), Point(-1,  1), Point( 1,  1), Point( 2,  0), Point( 1, -1)]
@@ -63,7 +65,7 @@ class ChineseCheckersBoard:
         player_5 = Player(5, ALL_PLAYER_COLORS[4], Point( 0,  4), directions_5)
         player_6 = Player(6, ALL_PLAYER_COLORS[5], Point( 0, 12), directions_6)
         
-        # Useful Player Relations
+        # Useful player mappings
         self.number_to_player = {1: player_1, 2: player_2, 3: player_3, 4: player_4, 5: player_5, 6: player_6}
         self.color_to_player = {ALL_PLAYER_COLORS[0]: player_1, ALL_PLAYER_COLORS[1]: player_2, ALL_PLAYER_COLORS[2]: player_3, ALL_PLAYER_COLORS[3]: player_4, ALL_PLAYER_COLORS[4]: player_5, ALL_PLAYER_COLORS[5]: player_6}
         self.color_to_number = {'White': -1, 'Black': 0, ALL_PLAYER_COLORS[0]: 1, ALL_PLAYER_COLORS[1]: 2, ALL_PLAYER_COLORS[2]: 3, ALL_PLAYER_COLORS[3]: 4, ALL_PLAYER_COLORS[4]: 5, ALL_PLAYER_COLORS[5]: 6}
@@ -71,30 +73,30 @@ class ChineseCheckersBoard:
 
     def initialize_custom_board(self, input: List):
         """
-        Initializes the board from a custom input which is a list
-        input[0]: players in the game as a list of colors ["color1", "color2"]
-        input[1]: current player, as a color
-        input[2]: list of winners as colors
-        input[3]: list of lists where each inner list is of the form [x, y, color]
+        Initialize the board from a custom input
+        input[0]: players in the game, as a list of colors: ["color1", "color2", ...]
+        input[1]: current player, as a color: "color1"
+        input[2]: list of winners, as colors ["color2"]
+        input[3]: piece positions, as a list of lists of the form: [x, y, "color1"]
         """
-        # Initializing the players
+        # Initialize the players
         player_colors = input[0]
         self.players = [self.color_to_player[color] for color in player_colors]
 
-        # Initializing the current player
+        # Initialize the current player
         current_player_color = input[1]
         self.current_player = self.color_to_player[current_player_color]
         
-        # Initializing the empty board
+        # Initialize the empty board
         self.board = self.initialize_empty_board()
 
-        # Set the pegs of the non_players
+        # Set the pegs of the non players
         non_players = set(self.all_players) - set(self.players)
         for player in non_players:
             for peg in player.current_pegs:
                 self.board[peg.position.x, peg.position.y] = peg
 
-        # Set the pegs of the players
+        # Clear the pegs of the players to be overwritten later
         for player in self.players:
             player.current_pegs.clear()
 
@@ -102,61 +104,67 @@ class ChineseCheckersBoard:
         winners = input[2]
         self.winning_players = [self.color_to_player[color] for color in winners]
 
-        # Each piece is a tuple (x, y, color)
+        # Each piece is a tuple [x, y, "color1"]
         piece_positions = input[3]
         for piece in piece_positions:
+            # Unpack the piece
             piece_x = piece[0]
             piece_y = piece[1]
             piece_color = piece[2]
+
+            # Convert the piece into a peg 
             peg = Peg(Point(piece_x, piece_y), piece_color, True, False)
-            if piece_color != "Black":
-                player_of_peg= self.color_to_player[piece_color]
-                player_of_peg.current_pegs.append(peg)
+            player_of_peg = self.color_to_player[piece_color]
+
+            # Add the peg to the player and update the board at that position
+            player_of_peg.current_pegs.append(peg)
             self.board[piece_x, piece_y] = peg
 
     def initialize_empty_board(self) -> np.ndarray:
         """
         Initialize a board with white pegs in the background and black pegs in the playable region
         """
-        # Fill the whole board as white pegs
+        # Generate the board
         board = np.ndarray((self.x_dim, self.y_dim), dtype=Peg)
+        
+        # Fill the whole board as white pegs that are out of the board
         for i in range(self.x_dim):
             for j in range(self.y_dim):
                 board[i, j] = Peg(Point(i, j), "White", False, True)
 
-        # Initialize the center hexagon for the board
-        hexagon_origin = Point(12, 8)
+        # Fill the center board as black pegs that are in the board and empty
+        hexagon_origin_x, hexagon_origin_y = 12, 8
         for radii in [0, 2, 4, 6, 8]:
-            for x in range(-radii, radii + 1):
-                for y in range(-radii, radii + 1):
-                    if abs(x) + abs(y) == radii:
-                        i = x + hexagon_origin.x
-                        j = y + hexagon_origin.y
+            for x_offset in range(-radii, radii + 1):
+                for y_offset in range(-radii, radii + 1):
+                    if abs(x_offset) + abs(y_offset) == radii:
+                        i = x_offset + hexagon_origin_x
+                        j = y_offset + hexagon_origin_y
                         board[i, j] =  Peg(Point(i, j), "Black", True, True)
         
-        # Initializing the side triangles of the board
-        self.initialize_player_corner(board, Point(12, 16), Point(1, -1), Point(-2, 0))
-        self.initialize_player_corner(board, Point(24, 12), Point(-1, -1), Point(-1, 1))
-        self.initialize_player_corner(board, Point(24, 4), Point(-2, 0), Point(1, 1))
-        self.initialize_player_corner(board, Point(12, 0), Point(-1, 1), Point(2, 0))
-        self.initialize_player_corner(board, Point(0, 4), Point(1, 1), Point(1, -1))
-        self.initialize_player_corner(board, Point(0, 12), Point(2, 0), Point(-1, -1))
+        # Initialize each of the empty corners of the board
+        self.initialize_player_corner(board, Point(12, 16), Point( 1, -1), Point(-2,  0))
+        self.initialize_player_corner(board, Point(24, 12), Point(-1, -1), Point(-1,  1))
+        self.initialize_player_corner(board, Point(24,  4), Point(-2,  0), Point( 1,  1))
+        self.initialize_player_corner(board, Point(12,  0), Point(-1,  1), Point( 2,  0))
+        self.initialize_player_corner(board, Point( 0,  4), Point( 1,  1), Point( 1, -1))
+        self.initialize_player_corner(board, Point( 0, 12), Point( 2,  0), Point(-1, -1))
         
         return board
     
-    def initialize_player_corner(self, board: np.ndarray, point: Point, ul: Point, r: Point):
+    def initialize_player_corner(self, board: np.ndarray, point: Point, upper_left: Point, right: Point):
         """
-        Initializes a corner of the board to be all black empty pegs
+        Initialize a corner of the board to be all black empty pegs
         """
         for i in range(4):
             for j in range(0, i + 1):
-                cur_position = point + ul * i + r * j
+                cur_position = point + upper_left * i + right * j
                 cur_peg = Peg(cur_position, "Black", True, True)
                 board[cur_position.x, cur_position.y] = cur_peg
 
     def initialize_num_players(self) -> int:
         """
-        Initializing the number of players
+        Initialize the number of players
         """
         print("\nInitializing the number of players.")
         number = input("Enter the number of players: ")
@@ -167,7 +175,7 @@ class ChineseCheckersBoard:
 
     def initialize_players(self, num_players: int) -> List[Player]:
         """
-        Initializing the players in the game
+        Initialize the players in the game
         """
         print("\nInitializing the players.")
         number_of_players = 1
@@ -197,8 +205,9 @@ class ChineseCheckersBoard:
 
     def initialize_board(self):
         """
-        Initialize a Board
+        Initialize the Board
         """
+        print("\nInitializing the board.")
         board = self.initialize_empty_board()
 
         # Initialize the players for the board
@@ -211,7 +220,7 @@ class ChineseCheckersBoard:
         """
         Reset the game
         """
-        # Reset the pegs of the actual players and update those pegs on the board
+        # Reset the pegs of the players and update those pegs on the board
         for player in self.players:
             player.reset_pegs()
             for peg in player.current_pegs:
