@@ -14,6 +14,7 @@ PLOT_DELAY = 0.01
 ALL_PLAYER_COLORS = ['Gold', "Purple", "Green", "Red", 'Darkorange', "Blue"]
 
 # Turn Everything Snake Case
+# Change all references of Peg to Hole?
 
 class ChineseCheckersBoard:
     # Class attributes

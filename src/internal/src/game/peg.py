@@ -3,7 +3,7 @@ from point import Point
 
 class Peg:
     """
-    Peg class representing the holes on the Chinese Checkers board.
+    Peg class representing the holes on the Chinese Checkers board
     """
     def __init__(self, position: Point, color: str, in_board: bool, is_empty: bool) -> None:
         """

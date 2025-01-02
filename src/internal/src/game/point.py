@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 class Point:
     """
-    Point class consisting of integer coordinates.
+    Point class consisting of integer coordinates
     """
     def __init__ (self, x, y):
         assert isinstance(x, int) and isinstance(y, int), "At least one of the input values was not an integer."
@@ -13,7 +13,7 @@ class Point:
         return Point(self.x + o.x, self.y + o.y)
     
     def __mul__(self, scalar):
-        assert isinstance(scalar, int) or isinstance(scalar, float), "The scalar you inputted was not an int or a float."
+        assert isinstance(scalar, (int, float)), "The scalar you inputted was not a number."
         return Point(int(self.x * scalar), int(self.y * scalar))
     
     def __eq__(self, other):
@@ -27,6 +27,6 @@ class Point:
     
     def __hash__(self):
         """
-        Converts the Point to a tuple and gets the hash of that tuple.
+        Converts the Point to a tuple and gets the hash of that tuple
         """
         return hash((self.x, self.y))
