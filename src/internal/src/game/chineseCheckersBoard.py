@@ -602,7 +602,7 @@ class ChineseCheckersBoard:
     def play_game_UI(self, other_player_function):
         """Display the board using matplotlib with dynamic updates"""
         self.fig, self.ax = plt.subplots()  # Create figure and axes
-        buffer = [] # Buffer to store the user's peg they want to move
+        buffer = [] # Buffer to store the peg the user wants to move
 
         def on_mouse_press(event):
             if self.is_game_over(): # If the game is over already
