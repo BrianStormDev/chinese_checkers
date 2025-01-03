@@ -605,60 +605,60 @@ class ChineseCheckersBoard:
         buffer = [] # Buffer to store the user's peg they want to move
 
         def on_mouse_press(event):
-            if not self.is_game_over(): # If the game is not over yet
-                if event.inaxes: # Ensure the event is within the axes
-
-                    # Transform mouse coordinates to data coordinates and then to a point
-                    x, y = self.event_coord_to_board_coord(event)
-                    point = Point(x, y)
-                        
-                    if buffer: # If a point has already been pressed, attempt the move
-
-                        # Checks that the endpoint is a point that can be reached
-                        possible_moves = self.point_valid_moves(buffer[0], self.current_player)
-                        possible_endpoints = [move[2] for move in possible_moves]
-
-                        # If the final point is in the possible_endpoints
-                        if point in possible_endpoints: 
-                            self.swap_pegs(buffer[0], point) # Swap the pegs
-                            print(f"Peg being moved to point ({point.x}, {point.y})")
-
-                            if self.check_player_won(self.current_player): # Check if someone has won
-                                print(f"Player {self.current_player.number}/{self.current_player.color} has won in place {len(self.winning_players) + 1}!")
-                                self.winning_players.append(self.current_player)
-
-                            # Get the next player, clear the buffer, and redraw the board    
-                            self.current_player = self.get_next_player(self.current_player)
-
-                            # Update the board with the other player whether it be a human, Naive AI, or minimax AI
-                            other_player_function()
-
-                            # Clear the buffer for the next player and update the board visualy
-                            buffer.clear()
-                            self.update_board_visual()
-                        else:
-                            # If the final point is not in the possible_endpoints
-                            print("The point you pressed is not a valid spot to move to.")
-
-                    else: # If there is nothing in the buffer
-                        # Ensure the peg trying to be moved is in the list of the player's pegs
-                        if self.peg_at_position(point) in self.current_player.current_pegs:
-                            possible_moves = self.point_valid_moves(point, self.current_player)
-
-                            if len(possible_moves) > 0: # Check that this peg has a possible move:
-                                print(f"Selected peg at point ({point.x}, {point.y}).\n")
-                                buffer.append(point)
-                                print("If you want to cancel the current peg you have selected, click outside the graph.\n")
-                            else:
-                                print("This peg has no spots to which it can go to.")
-                        else:
-                            print("The point you pressed is not a valid peg to move in the current player's pegs.")
-                else:
-                    print(f"\nPlayer {self.current_player.number}/{self.current_player.color}'s turn.")
-                    print(self.output_gamestate())
-                    buffer.clear()
-            else:
+            if self.is_game_over(): # If the game is over already
                 print(f"The game is over! The order of winning is {self.winning_players}.")
+                return
+
+            if not event.inaxes: # If the click (event) is not on the graph
+                print(f"\nPlayer {self.current_player.number}/{self.current_player.color}'s turn.")
+                print(self.output_gamestate())
+                buffer.clear()
+                return
+
+            # Transform mouse coordinates to data coordinates and then to a point
+            x, y = self.event_coord_to_board_coord(event)
+            point = Point(x, y)
+                
+            if buffer: # If a point has already been pressed, attempt the move
+
+                # Checks that the endpoint is a point that can be reached
+                possible_moves = self.point_valid_moves(buffer[0], self.current_player)
+                possible_endpoints = [move[2] for move in possible_moves]
+
+                # If the final point is in the possible_endpoints
+                if point in possible_endpoints: 
+                    self.swap_pegs(buffer[0], point) # Swap the pegs
+                    print(f"Peg being moved to point ({point.x}, {point.y}). \n")
+
+                    if self.check_player_won(self.current_player): # Check if someone has won
+                        print(f"Player {self.current_player.number}/{self.current_player.color} has won in place {len(self.winning_players) + 1}!")
+                        self.winning_players.append(self.current_player)
+
+                    self.current_player = self.get_next_player(self.current_player)
+
+                    # Update the board with the other player whether it be a human, Naive AI, or minimax AI
+                    other_player_function()
+
+                    # Clear the buffer for the next player and update the board visualy
+                    buffer.clear()
+                    self.update_board_visual()
+                else:
+                    # If the final point is not in the possible_endpoints
+                    print("The point you pressed is not a valid spot to move to.")
+
+            else: # If there is nothing in the buffer
+                # Ensure the peg trying to be moved is in the list of the player's pegs
+                if self.peg_at_position(point) in self.current_player.current_pegs:
+                    possible_moves = self.point_valid_moves(point, self.current_player)
+
+                    if len(possible_moves) > 0: # Check that this peg has a possible move:
+                        print(f"Selected peg at point ({point.x}, {point.y}).")
+                        print("If you want to cancel the current peg you have selected, click outside the graph.")
+                        buffer.append(point)
+                    else:
+                        print("This peg has no spots to which it can go to.")
+                else:
+                    print("The point you pressed is not a valid peg to move in the current player's pegs.")
 
         # Calls on_mouse_press when the user clicks on the graph
         self.fig.canvas.mpl_connect("button_press_event", on_mouse_press)  
@@ -727,7 +727,7 @@ class ChineseCheckersBoard:
 
             # Get the next player
             self.current_player = self.get_next_player(self.current_player)
-            
+
         # Appends the last place finisher
         self.winning_players.append(self.current_player)
         print(f"The game is over! The order of winning is {self.winning_players}.")
