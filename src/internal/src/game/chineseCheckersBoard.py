@@ -6,12 +6,32 @@ from agent import Agent
 from typing import List, Tuple, Set
 import numpy as np
 import matplotlib.pyplot as plt
+import time
+
+# Future Optimizations
+# Turn most things into constants rather than have unnecessary calculations
+#   Player's endzone / startzone, board initialization
+# Player's keep track of their current score since calculating it directly isn't possible
+# Implement minimax algorithm better
+# Optimize the displaying function so that points that haven't changed aren't redrawn (this is the bottleneck)
+# Convert code to C++
 
 X_DIM = 26
 Y_DIM = 18
 POINT_SIZE = 100
-PLOT_DELAY = 0.01
+PLOT_DELAY = 0.0001
 ALL_PLAYER_COLORS = ['GOLD', "PURPLE", "GREEN", "RED", 'DARKORANGE', "BLUE"]
+
+# Decorator used to measure the speed of a function
+def timing_decorator(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.perf_counter()  # Record the start time
+        result = func(*args, **kwargs)   # Call the original function
+        end_time = time.perf_counter()   # Record the end time
+        execution_time = end_time - start_time
+        print(f"Function '{func.__name__}' executed in {execution_time:.6f} seconds")
+        return result  # Return the original function's result
+    return wrapper
 
 class ChineseCheckersBoard:
     # Class attributes
@@ -261,6 +281,7 @@ class ChineseCheckersBoard:
         y = int(round(position[1]))
         return x, y
     
+    @timing_decorator
     def update_board_visual(self):
         """Update the displayed board dynamically"""
         peg_array = self.board.flatten()
@@ -271,8 +292,8 @@ class ChineseCheckersBoard:
             y_coords = [peg.position.y for peg in peg_array if peg.color != 'WHITE']
             self.positions = list(zip(x_coords, y_coords))
             self.scatter = self.ax.scatter(x_coords, y_coords, c=colors, s = POINT_SIZE)
+            self.scatter.set_offsets(self.positions)
 
-        self.scatter.set_offsets(self.positions)
         self.scatter.set_facecolor(colors)
         self.ax.figure.canvas.draw_idle()
         plt.pause(PLOT_DELAY)
@@ -304,6 +325,7 @@ class ChineseCheckersBoard:
         moves = set(map(lambda x: (x[0], x[2]), self.valid_player_moves(player)))
         return (start_point, end_point) in moves
 
+    @timing_decorator
     def valid_player_moves(self, player: Player) -> List[Tuple[Point, str, Point]]:
         """
         Generate a list of valid moves 
@@ -329,7 +351,7 @@ class ChineseCheckersBoard:
         Each tuple contains a starting point, the list of move codes to reach the ending point, and the ending point
         """
 
-        def valid_jumps_from_point(visited_positions: set, move_string: str, origin_pos: Point, current_pos: Point) -> Set[Tuple[Point, str, Point]]:
+        def valid_jumps_from_point(visited_positions: set, move_string: str, current_pos: Point) -> Set[Tuple[Point, str, Point]]:
             """
             visited_positions: indicates all of the points we have visited before
             move_string: indicates the moves made up till this point
@@ -342,23 +364,21 @@ class ChineseCheckersBoard:
             for move_code, direction in player.directions.items(): # For each possible direction
                 if self.is_valid_move(player, current_pos, direction, "Jump"):
                     jump_move_pos = current_pos + (direction * 2) # Get the jump_move_position
-                    if not self.in_playable_region(jump_move_pos):  # Skip invalid positions
-                        print(f"Jump position out of bounds: {jump_move_pos}")
-                        continue
-                    # Determine if we stop jumping:
-                    # 1. If the move_tuple is in moves, we don't make the recursive jump
-                    # 2. If the jump will result in the same position, we don't make the recursive jump
-                    if jump_move_pos not in visited_positions and (jump_move_pos != origin_pos): 
+
+                    # Determine if we stop jumping: If the jump will result in the same position, we don't make the recursive jump
+                    if jump_move_pos not in visited_positions: 
                         updated_move_code = move_string + "J" + move_code + " " # Builds onto the move code string
                         jumps.add((origin_pos, updated_move_code[:-1], jump_move_pos)) # We can add a valid move
                         visited_positions.add(jump_move_pos) # Update the visited positions
-                        jumps.update(valid_jumps_from_point(visited_positions, updated_move_code, origin_pos, jump_move_pos)) # Add all the other valid moves
+                        jumps.update(valid_jumps_from_point(visited_positions, updated_move_code, jump_move_pos)) # Add all the other valid moves
+
             return jumps
         
         moves = set()
+        origin_pos = peg.position
         
         for move_code, direction in player.directions.items(): # For each possible direction
-            origin_pos = peg.position # Get the current position of the peg
+             # Get the current position of the peg
             single_move_pos = origin_pos + direction
 
             # First determine if we can make any moves one step away 
@@ -370,7 +390,7 @@ class ChineseCheckersBoard:
                 moves.add((origin_pos, "S" + move_code, single_move_pos))
 
             # Finally determine if we can make any jumps
-            moves.update(valid_jumps_from_point(set(), '', origin_pos, origin_pos))
+            moves.update(valid_jumps_from_point(set([origin_pos]), '', origin_pos))
 
         return list(moves)
 
@@ -489,8 +509,8 @@ class ChineseCheckersBoard:
         Checks if the end_zone of this player is full
         """
         opposite_player = self.get_opposite_player(player)
-        end_zone_points = opposite_player.end_zone_points
-        for point in end_zone_points:
+        starting_zone_points = opposite_player.starting_zone_points
+        for point in starting_zone_points:
             peg = self.peg_at_position(point)
             if peg.is_empty:
                 return False
@@ -507,8 +527,8 @@ class ChineseCheckersBoard:
         Checks if a point is in the end zone of the player.
         """
         opposite_player = self.get_opposite_player(player)
-        end_zone_points = opposite_player.end_zone_points
-        return point in end_zone_points
+        starting_zone_points = opposite_player.starting_zone_points
+        return point in starting_zone_points
     
     def peg_at_position(self, position: Point) -> Peg:
         """Return the Peg located at the position"""
@@ -843,6 +863,7 @@ class ChineseCheckersBoard:
 ####################################################################################################################################################################
     # Functional Code and utility functions
 
+    @timing_decorator
     def update_game(self, move_command: List) -> bool:
         """
         Updates the gamestate based on the player_input
@@ -870,6 +891,7 @@ class ChineseCheckersBoard:
         # Return if the move succeeded
         return move_succeeded
 
+    @timing_decorator
     def format_move_for_update_func(self, move) -> List:
         """
         Format's a possible move from self.valid_player_moves into a format that can be input as a function call to update_gaame

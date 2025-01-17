@@ -15,7 +15,7 @@ def jump_loop_test():
     """
     custom = [['Gold', 'Red'], 'Red', [], [[9, 3, 'Gold'], [12, 0, 'Red'], [13, 1, 'Red'], [15, 3, 'Red'], [15, 5, 'Red'], [13, 5, 'Red'], [13, 3, 'Red']]]
     game = ChineseCheckersBoard(custom)
-    red_player = game.color_to_player["Red"]
+    red_player = game.color_to_player("Red")
     # Assuming that moves are counted correctly under the loop, we should have 29
     assert len(game.valid_player_moves(red_player)) == 29, "Jump Loop Test Failed!"
     print("Jump Loop Test Passed!")
@@ -26,7 +26,7 @@ def swapping_test_2p():
     """
     custom = [['Gold', 'Red'], 'Red', [], [[9, 13, 'Gold'], [8, 12, 'Red'], [10, 14, 'Red'], [11, 15, 'Red'], [12, 16, 'Red'], [11, 13, 'Red'], [12, 14, 'Red'], [13, 15, 'Red'], [13, 13, 'Red'], [14, 14, 'Red'], [15, 13, 'Red']]]
     game = ChineseCheckersBoard(custom)
-    red_player = game.color_to_player["Red"]
+    red_player = game.color_to_player("Red")
     valid_swap_moves = [move for move in game.valid_player_moves(red_player) if move[1][0] == "S"]
     assert len(valid_swap_moves) == 3, "Two Player Swap Test Failed!"
     print("Two Player Swap Test Passed!")
@@ -37,7 +37,7 @@ def swapping_test_6p():
     """
     custom = [['Red', 'Gold', 'Green', 'Blue', 'Darkorange', 'Purple'], 'Red', [], [[8, 12, 'Red'], [11, 15, 'Red'], [11, 13, 'Red'], [12, 14, 'Red'], [13, 15, 'Red'], [13, 13, 'Red'], [5, 9, 'Red'], [8, 4, 'Red'], [18, 10, 'Red'], [18, 6, 'Red'], [9, 13, 'Gold'], [10, 14, 'Green'], [12, 16, 'Blue'], [14, 14, 'Darkorange'], [15, 13, 'Purple']]]
     game = ChineseCheckersBoard(custom)
-    red_player = game.color_to_player["Red"]
+    red_player = game.color_to_player("Red")
     valid_swap_moves = [move for move in game.valid_player_moves(red_player) if move[1][0] == "S"]
     assert len(valid_swap_moves) == 11, "Six Player Swap Test Failed!"
     print("Six Player Swap Test Passed!")
@@ -48,7 +48,7 @@ def no_swap_test():
     """
     custom = [['Gold', 'Red'], 'Red', [], [[9, 13, 'Gold'], [8, 12, 'Red'], [10, 14, 'Red'], [11, 15, 'Red'], [11, 13, 'Red'], [12, 14, 'Red'], [13, 15, 'Red'], [13, 13, 'Red'], [14, 14, 'Red'], [15, 13, 'Red']]]
     game = ChineseCheckersBoard(custom)
-    yellow_player = game.color_to_player["Gold"]
+    yellow_player = game.color_to_player("Gold")
     valid_swap_moves = [move for move in game.valid_player_moves(yellow_player) if move[1][0] == "S"]
     assert len(valid_swap_moves) == 0, "No Swap Test Failed!"
     print("No Swap Test Passed!")
@@ -59,7 +59,7 @@ def win_test():
     """
     custom = [['Red', 'Gold'], 'Red', [], [[16, 12, 'Red'], [12, 16, 'Red'], [9, 13, 'Red'], [12, 14, 'Red'], [11, 15, 'Red'], [15, 13, 'Red'], [10, 14, 'Red'], [13, 15, 'Red'], [11, 13, 'Red'], [13, 13, 'Red'], [7, 11, 'Gold'], [19, 9, 'Gold'], [12, 8, 'Gold'], [13, 5, 'Gold'], [8, 10, 'Gold'], [9, 9, 'Gold'], [17, 11, 'Gold'], [9, 7, 'Gold'], [13, 7, 'Gold'], [5, 9, 'Gold']]]
     game = ChineseCheckersBoard(custom)
-    red_player = game.color_to_player["Red"]
+    red_player = game.color_to_player("Red")
     game.update_game([16, 12, 'JUL'])
     assert game.check_player_won(red_player) == True, "Win Test Failed!"
     print("Win Test Passed!")
@@ -413,13 +413,13 @@ if __name__ == "__main__":
     endzone_rule_test()
 
     # Experimental Tests
-    # random_moves_2p()
+    random_moves_2p()
     # random_moves_6p()
     # naive_vs_naive()
     # naive_vs_random_2p()
     # naive_vs_random_6p()
     # reset_function_test()
-    max_moves_experiment()
+    # max_moves_experiment()
     # convert_list_to_custom_game_test()
 
     # AI tests
