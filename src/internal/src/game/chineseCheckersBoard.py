@@ -10,17 +10,23 @@ import time
 
 # Future Optimizations
 # Turn most things into constants rather than have unnecessary calculations
-#   Player's endzone / startzone, board initialization
+#   board initialization
 # Player's keep track of their current score since calculating it directly isn't possible
 # Implement minimax algorithm better
 # Optimize the displaying function so that points that haven't changed aren't redrawn (this is the bottleneck)
 # Convert code to C++
+# Get rid of peg class, internal array is now just be numbers which have a dict that maps to colors
+# in board and in playable region are now sets of points
+
+# If white corresponds to 0 then I can initialize an np.zeros and not have to generate all the 0s at the start
 
 X_DIM = 26
 Y_DIM = 18
 POINT_SIZE = 100
 PLOT_DELAY = 0.0001
 ALL_PLAYER_COLORS = ['GOLD', "PURPLE", "GREEN", "RED", 'DARKORANGE', "BLUE"]
+PLAYABLE_REGION = [(0, 4), (0, 12), (1, 5), (1, 11), (2, 4), (2, 6), (2, 10), (2, 12), (3, 5), (3, 7), (3, 9), (3, 11), (4, 4), (4, 6), (4, 8), (4, 10), (4, 12), (5, 5), (5, 7), (5, 9), (5, 11), (6, 4), (6, 6), (6, 8), (6, 10), (6, 12), (7, 5), (7, 7), (7, 9), (7, 11), (8, 4), (8, 6), (8, 8), (8, 10), (8, 12), (9, 3), (9, 5), (9, 7), (9, 9), (9, 11), (9, 13), (10, 2), (10, 4), (10, 6), (10, 8), (10, 10), (10, 12), (10, 14), (11, 1), (11, 3), (11, 5), (11, 7), (11, 9), (11, 11), (11, 13), (11, 15), (12, 0), (12, 2), (12, 4), (12, 6), (12, 8), (12, 10), (12, 12), (12, 14), (12, 16), (13, 1), (13, 3), (13, 5), (13, 7), (13, 9), (13, 11), (13, 13), (13, 15), (14, 2), (14, 4), (14, 6), (14, 8), (14, 10), (14, 12), (14, 14), (15, 3), (15, 5), (15, 7), (15, 9), (15, 11), (15, 13), (16, 4), (16, 6), (16, 8), (16, 10), (16, 12), (17, 5), (17, 7), (17, 9), (17, 11), (18, 4), (18, 6), (18, 8), (18, 10), (18, 12), (19, 5), (19, 7), (19, 9), (19, 11), (20, 4), (20, 6), (20, 8), (20, 10), (20, 12), (21, 5), (21, 7), (21, 9), (21, 11), (22, 4), (22, 6), (22, 10), (22, 12), (23, 5), (23, 11), (24, 4), (24, 12)]
+NON_PLAYABLE_REGION = [(0, 0), (0, 1), (0, 2), (0, 3), (0, 5), (0, 6), (0, 7), (0, 8), (0, 9), (0, 10), (0, 11), (0, 13), (0, 14), (0, 15), (0, 16), (0, 17), (1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (1, 6), (1, 7), (1, 8), (1, 9), (1, 10), (1, 12), (1, 13), (1, 14), (1, 15), (1, 16), (1, 17), (2, 0), (2, 1), (2, 2), (2, 3), (2, 5), (2, 7), (2, 8), (2, 9), (2, 11), (2, 13), (2, 14), (2, 15), (2, 16), (2, 17), (3, 0), (3, 1), (3, 2), (3, 3), (3, 4), (3, 6), (3, 8), (3, 10), (3, 12), (3, 13), (3, 14), (3, 15), (3, 16), (3, 17), (4, 0), (4, 1), (4, 2), (4, 3), (4, 5), (4, 7), (4, 9), (4, 11), (4, 13), (4, 14), (4, 15), (4, 16), (4, 17), (5, 0), (5, 1), (5, 2), (5, 3), (5, 4), (5, 6), (5, 8), (5, 10), (5, 12), (5, 13), (5, 14), (5, 15), (5, 16), (5, 17), (6, 0), (6, 1), (6, 2), (6, 3), (6, 5), (6, 7), (6, 9), (6, 11), (6, 13), (6, 14), (6, 15), (6, 16), (6, 17), (7, 0), (7, 1), (7, 2), (7, 3), (7, 4), (7, 6), (7, 8), (7, 10), (7, 12), (7, 13), (7, 14), (7, 15), (7, 16), (7, 17), (8, 0), (8, 1), (8, 2), (8, 3), (8, 5), (8, 7), (8, 9), (8, 11), (8, 13), (8, 14), (8, 15), (8, 16), (8, 17), (9, 0), (9, 1), (9, 2), (9, 4), (9, 6), (9, 8), (9, 10), (9, 12), (9, 14), (9, 15), (9, 16), (9, 17), (10, 0), (10, 1), (10, 3), (10, 5), (10, 7), (10, 9), (10, 11), (10, 13), (10, 15), (10, 16), (10, 17), (11, 0), (11, 2), (11, 4), (11, 6), (11, 8), (11, 10), (11, 12), (11, 14), (11, 16), (11, 17), (12, 1), (12, 3), (12, 5), (12, 7), (12, 9), (12, 11), (12, 13), (12, 15), (12, 17), (13, 0), (13, 2), (13, 4), (13, 6), (13, 8), (13, 10), (13, 12), (13, 14), (13, 16), (13, 17), (14, 0), (14, 1), (14, 3), (14, 5), (14, 7), (14, 9), (14, 11), (14, 13), (14, 15), (14, 16), (14, 17), (15, 0), (15, 1), (15, 2), (15, 4), (15, 6), (15, 8), (15, 10), (15, 12), (15, 14), (15, 15), (15, 16), (15, 17), (16, 0), (16, 1), (16, 2), (16, 3), (16, 5), (16, 7), (16, 9), (16, 11), (16, 13), (16, 14), (16, 15), (16, 16), (16, 17), (17, 0), (17, 1), (17, 2), (17, 3), (17, 4), (17, 6), (17, 8), (17, 10), (17, 12), (17, 13), (17, 14), (17, 15), (17, 16), (17, 17), (18, 0), (18, 1), (18, 2), (18, 3), (18, 5), (18, 7), (18, 9), (18, 11), (18, 13), (18, 14), (18, 15), (18, 16), (18, 17), (19, 0), (19, 1), (19, 2), (19, 3), (19, 4), (19, 6), (19, 8), (19, 10), (19, 12), (19, 13), (19, 14), (19, 15), (19, 16), (19, 17), (20, 0), (20, 1), (20, 2), (20, 3), (20, 5), (20, 7), (20, 9), (20, 11), (20, 13), (20, 14), (20, 15), (20, 16), (20, 17), (21, 0), (21, 1), (21, 2), (21, 3), (21, 4), (21, 6), (21, 8), (21, 10), (21, 12), (21, 13), (21, 14), (21, 15), (21, 16), (21, 17), (22, 0), (22, 1), (22, 2), (22, 3), (22, 5), (22, 7), (22, 8), (22, 9), (22, 11), (22, 13), (22, 14), (22, 15), (22, 16), (22, 17), (23, 0), (23, 1), (23, 2), (23, 3), (23, 4), (23, 6), (23, 7), (23, 8), (23, 9), (23, 10), (23, 12), (23, 13), (23, 14), (23, 15), (23, 16), (23, 17), (24, 0), (24, 1), (24, 2), (24, 3), (24, 5), (24, 6), (24, 7), (24, 8), (24, 9), (24, 10), (24, 11), (24, 13), (24, 14), (24, 15), (24, 16), (24, 17), (25, 0), (25, 1), (25, 2), (25, 3), (25, 4), (25, 5), (25, 6), (25, 7), (25, 8), (25, 9), (25, 10), (25, 11), (25, 12), (25, 13), (25, 14), (25, 15), (25, 16), (25, 17)]
 
 # Decorator used to measure the speed of a function
 def timing_decorator(func):
@@ -38,7 +44,7 @@ class ChineseCheckersBoard:
     # x_dim, y_dim
     # players: List[Player]
     # current_player: Player
-    # board: ndarray[Peg]
+    # board: ndarray[int]
     # winning_players: List[Player]
     # fig, ax, scatter: matplotlib variables for plotting
 
@@ -145,40 +151,17 @@ class ChineseCheckersBoard:
         # Generate the board
         board = np.ndarray((self.x_dim, self.y_dim), dtype=Peg)
 
-        # Fill the whole board as white pegs that are out of the board
-        for i in range(self.x_dim):
-            for j in range(self.y_dim):
-                board[i, j] = Peg(Point(i, j), "WHITE", False, True)
-
-        # Fill the center board as black pegs that are in the board and empty
-        hexagon_origin_x, hexagon_origin_y = 12, 8
-        for radii in [0, 2, 4, 6, 8]:
-            for x_offset in range(-radii, radii + 1):
-                for y_offset in range(-radii, radii + 1):
-                    if abs(x_offset) + abs(y_offset) == radii:
-                        i = x_offset + hexagon_origin_x
-                        j = y_offset + hexagon_origin_y
-                        board[i, j] =  Peg(Point(i, j), "BLACK", True, True)
-
-        # Initialize each of the empty corners of the board
-        self.initialize_player_corner(board, Point(12, 16), Point( 1, -1), Point(-2,  0))
-        self.initialize_player_corner(board, Point(24, 12), Point(-1, -1), Point(-1,  1))
-        self.initialize_player_corner(board, Point(24,  4), Point(-2,  0), Point( 1,  1))
-        self.initialize_player_corner(board, Point(12,  0), Point(-1,  1), Point( 2,  0))
-        self.initialize_player_corner(board, Point( 0,  4), Point( 1,  1), Point( 1, -1))
-        self.initialize_player_corner(board, Point( 0, 12), Point( 2,  0), Point(-1, -1))
-
-        return board
+        for point in NON_PLAYABLE_REGION:
+            i = point[0]
+            j = point[1]
+            board[i, j] = Peg(Point(i, j), "WHITE", False, True)
+        
+        for point in PLAYABLE_REGION:
+            i = point[0]
+            j = point[1]
+            board[i, j] =  Peg(Point(i, j), "BLACK", True, True)
     
-    def initialize_player_corner(self, board: np.ndarray, point: Point, upper_left: Point, right: Point):
-        """
-        Initialize a corner of the board to be all black empty pegs
-        """
-        for i in range(4):
-            for j in range(0, i + 1):
-                cur_position = point + upper_left * i + right * j
-                cur_peg = Peg(cur_position, "BLACK", True, True)
-                board[cur_position.x, cur_position.y] = cur_peg
+        return board
 
     def initialize_num_players(self) -> int:
         """
