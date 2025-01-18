@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 from point import Point
-from peg import Peg
 from typing import List
 
 class Player:
@@ -28,32 +27,30 @@ class Player:
 
         # Set the origin of the pegs and the current state of pegs
         self.starting_zone_points = set()
-        self.initial_pegs = self.initialize_pegs(origin)
-        self.current_pegs = []
-        self.reset_pegs()
+        self.initial_pieces = self.initialize_pieces(origin)
+        self.current_pieces = []
+        self.reset_pieces()
     
-    def initialize_pegs(self, origin) -> List[Peg]:
+    def initialize_pieces(self, origin) -> List[Point]:
         """
-        Initializes the pegs and their position
+        Initializes the players pieces
         origin: Point representing the origin of the positions
         """
-        pegs = []
+        pieces = []
         for i in range(4):
             for j in range(0, i + 1):
                 cur_position = origin + self.directions["UL"] * i + self.directions["R"] * j
                 self.starting_zone_points.add(cur_position)
-                cur_peg = Peg(cur_position, self.color, True, False)
-                pegs.append(cur_peg)
-        return pegs
+                pieces.append(cur_position)
+        return pieces
 
-    def reset_pegs(self) -> List[Peg]:
+    def reset_pieces(self) -> List[Point]:
         """
-        Resets the players current_pegs
-        Clears their current_pegs and then makes a deep copy of their initial_pegs
+        Resets the players current_pieces
+        Clears their current_pieces and then makes a deep copy of their initial_pieces
         """
-        self.current_pegs.clear()
-        for peg in self.initial_pegs:
-            self.current_pegs.append(peg.copy())
+        self.current_pieces.clear()
+        self.current_pieces = self.initial_pieces.copy()
 
     def __repr__(self):
         return f'Player {self.number}/{self.color}'
